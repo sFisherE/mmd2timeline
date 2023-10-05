@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B3467E8-DCD5-4451-9E1E-EC70198EAB06}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>mmd2timeline</RootNamespace>
+    <AssemblyName>mmd2timeline</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AccessibilityModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ARModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ARModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.BaselibModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.BaselibModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CloudWebServicesModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.CloudWebServicesModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterInputModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CrashReportingModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DirectorModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.FacebookModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.FacebookModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GameCenterModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GridModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HotReloadModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticlesLegacyModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ParticlesLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpatialTracking">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpatialTrackingModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpatialTrackingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.StyleSheetsModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.StyleSheetsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubstanceModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TilemapModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Timeline">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TimelineModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TimelineModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TLSModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UmbraModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityConnectModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VehiclesModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VideoModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.WebModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.WebModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.WindModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Valve.Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\Valve.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Controllers\AudioClipController.cs" />
+    <Compile Include="src\Controllers\AudioPlayController.cs" />
+    <Compile Include="src\Controllers\CameraMotionController.cs" />
+    <Compile Include="src\Controllers\CameraMotionController.Focus.cs" />
+    <Compile Include="src\Controllers\CameraMotionController.Follow.cs" />
+    <Compile Include="src\Controllers\DelayTimeController.cs" />
+    <Compile Include="src\Controllers\IMMDController.cs" />
+    <Compile Include="src\Controllers\MMDBaseController.cs" />
+    <Compile Include="src\Controllers\MMDFolderController.cs" />
+    <Compile Include="src\Controllers\NavigationRigSnapshot.cs" />
+    <Compile Include="src\Controllers\PersonMotionController.CloseLowerBones.cs" />
+    <Compile Include="src\Controllers\PersonMotionController.cs" />
+    <Compile Include="src\Controllers\PersonMotionController.HeightFix.cs" />
+    <Compile Include="src\Controllers\PersonMotionController.MakeReady.cs" />
+    <Compile Include="src\Controllers\ProgressController.cs" />
+    <Compile Include="src\Controllers\StartAndEndTimeController.cs" />
+    <Compile Include="src\LibMmd\Motion\VmdVisibleIK.cs" />
+    <Compile Include="src\Model\AudioSetting.cs" />
+    <Compile Include="src\Model\CameraSetting.cs" />
+    <Compile Include="src\Model\Config.cs" />
+    <Compile Include="src\Model\Lang.cs" />
+    <Compile Include="src\Model\MMDEntity.cs" />
+    <Compile Include="src\Model\MMDEntity.Store.cs" />
+    <Compile Include="src\Model\MMDFile.cs" />
+    <Compile Include="src\Model\MMDSetting.cs" />
+    <Compile Include="src\Model\MSJSONClass.cs" />
+    <Compile Include="src\Model\PersonMotion.cs" />
+    <Compile Include="src\Model\Playlist.Control.cs" />
+    <Compile Include="src\Model\Playlist.cs" />
+    <Compile Include="src\Model\Playlist.ImportExport.cs" />
+    <Compile Include="src\Player\Player.cs" />
+    <Compile Include="src\Player\Player.PlayConfirm.cs" />
+    <Compile Include="src\Player\Player.Playlist.cs" />
+    <Compile Include="src\Player\Player.Settings.cs" />
+    <Compile Include="src\Player\Player.Status.cs" />
+    <Compile Include="src\Player\Player.UI.cs" />
+    <Compile Include="src\Player\Settings.cs" />
+    <Compile Include="src\Player\Settings.Script.cs" />
+    <Compile Include="src\Player\Settings.Tip.cs" />
+    <Compile Include="src\Player\Settings.UI.cs" />
+    <Compile Include="src\Player\Settings.UI.Show.cs" />
+    <Compile Include="src\Utils\GroupUI.cs" />
+    <Compile Include="src\Utils\MacGruber_Utils.cs" />
+    <Compile Include="src\Utils\LogUtil.cs" />
+    <Compile Include="src\Timeline\Mmd2TimelineCameraAtomPlugin.cs" />
+    <Compile Include="src\Timeline\Mmd2TimelinePersonAtomPlugin.cs" />
+    <Compile Include="src\Timeline\Mmd2TimelinePersonAtomPlugin.Heel.cs" />
+    <Compile Include="src\Timeline\Mmd2TimelinePersonAtomPlugin.Sample.cs" />
+    <Compile Include="src\Timeline\Mmd2TimelinePersonAtomPlugin.Utils.cs" />
+    <Compile Include="src\Utils\BufferBinaryReader.cs" />
+    <Compile Include="src\ConfigurableJointExtensions.cs" />
+    <Compile Include="src\DazBoneMapping.cs" />
+    <Compile Include="src\FaceMorph.cs" />
+    <Compile Include="src\FingerMorph.cs" />
+    <Compile Include="src\FingerOutputExt.cs" />
+    <Compile Include="src\TimelineJson.cs" />
+    <Compile Include="src\LibMmd\Model\Bone.cs" />
+    <Compile Include="src\LibMmd\Model\MmdModel.cs" />
+    <Compile Include="src\LibMmd\Model\Morph.cs" />
+    <Compile Include="src\LibMmd\Model\SkinningOperator.cs" />
+    <Compile Include="src\LibMmd\Motion\BoneImage.cs" />
+    <Compile Include="src\LibMmd\Motion\BoneKeyframe.cs" />
+    <Compile Include="src\LibMmd\Motion\BonePose.cs" />
+    <Compile Include="src\LibMmd\Motion\CameraKeyframe.cs" />
+    <Compile Include="src\LibMmd\Motion\CameraMotion.cs" />
+    <Compile Include="src\LibMmd\Motion\CameraPose.cs" />
+    <Compile Include="src\LibMmd\Motion\Interpolator.cs" />
+    <Compile Include="src\LibMmd\Motion\MmdMotion.cs" />
+    <Compile Include="src\LibMmd\Motion\MmdPose.cs" />
+    <Compile Include="src\LibMmd\Motion\MorphKeyframe.cs" />
+    <Compile Include="src\LibMmd\Motion\MorphPose.cs" />
+    <Compile Include="src\LibMmd\Motion\MotionPlayer.cs" />
+    <Compile Include="src\LibMmd\Motion\Poser.cs" />
+    <Compile Include="src\LibMmd\Reader\MmdFileParseException.cs" />
+    <Compile Include="src\LibMmd\Reader\ModelReader2.cs" />
+    <Compile Include="src\LibMmd\Reader\PmxReader2.cs" />
+    <Compile Include="src\LibMmd\Reader\VmdReader2.cs" />
+    <Compile Include="src\LibMmd\Unity3D\MmdCameraObject.cs" />
+    <Compile Include="src\LibMmd\Unity3D\MmdGameObject.cs" />
+    <Compile Include="src\LibMmd\Unity3D\Utils.cs" />
+    <Compile Include="src\LibMmd\Util\MathUtil.cs" />
+    <Compile Include="src\LibMmd\Util\MatrixExtensions.cs" />
+    <Compile Include="src\LibMmd\Util\MmdReaderUtil2.cs" />
+    <Compile Include="src\LibMmd\Util\Tools.cs" />
+    <Compile Include="src\Utils\Settings.cs" />
+    <Compile Include="src\Utils\SJISToUnicode.cs" />
+    <Compile Include="src\Utils\ToEncoding.cs" />
+    <Compile Include="src\Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) e:\vam\Custom\Scripts\mmd2timeline</PostBuildEvent>
+  </PropertyGroup>
+</Project>
