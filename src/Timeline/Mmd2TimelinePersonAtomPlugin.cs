@@ -158,7 +158,7 @@ namespace mmd2timeline
             }
             //骨骼微调
             {
-                m_BoneChooser = new JSONStorableStringChooser("AdjustBoneRotation", new List<string>() { "Shoulder", "Arm", "Elbow","Hand","Foot" }, "Arm", "Bone Rotation Adjust",SetBone);
+                m_BoneChooser = new JSONStorableStringChooser("AdjustBoneRotation", new List<string>() { "Shoulder", "Arm", "Elbow","Hand", "Thigh", "Knee", "Foot", "Toe" }, "Arm", "Bone Rotation Adjust",SetBone);
                 CreateFilterablePopup(m_BoneChooser, true);
 
                 CreateSlider(m_BoneAdjustX, true);

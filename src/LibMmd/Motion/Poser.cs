@@ -216,6 +216,22 @@ namespace LibMMD.Motion
             }
         }
 
+        static Dictionary<string, string[]> s_AdjustBones;
+
+        static void InitAdjustBones()
+        {
+            if (s_AdjustBones != null) return;
+            s_AdjustBones = new Dictionary<string, string[]>();
+            s_AdjustBones.Add("Arm", new string[] { "左腕", "右腕" });
+            s_AdjustBones.Add("Shoulder", new string[] { "左肩", "右肩" });
+            s_AdjustBones.Add("Elbow", new string[] { "左ひじ", "右ひじ" });
+            s_AdjustBones.Add("Hand", new string[] { "左手首", "右手首" });
+            s_AdjustBones.Add("Thigh", new string[] { "左足", "右足" });
+            s_AdjustBones.Add("Knee", new string[] { "左ひざ", "右ひざ" });
+            s_AdjustBones.Add("Foot", new string[] { "左足首", "右足首" });
+            s_AdjustBones.Add("Toe", new string[] { "左つま先", "右つま先" });
+        }
+
         private void UpdateBoneSelfTransform(int index)
         {
             var image = BoneImages[index];
@@ -223,49 +239,20 @@ namespace LibMMD.Motion
             image.TotalRotation = image.MorphRotation * image.Rotation;
             image.TotalTranslation = image.MorphTranslation + image.Translation;
             bool mark = image.Name.StartsWith("左") ? true : false;
-            if (Model.m_BoneAdjust.ContainsKey("Arm"))
+
+            InitAdjustBones();
+            foreach(var item in s_AdjustBones)
             {
-                if (image.Name == "左腕" || image.Name == "右腕")
+                string boneName = item.Key;
+                if (Model.m_BoneAdjust.ContainsKey(boneName))
                 {
-                    Vector3 v = Model.m_BoneAdjust["Arm"];
-                    v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
-                    image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
-                }
-            }
-            if (Model.m_BoneAdjust.ContainsKey("Shoulder"))
-            {
-                if (image.Name == "左肩" || image.Name == "右肩")
-                {
-                    Vector3 v = Model.m_BoneAdjust["Shoulder"];
-                    v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
-                    image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
-                }
-            }
-            if (Model.m_BoneAdjust.ContainsKey("Elbow"))
-            {
-                if (image.Name == "左ひじ" || image.Name == "右ひじ")
-                {
-                    Vector3 v = Model.m_BoneAdjust["Elbow"];
-                    v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
-                    image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
-                }
-            }
-            if (Model.m_BoneAdjust.ContainsKey("Hand"))
-            {
-                if (image.Name == "左手首" || image.Name == "右手首")
-                {
-                    Vector3 v = Model.m_BoneAdjust["Hand"];
-                    v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
-                    image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
-                }
-            }
-            if (Model.m_BoneAdjust.ContainsKey("Foot"))
-            {
-                if (image.Name == "左足首" || image.Name == "右足首")
-                {
-                    Vector3 v = Model.m_BoneAdjust["Foot"];
-                    v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
-                    image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
+                    var names = s_AdjustBones[boneName];
+                    if (image.Name == names[0] || image.Name == names[1])
+                    {
+                        Vector3 v = Model.m_BoneAdjust[boneName];
+                        v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
+                        image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
+                    }
                 }
             }
 
