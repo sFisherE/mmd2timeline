@@ -127,15 +127,18 @@ namespace LibMMD.Motion
             MorphMotions = new Dictionary<string, List<KeyValuePair<int, MorphKeyframe>>>();
         }
 
-        bool IsSkipForIk(string boneName)
+        public bool IsSkipForIk(int frame,string boneName)
         {
             foreach (var item in VisibleIKList)
             {
                 foreach (var item2 in item.IKList)
                 {
-                    if (!item2.Enable && item2.IKName == boneName)
+                    if (!item2.Enable)
                     {
-                        return true;
+                        if (item2.IKName == boneName)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -143,8 +146,6 @@ namespace LibMMD.Motion
         }
         public BonePose GetBonePose(string boneName, int frame)
         {
-            var skipForIk = IsSkipForIk(boneName);
-
             List<KeyValuePair<int, BoneKeyframe>> keyFrames;
             BoneMotions.TryGetValue(boneName, out keyFrames);
             if (keyFrames == null || keyFrames.Count == 0)
@@ -153,7 +154,6 @@ namespace LibMMD.Motion
                 {
                     Translation = Vector3.zero,
                     Rotation = Quaternion.identity,
-                    SkipForIk = skipForIk,
                 };
             }
 
@@ -164,7 +164,6 @@ namespace LibMMD.Motion
                 {
                     Translation = key.Translation,
                     Rotation = key.Rotation,
-                    SkipForIk = skipForIk,
                 };
             }
 
@@ -175,7 +174,6 @@ namespace LibMMD.Motion
                 {
                     Translation = key.Translation,
                     Rotation = key.Rotation,
-                    SkipForIk = skipForIk,
                 };
             }
 
@@ -209,7 +207,6 @@ namespace LibMMD.Motion
                 {
                     Translation = leftKey.Translation,
                     Rotation = leftKey.Rotation,
-                    SkipForIk = skipForIk,
                 };
             }
             var baryPos = (frame - leftFrame) / (float) (rightFrame - leftFrame);
@@ -227,7 +224,6 @@ namespace LibMMD.Motion
             {
                 Translation = translation,
                 Rotation = rotation,
-                SkipForIk = skipForIk,
             };
         }
 

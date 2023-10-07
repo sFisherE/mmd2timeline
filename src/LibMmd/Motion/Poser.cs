@@ -10,6 +10,7 @@ namespace LibMMD.Motion
 {
     public class Poser
     {
+        public MotionPlayer motionPlayer;
         public Poser(MmdModel model)
         {
             Model = model;
@@ -176,9 +177,6 @@ namespace LibMMD.Motion
             //直接从bonepose里面设置的
             BoneImages[index].Translation = bonePose.Translation * motionScale;
             BoneImages[index].Rotation = bonePose.Rotation;
-            BoneImages[index].SkipForIk = bonePose.SkipForIk;
-
-
         }
         public void SetMorphPose(int index, MorphPose morphPose)
         {
@@ -266,7 +264,8 @@ namespace LibMMD.Motion
 
             if (!image.HasIk) return;
 
-            if (image.SkipForIk)
+            //todo:处理frame
+            if (motionPlayer != null && motionPlayer.IsSkipForIk(0, image.Name))
             {
                 return;
             }

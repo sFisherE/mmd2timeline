@@ -31,9 +31,13 @@ namespace LibMMD.Motion
                 }
             }
         }
-
+        public bool IsSkipForIk(int frame, string boneName)
+        {
+            return _motion.IsSkipForIk(frame, boneName);
+        }
         public void SeekFrame(int frame, float motionScale)
         {
+            _poser.motionPlayer = this;
             foreach (var entry in _morphMap)
             {
                 _poser.SetMorphPose(entry.Value, _motion.GetMorphPose(entry.Key, frame));

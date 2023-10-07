@@ -76,71 +76,84 @@ namespace LibMMD.Reader
                 keyFrame.WInterpolator = new Interpolator();
             }
 
-            //Èç¹ûÊÇÏà»úµÄ»°£¬µ½ÕâÀï¾Í¿ÉÒÔÁË
+            //å¦‚æœæ˜¯ç›¸æœºçš„è¯ï¼Œåˆ°è¿™é‡Œå°±å¯ä»¥äº†
             if (forCamera) return null;
-
-            if (reader.CanRead())
+            try
             {
-                var CameraListCapacity = reader.ReadInt32();
-                for (int k = 0; k < CameraListCapacity; k++)
+                if (reader.CanRead())
                 {
-                    //VmdCamera
-                    var FrameIndex = reader.ReadInt32();
-                    var Distance = reader.ReadSingle();
-                    var PositionX = reader.ReadSingle();
-                    var PositionY = reader.ReadSingle();
-                    var PositionZ = reader.ReadSingle();
-                    var RotateX = reader.ReadSingle();
-                    var RotateY = reader.ReadSingle();
-                    var RotateZ = reader.ReadSingle();
-                    var VmdCameraIPL = reader.ReadBytes(24);
-                    var Angle = reader.ReadSingle();
+                    var CameraListCapacity = reader.ReadInt32();
+                    for (int k = 0; k < CameraListCapacity; k++)
+                    {
+                        //VmdCamera
+                        var FrameIndex = reader.ReadInt32();
+                        var Distance = reader.ReadSingle();
+                        var PositionX = reader.ReadSingle();
+                        var PositionY = reader.ReadSingle();
+                        var PositionZ = reader.ReadSingle();
+                        var RotateX = reader.ReadSingle();
+                        var RotateY = reader.ReadSingle();
+                        var RotateZ = reader.ReadSingle();
+                        var VmdCameraIPL = reader.ReadBytes(24);
+                        var Angle = reader.ReadSingle();
+                    }
+                }
+                if (reader.CanRead())
+                {
+                    var LightListCapacity = reader.ReadInt32();
+                    for (int m = 0; m < LightListCapacity; m++)
+                    {
+                        var FrameIndex = reader.ReadInt32();
+                        var Red = reader.ReadSingle();
+                        var Green = reader.ReadSingle();
+                        var Blue = reader.ReadSingle();
+                        var DirectionX = reader.ReadSingle();
+                        var DirectionY = reader.ReadSingle();
+                        var DirectionZ = reader.ReadSingle();
+                    }
+                }
+                if (reader.CanRead())
+                {
+                    var SelfShadowListCapacity = reader.ReadInt32();
+                    for (int n = 0; n < SelfShadowListCapacity; n++)
+                    {
+                        var FrameIndex = reader.ReadInt32();
+                        var Mode = reader.ReadByte();
+                        var Distance = reader.ReadSingle();
+                    }
                 }
             }
-            if (reader.CanRead())
+            catch (System.Exception e)
             {
-                var LightListCapacity = reader.ReadInt32();
-                for (int m = 0; m < LightListCapacity; m++)
-                {
-                    var FrameIndex = reader.ReadInt32();
-                    var Red = reader.ReadSingle();
-                    var Green = reader.ReadSingle();
-                    var Blue = reader.ReadSingle();
-                    var DirectionX = reader.ReadSingle();
-                    var DirectionY = reader.ReadSingle();
-                    var DirectionZ = reader.ReadSingle();
-                }
-            }
-            if (reader.CanRead())
-            {
-                var SelfShadowListCapacity = reader.ReadInt32();
-                for (int n = 0; n < SelfShadowListCapacity; n++)
-                {
-                    var FrameIndex = reader.ReadInt32();
-                    var Mode = reader.ReadByte();
-                    var Distance = reader.ReadSingle();
-                }
+                Debug.LogError("1.parse vmd error:" + e.ToString());
             }
             var ret = motion.BuildMmdMotion();
-
-            if (reader.CanRead())
+            try
             {
-                var VisibleIKListCapacity = reader.ReadInt32();
-                for (int num4 = 0; num4 < VisibleIKListCapacity; num4++)
+                if (reader.CanRead())
                 {
-                    VmdVisibleIK vmdVisibleIK = new VmdVisibleIK();
-                    vmdVisibleIK.FrameIndex = reader.ReadInt32();
-                    vmdVisibleIK.Visible = reader.ReadByte() != 0;
-                    int num2 = reader.ReadInt32();
-                    for (int i = 0; i < num2; i++)
+                    var VisibleIKListCapacity = reader.ReadInt32();
+                    for (int num4 = 0; num4 < VisibleIKListCapacity; num4++)
                     {
-                        VmdVisibleIK.IK iK = new VmdVisibleIK.IK();
-                        iK.IKName = MmdReaderUtil2.ReadStringFixedLength(reader, 20);
-                        iK.Enable = reader.ReadByte() != 0;
-                        vmdVisibleIK.IKList.Add(iK);
+                        VmdVisibleIK vmdVisibleIK = new VmdVisibleIK();
+                        vmdVisibleIK.FrameIndex = reader.ReadInt32();
+                        vmdVisibleIK.Visible = reader.ReadByte() != 0;
+                        int num2 = reader.ReadInt32();
+                        for (int i = 0; i < num2; i++)
+                        {
+                            VmdVisibleIK.IK iK = new VmdVisibleIK.IK();
+                            iK.IKName = MmdReaderUtil2.ReadStringFixedLength(reader, 20);
+                            iK.Enable = reader.ReadByte() != 0;
+                            Debug.LogWarning("ikname:" + iK.IKName+ " "+ iK.Enable.ToString());
+                            vmdVisibleIK.IKList.Add(iK);
+                        }
+                        ret.VisibleIKList.Add(vmdVisibleIK);
                     }
-                    ret.VisibleIKList.Add(vmdVisibleIK);
                 }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("2.parse vmd error:" + e.ToString());
             }
             return ret;
         }
