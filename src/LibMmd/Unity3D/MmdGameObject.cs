@@ -20,7 +20,6 @@ namespace LibMMD.Unity3D
         public bool AutoPhysicsStepLength = true;
         public bool Playing;
         public int PhysicsCacheFrameSize = 300;
-        public int PhysicsMode = None;
         public float PhysicsFps = 120.0f;
 
         public string ModelName
@@ -28,14 +27,12 @@ namespace LibMMD.Unity3D
             get { return _model.Name; }
         }
 
-        //public string MotionPath { get; private set; }
         public string BonePoseFilePath { get; private set; }
 
         public MmdGameObject()
         {
         }
         public GameObject[] _bones;
-        //private const int DefaultMaxTextureSize = 1024;
         public MmdModel _model;
         public Poser _poser;
         public MmdMotion _motion;
@@ -49,15 +46,14 @@ namespace LibMMD.Unity3D
                 return 0;
             }
         }
+        private float _motionScale;
 
         public MotionPlayer _motionPlayer;
         public float _playTime;
         private List<List<int>> _partIndexes;
         private List<Vector3[]> _partMorphVertexCache;
-        //private readonly ModelReadConfig _modelReadConfig = new ModelReadConfig { GlobalToonPath = "" };
         private UnityEngine.Material[] _materials;
 
-        //private MmdUnityConfig _config = new MmdUnityConfig();
         private GameObject _boneRootGameObject;
 
         public static GameObject CreateGameObject(string name = "MMDGameObject")
@@ -72,15 +68,8 @@ namespace LibMMD.Unity3D
             return obj;
         }
 
-        //public enum PhysicsModeEnum
-        //{
-        public const int None = 0;
-        public const int Unity = 1;
-        //}
-
         public bool LoadModel(string path = null)
         {
-            //ModelPath = path;
             try
             {
                 DoLoadModel(path);
@@ -99,23 +88,9 @@ namespace LibMMD.Unity3D
                 ResetMotionPlayer();
             }
             _playTime = 0.0f;
-            //RestartBonePoseCalculation(0.0f, 1 / PhysicsFps);
             UpdateBones();
             return true;
         }
-
-        //private void RestartBonePoseCalculation(double startTimePos, double stepLength)
-        //{
-        //StopBonePoseCalculation();
-        //StartBonePoseCalculation(startTimePos, stepLength);
-        //}
-
-        //private void StartBonePoseCalculation(double startTimePos, double stepLength)
-        //{
-        //}
-        //private void StopBonePoseCalculation()
-        //{
-        //}
 
         public void LoadMotion(string path)
         {
@@ -139,158 +114,7 @@ namespace LibMMD.Unity3D
                 //RestartBonePoseCalculation(_playTime, 1.0f / PhysicsFps);
             }
         }
-        //public TimelineJson json;
-        //public Dictionary<string, TimelineControlJson> timelineControlLookup;
-        //public bool m_FrameStepMode = false;
-
-        //public Dictionary<string, FloatParamsJson> m_RightFingerMotions = null;
-        //public Dictionary<string, FloatParamsJson> m_LeftFingerMotions = null;
-
-
-        //public void SetFingerKeyFrame(float time,string boneName,string key,float value)
-        //{
-        //    var dic = boneName.StartsWith("l") ? m_LeftFingerMotions : m_RightFingerMotions;
-        //    TimelineFrameJson f = new TimelineFrameJson();
-        //    f.t = time.ToString();
-        //    f.v = ((int)value).ToString();
-        //    f.c = "3";
-        //    f.i = f.v;
-        //    f.o = f.v;
-        //    dic[key].Value.Add(f);
-        //}
-        //public Dictionary<string, HashSet<int>> fingerKeyFrames;
-
-        //public void StepPlay(float beginTime, float endTime)
-        //{
-        //    json = new TimelineJson();
-        //    json.Clips = new List<TimelineClipJson>();
-        //    TimelineClipJson clipJson = new TimelineClipJson();
-        //    json.Clips.Add(clipJson);
-
-        //    //fingerKeyFrames = GetFingerKeyFrames();
-        //    var list = GetMorphKeyFrames(beginTime, endTime);
-
-        //    clipJson.FloatParams = list;
-        //    m_RightFingerMotions = new Dictionary<string, FloatParamsJson>();
-        //    m_LeftFingerMotions = new Dictionary<string, FloatParamsJson>();
-
-        //    for (int i = 0; i < 2; i++)
-        //    {
-        //        var motions = i == 0 ? m_LeftFingerMotions : m_RightFingerMotions;
-        //        foreach (var item in FingerMorph.setting)
-        //        {
-        //            var j = new FloatParamsJson();
-        //            j.Storable = FingerMorph.StorableNames[i];
-        //            j.Name = item;
-        //            j.Min = "-100";
-        //            j.Max = "100";
-        //            motions.Add(item, j);
-        //            clipJson.FloatParams.Add(j);
-        //        }
-        //    }
-
-
-        //    clipJson.AnimationName = this._motion.Name;
-        //    clipJson.AnimationLength = (endTime-beginTime).ToString();
-
-        //    clipJson.Controllers = new List<TimelineControlJson>();
-        //    timelineControlLookup = new Dictionary<string, TimelineControlJson>();
-        //    //控制器动画
-        //    foreach(var item in DazBoneMapping.vamControls)
-        //    {
-        //        if (Settings.EnableHeelAjust)
-        //        {
-        //            if (item == "rToeControl" || item == "lToeControl")
-        //                continue;
-        //        }
-        //        var controlJson = new TimelineControlJson();
-        //        controlJson.Controller = item;
-        //        timelineControlLookup.Add(item, controlJson);
-        //        clipJson.Controllers.Add(controlJson);
-        //    }
-
-        //    m_FrameStepMode = true;
-        //    StartCoroutine(CoStepPlay(beginTime,endTime));
-        //}
-        //public float StepSpeed = 2;
-        //public int CurFrame = 0;
-        //public List<int> m_FrameSteps;
-        //public bool IsSampling = false;
-        //public bool IsPausing = false;
-
-        //public float GetRelativeTime()
-        //{
-        //    int frame = CurFrame;
-        //    float time = (float)frame / 30;
-        //    float val = time - m_BeginTime;
-        //    float min = 0;
-        //    float max = m_EndTime - m_BeginTime;
-        //    return Mathf.Clamp(val, min, max);
-        //}
-        //float m_BeginTime;
-        //float m_EndTime;
-        //IEnumerator CoStepPlay(float beginTime, float endTime)
-        //{
-        //    m_BeginTime = beginTime;
-        //    m_EndTime = endTime;
-        //    IsPausing = false;
-        //    IsSampling = true;
-        //    m_FrameSteps = GetMotionKeyFrames(beginTime, endTime);
-        //    for (int i = 0; i < m_FrameSteps.Count; i++)
-        //    {
-        //        CurFrame = m_FrameSteps[i];
-        //        _motionPlayer.SeekFrame(CurFrame);
-        //        _poser.PrePhysicsPosing(false);
-        //        _poser.PostPhysicsPosing();
-        //        UpdateBones();
-        //        if (OnUpdate != null)
-        //            OnUpdate(this);
-
-        //        if (i >= m_FrameSteps.Count - 1)
-        //            break;
-
-        //        int diff = m_FrameSteps[i + 1] - CurFrame;
-
-        //        while (IsPausing)
-        //            yield return new WaitForSeconds(0.5f);
-
-        //        yield return new WaitForSeconds((1.0f / 30/ StepSpeed) * diff);
-        //    }
-        //    IsSampling = false;
-        //    IsPausing = false;
-        //    CurFrame = 0;
-        //}
-        //public void UpdateHeelAdjust()
-        //{
-        //    _motionPlayer.SeekFrame(CurFrame);
-        //    _poser.PrePhysicsPosing(false);
-        //    _poser.PostPhysicsPosing();
-        //    UpdateBones();
-        //    if (OnUpdate != null)
-        //        OnUpdate(this);
-        //}
-
-
-        //private void Update()
-        //{
-        //    if (!Playing)
-        //    {
-        //        return;
-        //    }
-        //    if (m_FrameStepMode) return;
-
-        //    var deltaTime = Time.deltaTime;
-        //    _playTime += deltaTime;
-
-        //    _motionPlayer.SeekTime(_playTime);
-        //    _poser.PrePhysicsPosing(false);
-        //    _poser.PostPhysicsPosing();
-
-        //    UpdateBones();
-
-        //    if (OnUpdate != null)
-        //        OnUpdate(this);
-        //}
+ 
         //表情
         public Dictionary<string, float> GetUpdatedMorph(float time)
         {
@@ -471,9 +295,8 @@ namespace LibMMD.Unity3D
         private void ResetMotionPlayer()
         {
             _motionPlayer = new MotionPlayer(_motion, _poser);
-            _motionPlayer.SeekFrame(0);
+            _motionPlayer.SeekFrame(0, _motionScale);
             _poser.PrePhysicsPosing();
-            //_physicsReactor.Reset();
             _poser.PostPhysicsPosing();
         }
 
@@ -543,7 +366,7 @@ namespace LibMMD.Unity3D
             }
             //StopBonePoseCalculation();
             _playTime = 0.0f;
-            _motionPlayer.SeekFrame(0);
+            _motionPlayer.SeekFrame(0, _motionScale);
             _poser.PrePhysicsPosing();
             _poser.PostPhysicsPosing();
             //StartBonePoseCalculation(0.0, 1.0f / PhysicsFps);
@@ -553,7 +376,7 @@ namespace LibMMD.Unity3D
         public void SeekFrame(int frame)
         {
             _playTime = (float)frame / 30;
-            _motionPlayer.SeekFrame(frame);
+            _motionPlayer.SeekFrame(frame, _motionScale);
         }
 
         /// <summary>
@@ -565,7 +388,7 @@ namespace LibMMD.Unity3D
             {
                 return;
             }
-            _motionPlayer.SeekTime(_playTime);
+            _motionPlayer.SeekTime(_playTime, _motionScale);
             _poser.PrePhysicsPosing();
             _poser.PostPhysicsPosing();
             UpdateBones();
@@ -586,16 +409,12 @@ namespace LibMMD.Unity3D
         public void SetMotionPos(float pos, bool update = true, float motionScale = 1f)
         {
             if (_motion == null) return;
-            //StopBonePoseCalculation();
+            _motionScale = motionScale;
             _playTime = pos;
-            //_restStepTime = 0.0f;
             _motionPlayer.SeekTime(_playTime, motionScale);
             _poser.PrePhysicsPosing();
-            //_physicsReactor.Reset();
             _poser.PostPhysicsPosing();
-            //StartBonePoseCalculation(0.0, 1.0f / PhysicsFps);
             UpdateBones();
-            //_poser.Deform();
             if (update && OnUpdate != null)
                 OnUpdate(this);
         }
@@ -655,27 +474,5 @@ namespace LibMMD.Unity3D
                     : modelRootTransform;
             }
         }
-        //private void OnDrawGizmos()
-        //{
-        //    Color col = Gizmos.color;
-        //    if (_model != null)
-        //    {
-        //        Gizmos.color = Color.red;
-        //        foreach (var item in _model.Bones)
-        //        {
-        //            Gizmos.DrawWireSphere(item.Position, 0.1f);
-        //        }
-        //    }
-        //    if (_bones != null)
-        //    {
-        //        Gizmos.color = Color.green;
-        //        foreach (var item in _bones)
-        //        {
-        //            Gizmos.DrawWireSphere(item.transform.position, 0.1f);
-        //        }
-        //    }
-        //    Gizmos.color = col;
-        //}
-
     }
 }

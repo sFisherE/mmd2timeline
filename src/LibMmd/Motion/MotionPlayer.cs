@@ -32,7 +32,7 @@ namespace LibMMD.Motion
             }
         }
 
-        public void SeekFrame(int frame)
+        public void SeekFrame(int frame, float motionScale)
         {
             foreach (var entry in _morphMap)
             {
@@ -40,11 +40,11 @@ namespace LibMMD.Motion
             }
             foreach (var entry in _boneMap)
             {
-                _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, frame));
+                _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, frame),motionScale);
             }
         }
 
-        public void SeekTime(double time, float motionScale = 1f)
+        public void SeekTime(double time, float motionScale)
         {
             var frame = (int)(time * 30f);
 

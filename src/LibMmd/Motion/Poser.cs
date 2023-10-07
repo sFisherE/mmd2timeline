@@ -174,7 +174,7 @@ namespace LibMMD.Motion
             //LogUtil.Debug($"Poser::SetBonePose:{index},{bonePose.Translation},{bonePose.Rotation},{motionScale}");
 
             //直接从bonepose里面设置的
-            BoneImages[index].Translation = bonePose.Translation * motionScale;//Settings.s_MotionScale;
+            BoneImages[index].Translation = bonePose.Translation * motionScale;
             BoneImages[index].Rotation = bonePose.Rotation;
             BoneImages[index].SkipForIk = bonePose.SkipForIk;
 

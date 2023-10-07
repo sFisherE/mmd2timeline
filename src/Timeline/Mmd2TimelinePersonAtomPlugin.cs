@@ -35,9 +35,10 @@ namespace mmd2timeline
         public JSONStorableFloat motionScale;
         void SetMotionScale(float val)
         {
-            Settings.s_MotionScale = val;
             if(m_MmdPersonGameObject!=null)
-                m_MmdPersonGameObject.SetMotionPos(m_MmdPersonGameObject._playTime, true);
+            {
+                m_MmdPersonGameObject.SetMotionPos(m_MmdPersonGameObject._playTime, true, motionScale.val);
+            }
         }
         public JSONStorableFloat posY;
         public JSONStorableFloat startTime;
@@ -352,13 +353,13 @@ namespace mmd2timeline
         void SetProgress(float val)
         {
             if (m_MmdPersonGameObject == null) return;
-            m_MmdPersonGameObject.SetMotionPos(val);
+            m_MmdPersonGameObject.SetMotionPos(val,true,motionScale.val);
 
         }
         void SetStartTime(float val)
         {
             if (m_MmdPersonGameObject == null) return;
-            m_MmdPersonGameObject.SetMotionPos(val);
+            m_MmdPersonGameObject.SetMotionPos(val,true,motionScale.val);
             float max = endTime.max;
             endTime.min= val;
             endTime.max = max;
@@ -373,7 +374,7 @@ namespace mmd2timeline
         void ImportVmd(string path)
         {
             m_MmdPersonGameObject.LoadMotion(path);
-            m_MmdPersonGameObject.SetMotionPos(0);
+            m_MmdPersonGameObject.SetMotionPos(0,true,motionScale.val);
         }
         void SetTransform()
         {
@@ -413,6 +414,7 @@ namespace mmd2timeline
             m_BoneAdjustX.val = 0;
             m_BoneAdjustY.val = 0;
             m_BoneAdjustZ.val = 0;
+            motionScale.val = 1;
             m_ChoosePerson = StartCoroutine(CoChoosePerson());
         }
         IEnumerator CoChoosePerson()

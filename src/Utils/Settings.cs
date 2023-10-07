@@ -14,6 +14,5 @@ namespace mmd2timeline
         public static bool s_OnlyFace = false;
 
         public static bool EnableHeelAjust = false;
-        public static float s_MotionScale = 1;
     }
 }
