@@ -146,7 +146,7 @@ namespace mmd2timeline
             clipJSON.Add("RotX", rotX);
             var rotY = new JSONArray();
             foreach (var frame in RotY) rotY.Add(frame.GetJSONClass());
-            clipJSON.Add("RotY", rotX);
+            clipJSON.Add("RotY", rotY);
             var rotZ = new JSONArray();
             foreach (var frame in RotZ) rotZ.Add(frame.GetJSONClass());
             clipJSON.Add("RotZ", rotZ);
