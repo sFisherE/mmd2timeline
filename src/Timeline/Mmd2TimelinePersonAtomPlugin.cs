@@ -79,8 +79,7 @@ namespace mmd2timeline
 			motionScale = new JSONStorableFloat("Motion Scale", 1f, SetMotionScale, 0.1f, 2, true);
 			sampleSpeed = new JSONStorableFloat("Sample Speed", 2, SetSampleSpeed, 0.1f, 3);
 			//sampleRateChooser = new JSONStorableStringChooser("Sample Mode", new List<string>() { "EveryFrame","KeyFrame",  }, "EveryFrame", "Sample Mode");
-			playProgress = new JSONStorableFloat("Preview", 0f, SetProgress, 0, 10f, true);
-
+			playProgress = new JSONStorableFloat("Preview", 0f, SetProgress, 0, 10f, true);//预览
 
 			m_BoneAdjustX = new JSONStorableFloat("Adjust Bone Rotation X", 0f, SetBoneAdjustX, -30, 30f, true);
 			m_BoneAdjustY = new JSONStorableFloat("Adjust Bone Rotation Y", 0f, SetBoneAdjustY, -30, 30f, true);
@@ -154,7 +153,11 @@ namespace mmd2timeline
 			{
 				var slider = CreateSlider(playProgress);
 				if (slider != null)
-					slider.quickButtonsEnabled = false;
+					RegisterFloat(playProgress);
+					//liu修改 增加选择范围 可以上一帧 下一帧 点击选择
+					slider.rangeAdjustEnabled = false;//范围调整已启用
+					slider.valueFormat = "F2";//小位数调整
+					//slider.quickButtonsEnabled = false;
 			}
 			//骨骼微调
 			{
