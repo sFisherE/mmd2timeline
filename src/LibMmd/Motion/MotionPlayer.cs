@@ -8,6 +8,9 @@ namespace LibMMD.Motion
 {
     public class MotionPlayer
     {
+        private Dictionary<string, int> m_boneNameTable;
+        private Dictionary<int, string> m_boneNameTable2;
+
         public MotionPlayer(MmdMotion motion, Poser poser)
         {
             _motion = motion;
@@ -30,18 +33,68 @@ namespace LibMMD.Motion
                     _morphMap.Add(new KeyValuePair<string, int>(name, i));
                 }
             }
+
+            m_boneNameTable = new Dictionary<string, int>();
+            m_boneNameTable2 = new Dictionary<int, string>();
+            int j = 0;
+            foreach(var item in _motion.BoneMotions)
+            {
+                m_boneNameTable.Add(item.Key, j);
+                m_boneNameTable2.Add(j, item.Key);
+                j++;
+            }
+
+            VisibleIKKeys = new VmdVisibleIKKeyList();
+
+            VmdVisibleIKKey vmdVisibleIKKey = new VmdVisibleIKKey();
+            vmdVisibleIKKey.FrameIndex = 0;
+            vmdVisibleIKKey.Visible = true;
+
+            BoneImage[] array = _poser.EnumIKBone();
+            vmdVisibleIKKey.IKEnable = new VmdVisibleIKKey.IK[array.Length];
+            for (int k = 0; k < array.Length; k++)
+            {
+                string name = array[k].Name;
+                vmdVisibleIKKey.IKEnable[k] = new VmdVisibleIKKey.IK();
+                if (motion.IsBoneRegistered(name))
+                {
+                    vmdVisibleIKKey.IKEnable[k].IKBoneIndex = m_boneNameTable[name];
+                    vmdVisibleIKKey.IKEnable[k].Enable = true;
+                }
+                else
+                {
+                    vmdVisibleIKKey.IKEnable[k].IKBoneIndex = -1;
+                    vmdVisibleIKKey.IKEnable[k].Enable = false;
+                }
+            }
+            //ÂÖàÂàùÂßãÂåñ0Â∏ßÁöÑikÁä∂ÊÄÅ
+            VisibleIKKeys.Add(vmdVisibleIKKey);
+
+            var num2 = _motion.VisibleIKList.Count;
+            for (int n = 0; n < num2; n++)
+            {
+                VmdVisibleIK vik = _motion.VisibleIKList[n];
+                VmdVisibleIKKey vmdVisibleIKKey2 = VmdVisibleIKKey.FromVmdVisibleIK(vik, m_boneNameTable);
+                vmdVisibleIKKey2.FrameIndex *= 30;//‰∏çÁ°ÆÂÆöËøô‰∏™ÂÄºÊòØÂï•
+                VmdVisibleIKKeyList visibleIKKeys = VisibleIKKeys;
+                int num8 = visibleIKKeys.FindFrameIndex(vmdVisibleIKKey2.FrameIndex);
+                if (num8 >= 0)
+                {
+                    visibleIKKeys.RemoveAt(num8);
+                }
+                visibleIKKeys.Add(vmdVisibleIKKey2);
+                //num3 = Math.Max(num3, vmdVisibleIKKey2.FrameIndex);
+            }
+
         }
-        public bool IsSkipForIk(int frame, string boneName)
-        {
-            return _motion.IsSkipForIk(frame, boneName);
-        }
+        public VmdVisibleIKKeyList VisibleIKKeys;
         public void SeekFrame(int frame, float motionScale)
         {
-            _poser.motionPlayer = this;
             foreach (var entry in _morphMap)
             {
                 _poser.SetMorphPose(entry.Value, _motion.GetMorphPose(entry.Key, frame));
             }
+            UpdateIKEnable(frame);
             foreach (var entry in _boneMap)
             {
                 _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, frame),motionScale);
@@ -50,17 +103,35 @@ namespace LibMMD.Motion
 
         public void SeekTime(double time, float motionScale)
         {
-            var frame = (int)(time * 30f);
 
             foreach (var entry in _morphMap)
             {
-                _poser.SetMorphPose(entry.Value, _motion.GetMorphPose(entry.Key, frame));
+                _poser.SetMorphPose(entry.Value, _motion.GetMorphPose(entry.Key, time));
             }
+            var frame = (int)(time * 30f);
+            UpdateIKEnable(frame);
             foreach (var entry in _boneMap)
             {
-                //poser÷–≤ª «À˘”–bone∂º”–…Ë÷√∂Øª≠µƒ£¨±»»Á”––©∂Øª≠√ª”–ik£¨”––©ik÷°÷ª”–“ª÷°µƒ
-                _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, frame), motionScale);
+                //poser‰∏≠‰∏çÊòØÊâÄÊúâboneÈÉΩÊúâËÆæÁΩÆÂä®ÁîªÁöÑÔºåÊØîÂ¶ÇÊúâ‰∫õÂä®ÁîªÊ≤°ÊúâikÔºåÊúâ‰∫õikÂ∏ßÂè™Êúâ‰∏ÄÂ∏ßÁöÑ
+                _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, time), motionScale);
             }
+        }
+        public bool UpdateIKEnable(int frameIndex)
+        {
+            VmdVisibleIKKey state = VisibleIKKeys.GetState(frameIndex);
+            bool result = false;
+            for (int i = 0; i < state.IKEnable.Length; i++)
+            {
+                VmdVisibleIKKey.IK iK = state.IKEnable[i];
+                //Ê†πÊçÆÊï∞ÊçÆËÆæÁΩÆikÁöÑÁä∂ÊÄÅ
+                var image = _poser.GetBoneImage(m_boneNameTable2[iK.IKBoneIndex]);
+                if (image != null && image.IKEnable != iK.Enable)
+                {
+                    image.IKEnable = iK.Enable;
+                    result = true;
+                }
+            }
+            return result;
         }
         private static void UpdateVertexOffsetByMorph(MmdModel model, int index, float rate, Vector3[] output)
         {
