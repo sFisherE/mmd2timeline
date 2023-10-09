@@ -37,197 +37,197 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AccessibilityModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.AIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ARModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ARModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ARModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.BaselibModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.BaselibModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.BaselibModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ClothModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CloudWebServicesModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.CloudWebServicesModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.CloudWebServicesModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ClusterInputModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ClusterRendererModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CrashReportingModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.DirectorModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.FacebookModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.FacebookModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.FacebookModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.GameCenterModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.GridModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.GridModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.HotReloadModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.InputModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.Networking.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticlesLegacyModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ParticlesLegacyModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ParticlesLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PerformanceReportingModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ScreenCaptureModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SharedInternalsModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpatialTracking.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpatialTrackingModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpatialTrackingModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.SpatialTrackingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpriteMaskModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpriteShapeModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StyleSheetsModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.StyleSheetsModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.StyleSheetsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SubstanceModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TerrainModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TerrainPhysicsModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TilemapModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Timeline">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.Timeline.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TimelineModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TimelineModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.TimelineModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TLSModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UmbraModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UNETModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityAnalyticsModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityConnectModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VehiclesModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VideoModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VRModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.VRModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.WebModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.WebModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.WebModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.WindModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.WindModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.XRModule">
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\UnityEngine.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="Valve.Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\vam\VaM_Data\Managed\Valve.Newtonsoft.Json.dll</HintPath>
+      <HintPath>H:\temp\Virt A Mate\VaM_Data\Managed\Valve.Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
