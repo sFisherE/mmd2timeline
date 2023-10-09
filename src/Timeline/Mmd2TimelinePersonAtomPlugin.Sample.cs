@@ -37,7 +37,6 @@ namespace mmd2timeline
         }
 
 
-        private string liuFolder = MVR.FileManagementSecure.FileManagerSecure.GetFullPath("Saves");//liu修改 返回指定路径字符串的绝对路径
         void ImportVmd()
         {
             if (m_MmdPersonGameObject == null)
@@ -50,10 +49,6 @@ namespace mmd2timeline
                 SuperController.singleton.GetMediaPathDialog(path =>
                 {
                     if (string.IsNullOrEmpty(path)) return;
-
-                    //liu修改  
-                    this.liuFolder = MVR.FileManagementSecure.FileManagerSecure.GetDirectoryName(path, false);//返回指定路径字符串的目录信息
-
                     ImportVmd(path);
 
                     //更新动画长度
@@ -65,7 +60,7 @@ namespace mmd2timeline
 
                     importedVmdLabel.text = "Imported Vmd:" + m_MmdPersonGameObject.GetImportedVmds();
 
-                }, "vmd", this.liuFolder, false);
+                }, "vmd", "MMD", false);
             }
             catch (Exception exc)
             {
