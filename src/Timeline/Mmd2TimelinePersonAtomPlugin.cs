@@ -155,7 +155,11 @@ namespace mmd2timeline
             {
                 var slider = CreateSlider(playProgress);
                 if (slider != null)
-                    slider.quickButtonsEnabled = false;
+					RegisterFloat(playProgress);
+					//liu修改 增加选择范围 可以上一帧 下一帧 点击选择
+					slider.rangeAdjustEnabled = false;//范围调整已启用
+					slider.valueFormat = "F2";//小位数调整
+					//slider.quickButtonsEnabled = false;
             }
             //骨骼微调
             {
@@ -192,6 +196,7 @@ namespace mmd2timeline
             //    }
             //}
 
+			int lgPauseWwitchContinueType=0;
 
             CreateHeader("Step 3:", false, Color.black);
             {
@@ -212,14 +217,27 @@ namespace mmd2timeline
             }
 
             {
-                var btn = CreateButton("Pause", false);
-                if (btn != null)
-                    btn.button.onClick.AddListener(Pause);
-            }
-            {
-                var btn = CreateButton("Continue", false);
-                if (btn != null)
-                    btn.button.onClick.AddListener(Continue);
+                //liu修改  暂停和继续切换按钮
+                UIDynamicButton lgPauseWwitchContinueButton = CreateButton("Pause", false);
+                if (lgPauseWwitchContinueButton != null)
+                {
+                    lgPauseWwitchContinueButton.button.onClick.AddListener(() =>
+                    {
+                        //SuperController.LogMessage($"lgPauseWwitchContinueButton.label:{lgPauseWwitchContinueButton.buttonText.text}");
+                        if (lgPauseWwitchContinueType == 0)
+                        {
+                            Pause();
+                            lgPauseWwitchContinueButton.label = "Continue";
+                            lgPauseWwitchContinueType = 1;
+                        }
+                        else
+                        {
+                            Continue();
+                            lgPauseWwitchContinueButton.label = "Pause";
+                            lgPauseWwitchContinueType = 0;
+                        }
+                    });
+                }
             }
             {
                 var btn = CreateButton("Next KeyFrame", false);
