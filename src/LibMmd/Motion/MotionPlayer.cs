@@ -36,12 +36,11 @@ namespace LibMMD.Motion
 
             m_boneNameTable = new Dictionary<string, int>();
             m_boneNameTable2 = new Dictionary<int, string>();
-            int j = 0;
-            foreach(var item in _motion.BoneMotions)
+            for(int i=0;i< poser.Model.Bones.Length; i++)
             {
-                m_boneNameTable.Add(item.Key, j);
-                m_boneNameTable2.Add(j, item.Key);
-                j++;
+                var item = poser.Model.Bones[i];
+                m_boneNameTable.Add(item.Name, i);
+                m_boneNameTable2.Add(i, item.Name);
             }
 
             VisibleIKKeys = new VmdVisibleIKKeyList();
@@ -76,16 +75,13 @@ namespace LibMMD.Motion
                 VmdVisibleIK vik = _motion.VisibleIKList[n];
                 VmdVisibleIKKey vmdVisibleIKKey2 = VmdVisibleIKKey.FromVmdVisibleIK(vik, m_boneNameTable);
                 vmdVisibleIKKey2.FrameIndex *= 30;//不确定这个值是啥
-                VmdVisibleIKKeyList visibleIKKeys = VisibleIKKeys;
-                int num8 = visibleIKKeys.FindFrameIndex(vmdVisibleIKKey2.FrameIndex);
+                int num8 = VisibleIKKeys.FindFrameIndex(vmdVisibleIKKey2.FrameIndex);
                 if (num8 >= 0)
                 {
-                    visibleIKKeys.RemoveAt(num8);
+                    VisibleIKKeys.RemoveAt(num8);
                 }
-                visibleIKKeys.Add(vmdVisibleIKKey2);
-                //num3 = Math.Max(num3, vmdVisibleIKKey2.FrameIndex);
+                VisibleIKKeys.Add(vmdVisibleIKKey2);
             }
-
         }
         public VmdVisibleIKKeyList VisibleIKKeys;
         public void SeekFrame(int frame, float motionScale)
