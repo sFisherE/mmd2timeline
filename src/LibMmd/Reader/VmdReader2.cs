@@ -137,6 +137,8 @@ namespace LibMMD.Reader
                     {
                         VmdVisibleIK vmdVisibleIK = new VmdVisibleIK();
                         vmdVisibleIK.FrameIndex = reader.ReadInt32();
+                        Debug.LogWarning("ik visible frame:" + vmdVisibleIK.FrameIndex);
+
                         vmdVisibleIK.Visible = reader.ReadByte() != 0;
                         int num2 = reader.ReadInt32();
                         for (int i = 0; i < num2; i++)

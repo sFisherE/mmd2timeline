@@ -37,6 +37,8 @@ namespace LibMMD.Motion
         public float AppendRatio { get; set; }
 
         public bool HasIk { get; set; }
+        public bool IKEnable = false;
+
         public bool IkLink { get; set; }
 
         public float CcdAngleLimit { get; set; }

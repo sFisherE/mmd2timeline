@@ -10,7 +10,26 @@ namespace LibMMD.Motion
 {
     public class Poser
     {
-        public MotionPlayer motionPlayer;
+
+       public BoneImage[] EnumIKBone()
+        {
+            List<BoneImage> list = new List<BoneImage>();
+            foreach (var boneImage in BoneImages)
+            {
+                if (boneImage.HasIk)
+                {
+                    list.Add(boneImage);
+                }
+            }
+            return list.ToArray();
+        }
+        Dictionary<string, BoneImage> BoneImageLookup = new Dictionary<string, BoneImage>();
+        public BoneImage GetBoneImage(string name)
+        {
+            if (BoneImageLookup.ContainsKey(name))
+                return BoneImageLookup[name];
+            return null;
+        }
         public Poser(MmdModel model)
         {
             Model = model;
@@ -143,6 +162,12 @@ namespace LibMMD.Motion
                     _prePhysicsBones.Add(i);
                 }
             }
+
+            foreach(var item in BoneImages)
+            {
+                BoneImageLookup.Add(item.Name, item);
+            }
+
             //需要排序
             BoneImage.TransformOrder order = new BoneImage.TransformOrder(model);
             _prePhysicsBones.Sort(order);
@@ -264,8 +289,7 @@ namespace LibMMD.Motion
 
             if (!image.HasIk) return;
 
-            //todo:处理frame
-            if (motionPlayer != null && motionPlayer.IsSkipForIk(0, image.Name))
+            if (!image.IKEnable)
             {
                 return;
             }
