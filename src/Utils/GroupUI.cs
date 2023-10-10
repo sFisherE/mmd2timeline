@@ -4,7 +4,7 @@ namespace mmd2timeline.Player
 {
     internal class GroupUI
     {
-        internal Settings _Script;
+        internal BaseScript _Script;
 
         /// <summary>
         /// 元素
@@ -30,7 +30,11 @@ namespace mmd2timeline.Player
 
         private GroupUI() { }
 
-        public GroupUI(Settings script)
+        /// <summary>
+        /// UI组
+        /// </summary>
+        /// <param name="script"></param>
+        public GroupUI(BaseScript script)
         {
             this._Script = script;
         }
