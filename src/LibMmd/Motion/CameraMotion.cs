@@ -52,18 +52,31 @@ namespace LibMMD.Motion
             var leftBound = KeyFrames[leftBoundIndex];
             var leftFrame = leftBound.Key;
             var leftKey = leftBound.Value;
-            if (leftFrame == rightFrame || leftFrame == rightFrame - 1) //如果两个关键帧相邻，一般是要切镜，不做插值直接取左帧
+            if (leftFrame == rightFrame)
             {
                 return CameraKeyFrameToCameraPose(leftKey);
             }
             var t = (frame - leftFrame) / (rightFrame - leftFrame);
-            var points = new float[6];
+            var points = new float[6];//MoveX,MoveY,MoveZ,Rotate,Distance,Angle
+            bool isLinear = false;
             for (var i = 0; i < 6; i++)
             {
                 var p1 = new Vector3(leftKey.Interpolation[i * 4], leftKey.Interpolation[i * 4 + 2]);
                 var p2 = new Vector3(leftKey.Interpolation[i * 4 + 1], leftKey.Interpolation[i * 4 + 3]);
-                points[i] = CalculBezierPointByTwo(t, p1, p2);
+                //线性插值
+                if (p1.x == p1.y && p2.x == p2.y)
+                {
+                    points[i] = t;
+                    isLinear = true;
+                }
+                else
+                    points[i] = CalculBezierPointByTwo(t, p1, p2);
             }
+            if (isLinear&& leftFrame == rightFrame - 1)
+            {
+                return CameraKeyFrameToCameraPose(leftKey);
+            }
+
             var x = leftKey.Position.x + points[0] * (rightKey.Position.x - leftKey.Position.x);
             //x = (1-points[0])*leftKey.Position.x+points[0]*rightKey.Position.x
 
@@ -99,7 +112,7 @@ namespace LibMMD.Motion
 
         public CameraPose GetCameraPose(double time)
         {
-            return GetCameraPoseByFrame((float) (time * 30.0));
+            return GetCameraPoseByFrame((float)(time * 30.0));
         }
 
         private class CameraKeyframeSearchComparator : IComparer<KeyValuePair<int, CameraKeyframe>>
