@@ -7,6 +7,8 @@ namespace mmd2timeline
 {
     class Settings
     {
+        public static string saveDataPath = "Saves\\PluginData\\mmd2timeline";
+
         public static string varPmxPath = null;//"sfishere.mmd2timeline.10:/Custom/Scripts/mmd2timeline/g2f.pmx";
         public static string pmxPath = "Custom/Scripts/mmd2timeline/g2f.pmx";
 

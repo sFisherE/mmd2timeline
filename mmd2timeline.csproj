@@ -231,47 +231,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Controllers\AudioClipController.cs" />
-    <Compile Include="src\Controllers\AudioPlayController.cs" />
-    <Compile Include="src\Controllers\CameraMotionController.cs" />
-    <Compile Include="src\Controllers\CameraMotionController.Focus.cs" />
-    <Compile Include="src\Controllers\CameraMotionController.Follow.cs" />
-    <Compile Include="src\Controllers\DelayTimeController.cs" />
-    <Compile Include="src\Controllers\IMMDController.cs" />
-    <Compile Include="src\Controllers\MMDBaseController.cs" />
-    <Compile Include="src\Controllers\MMDFolderController.cs" />
-    <Compile Include="src\Controllers\NavigationRigSnapshot.cs" />
-    <Compile Include="src\Controllers\PersonMotionController.CloseLowerBones.cs" />
-    <Compile Include="src\Controllers\PersonMotionController.cs" />
-    <Compile Include="src\Controllers\PersonMotionController.HeightFix.cs" />
-    <Compile Include="src\Controllers\PersonMotionController.MakeReady.cs" />
-    <Compile Include="src\Controllers\ProgressController.cs" />
-    <Compile Include="src\Controllers\StartAndEndTimeController.cs" />
+    <Compile Include="src\JSONClasses\Config.cs" />
+    <Compile Include="src\JSONClasses\Enums.cs" />
+    <Compile Include="src\JSONClasses\Lang.cs" />
     <Compile Include="src\LibMmd\Motion\VmdVisibleIK.cs" />
-    <Compile Include="src\Model\AudioSetting.cs" />
-    <Compile Include="src\Model\CameraSetting.cs" />
-    <Compile Include="src\Model\Config.cs" />
-    <Compile Include="src\Model\Lang.cs" />
-    <Compile Include="src\Model\MMDEntity.cs" />
-    <Compile Include="src\Model\MMDEntity.Store.cs" />
-    <Compile Include="src\Model\MMDFile.cs" />
-    <Compile Include="src\Model\MMDSetting.cs" />
-    <Compile Include="src\Model\MSJSONClass.cs" />
-    <Compile Include="src\Model\PersonMotion.cs" />
-    <Compile Include="src\Model\Playlist.Control.cs" />
-    <Compile Include="src\Model\Playlist.cs" />
-    <Compile Include="src\Model\Playlist.ImportExport.cs" />
-    <Compile Include="src\Player\Player.cs" />
-    <Compile Include="src\Player\Player.PlayConfirm.cs" />
-    <Compile Include="src\Player\Player.Playlist.cs" />
-    <Compile Include="src\Player\Player.Settings.cs" />
-    <Compile Include="src\Player\Player.Status.cs" />
-    <Compile Include="src\Player\Player.UI.cs" />
+    <Compile Include="src\JSONClasses\MSJSONClass.cs" />
+    <Compile Include="src\Player\BaseScript.cs" />
+    <Compile Include="src\Player\BaseScript.FullElements.cs" />
+    <Compile Include="src\Player\BaseScript.Tip.cs" />
+    <Compile Include="src\Player\BaseScript.UI.cs" />
+    <Compile Include="src\Player\BaseScript.UI.Show.cs" />
     <Compile Include="src\Player\Settings.cs" />
-    <Compile Include="src\Player\Settings.Script.cs" />
-    <Compile Include="src\Player\Settings.Tip.cs" />
+    <Compile Include="src\Player\Settings.MotionMode.cs" />
     <Compile Include="src\Player\Settings.UI.cs" />
-    <Compile Include="src\Player\Settings.UI.Show.cs" />
     <Compile Include="src\Utils\GroupUI.cs" />
     <Compile Include="src\Utils\MacGruber_Utils.cs" />
     <Compile Include="src\Utils\LogUtil.cs" />
@@ -322,6 +294,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\JSONClasses\readme.md" />
+    <None Include="src\Player\Audio\readme.md" />
+    <None Include="src\Player\Camera\readme.md" />
+    <None Include="src\Player\Motion\readme.md" />
+    <None Include="src\Player\Playlist\readme.md" />
+    <None Include="src\Player\readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
