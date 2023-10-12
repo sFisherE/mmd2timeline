@@ -240,6 +240,9 @@
     <Compile Include="src\Player\Camera\CameraHelper.Follow.cs" />
     <Compile Include="src\Player\Camera\CameraHelper.WindowCamera.cs" />
     <Compile Include="src\Player\Camera\NavigationRigSnapshot.cs" />
+    <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
+    <Compile Include="src\Player\Playlist\Playlist.cs" />
+    <Compile Include="src\Player\Playlist\Playlist.ImportExport.cs" />
     <Compile Include="src\Player\Store\AudioSetting.cs" />
     <Compile Include="src\Player\Store\CameraSetting.cs" />
     <Compile Include="src\Player\Store\MMDEntity.cs" />
