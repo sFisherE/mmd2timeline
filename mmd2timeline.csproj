@@ -240,6 +240,13 @@
     <Compile Include="src\Player\Camera\CameraHelper.Follow.cs" />
     <Compile Include="src\Player\Camera\CameraHelper.WindowCamera.cs" />
     <Compile Include="src\Player\Camera\NavigationRigSnapshot.cs" />
+    <Compile Include="src\Player\Store\AudioSetting.cs" />
+    <Compile Include="src\Player\Store\CameraSetting.cs" />
+    <Compile Include="src\Player\Store\MMDEntity.cs" />
+    <Compile Include="src\Player\Store\MMDEntity.Store.cs" />
+    <Compile Include="src\Player\Store\MMDFile.cs" />
+    <Compile Include="src\Player\Store\MMDSetting.cs" />
+    <Compile Include="src\Player\Store\PersonMotion.cs" />
     <Compile Include="src\Utils\Config.cs" />
     <Compile Include="src\JSONClasses\Enums.cs" />
     <Compile Include="src\JSONClasses\Lang.cs" />
@@ -311,6 +318,7 @@
     <None Include="src\Player\Motion\readme.md" />
     <None Include="src\Player\Playlist\readme.md" />
     <None Include="src\Player\readme.md" />
+    <None Include="src\Player\Store\readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
