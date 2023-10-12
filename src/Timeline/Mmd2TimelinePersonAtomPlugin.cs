@@ -20,8 +20,8 @@ namespace mmd2timeline
         {
             EnableHighHeel(enableHeel.val);
             //sfishere.mmd2timeline.10:/Custom/Scripts/mmd2timeline
-            Settings.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
-            LogUtil.Log("path:"+ Settings.varPmxPath);
+            Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
+            LogUtil.Log("path:"+ Config.varPmxPath);
         }
         public Text sampleTimeLabel;
         public Text importedVmdLabel;
@@ -607,7 +607,7 @@ namespace mmd2timeline
             m_MmdPersonGameObject.OnUpdate = mmd =>
             {
                 List<GameObject> fingerBones = new List<GameObject>();
-                if (!Settings.s_OnlyFace)
+                if (!Config.s_OnlyFace)
                 {
                     var bones2 = mmd._bones;
                     List<GameObject> thumbBones = new List<GameObject>();

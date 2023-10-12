@@ -17,7 +17,7 @@ namespace mmd2timeline
     /// 配置类。
     /// </summary>
     /// <remarks>此类中的数据除部分实时参数外，将被自动保存在数据文件中，每次插件加载时会从数据文件中重新加载数据。</remarks>
-    internal class Config : MSJSONClass
+    internal partial class Config : MSJSONClass
     {
         /// <summary>
         /// 默认动作模式配置
@@ -1173,7 +1173,7 @@ namespace mmd2timeline
         {
             get
             {
-                return Settings.saveDataPath + "\\config.json";
+                return Config.saveDataPath + "\\config.json";
             }
         }
         private static Config _instance;
