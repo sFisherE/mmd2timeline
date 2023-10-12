@@ -240,6 +240,7 @@
     <Compile Include="src\Player\Camera\CameraHelper.Follow.cs" />
     <Compile Include="src\Player\Camera\CameraHelper.WindowCamera.cs" />
     <Compile Include="src\Player\Camera\NavigationRigSnapshot.cs" />
+    <Compile Include="src\Player\Folder\MMDFolderHelper.cs" />
     <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
     <Compile Include="src\Player\Playlist\Playlist.cs" />
     <Compile Include="src\Player\Playlist\Playlist.ImportExport.cs" />
@@ -319,6 +320,7 @@
     <None Include="src\JSONClasses\readme.md" />
     <None Include="src\Player\Audio\readme.md" />
     <None Include="src\Player\Camera\readme.md" />
+    <None Include="src\Player\Folder\readme.md" />
     <None Include="src\Player\Motion\readme.md" />
     <None Include="src\Player\Playlist\readme.md" />
     <None Include="src\Player\readme.md" />
