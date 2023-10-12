@@ -438,7 +438,7 @@ namespace LibMMD.Unity3D
             {
                 var gameObject = new GameObject(x.Name);
                 //debug
-                if (Settings.s_Debug)
+                if (Config.s_Debug)
                 {
                     var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     go.transform.parent = gameObject.transform;

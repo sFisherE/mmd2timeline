@@ -13,10 +13,10 @@ namespace LibMMD.Reader
             byte[] bytes = null;
             if (path == null)
             {
-                if (FileManagerSecure.FileExists(Settings.pmxPath))
-                    bytes = FileManagerSecure.ReadAllBytes(Settings.pmxPath);
+                if (FileManagerSecure.FileExists(Config.pmxPath))
+                    bytes = FileManagerSecure.ReadAllBytes(Config.pmxPath);
                 else
-                    bytes = FileManagerSecure.ReadAllBytes(Settings.varPmxPath);
+                    bytes = FileManagerSecure.ReadAllBytes(Config.varPmxPath);
             }
             else
             {

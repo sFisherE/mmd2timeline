@@ -5,7 +5,7 @@ using System.Text;
 
 namespace mmd2timeline
 {
-    class Settings
+    internal partial class Config
     {
         public static string saveDataPath = "Saves\\PluginData\\mmd2timeline";
 

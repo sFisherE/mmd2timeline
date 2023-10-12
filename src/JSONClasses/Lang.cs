@@ -122,7 +122,7 @@ namespace mmd2timeline
         {
             LogUtil.Debug($"{Application.systemLanguage}");
 
-            var path = Settings.saveDataPath;
+            var path = Config.saveDataPath;
 
             if (!string.IsNullOrEmpty(_PluginPath))
             {
@@ -170,7 +170,7 @@ namespace mmd2timeline
         {
             get
             {
-                return Settings.saveDataPath + "\\lang.json";
+                return Config.saveDataPath + "\\lang.json";
             }
         }
         private static Lang _instance;
