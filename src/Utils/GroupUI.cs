@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal class GroupUI
     {
