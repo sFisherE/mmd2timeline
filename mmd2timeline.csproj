@@ -231,7 +231,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\JSONClasses\Config.cs" />
+    <Compile Include="src\Player\Audio\AudioClipHelper.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.AudioSource.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.PlayControl.cs" />
+    <Compile Include="src\Utils\Config.cs" />
     <Compile Include="src\JSONClasses\Enums.cs" />
     <Compile Include="src\JSONClasses\Lang.cs" />
     <Compile Include="src\LibMmd\Motion\VmdVisibleIK.cs" />
@@ -287,7 +291,7 @@
     <Compile Include="src\LibMmd\Util\MatrixExtensions.cs" />
     <Compile Include="src\LibMmd\Util\MmdReaderUtil2.cs" />
     <Compile Include="src\LibMmd\Util\Tools.cs" />
-    <Compile Include="src\Utils\Settings.cs" />
+    <Compile Include="src\Utils\Config.Settings.cs" />
     <Compile Include="src\Utils\SJISToUnicode.cs" />
     <Compile Include="src\Utils\ToEncoding.cs" />
     <Compile Include="src\Utility.cs" />
@@ -305,6 +309,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) e:\vam\Custom\Scripts\mmd2timeline</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
