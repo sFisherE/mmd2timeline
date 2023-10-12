@@ -235,6 +235,11 @@
     <Compile Include="src\Player\Audio\AudioPlayHelper.AudioSource.cs" />
     <Compile Include="src\Player\Audio\AudioPlayHelper.cs" />
     <Compile Include="src\Player\Audio\AudioPlayHelper.PlayControl.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.Focus.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.Follow.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.WindowCamera.cs" />
+    <Compile Include="src\Player\Camera\NavigationRigSnapshot.cs" />
     <Compile Include="src\Utils\Config.cs" />
     <Compile Include="src\JSONClasses\Enums.cs" />
     <Compile Include="src\JSONClasses\Lang.cs" />
