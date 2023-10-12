@@ -246,6 +246,7 @@
     <Compile Include="src\Player\Store\AudioSetting.cs" />
     <Compile Include="src\Player\Store\CameraSetting.cs" />
     <Compile Include="src\Player\Store\MMDEntity.cs" />
+    <Compile Include="src\Player\Store\MMDEntity.Favorite.cs" />
     <Compile Include="src\Player\Store\MMDEntity.Store.cs" />
     <Compile Include="src\Player\Store\MMDFile.cs" />
     <Compile Include="src\Player\Store\MMDSetting.cs" />
