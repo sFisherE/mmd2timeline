@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal abstract partial class BaseScript
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal abstract partial class BaseScript
     {

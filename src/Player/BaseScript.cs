@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     /// <summary>
     /// 基础脚本类
@@ -11,9 +11,9 @@ namespace mmd2timeline.Player
     /// <remarks>主要提供可继承的通用的UI处理方法</remarks>
     internal abstract partial class BaseScript : MVRScript
     {
-        public const string PLUGIN_NAME = "Player";
+        public const string PLUGIN_NAME = "MMD2TimelinePlayer";
 
-        public const string VERSION = "2.1.6";
+        public const string VERSION = "1.0.0a";
 
         /// <summary>
         /// 获取插件的版本号

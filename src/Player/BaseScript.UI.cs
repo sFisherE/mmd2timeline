@@ -2,18 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal abstract partial class BaseScript
     {
-        // 左侧
+        /// <summary>
+        /// 左侧
+        /// </summary>
         protected const bool LeftSide = false;
-        // 右侧
+        /// <summary>
+        /// 右侧
+        /// </summary>
         protected const bool RightSide = true;
 
-        protected readonly string noneString = "None";
+        /// <summary>
+        /// 空字符串选项
+        /// </summary>
+        internal const string noneString = "None";
 
-        protected readonly List<string> noneStrings = new List<string>(new string[1] { "None" });
+        /// <summary>
+        /// 空字符串列表
+        /// </summary>
+        internal readonly List<string> noneStrings = new List<string> { noneString };
 
         /// <summary>
         /// 创建标题UI
@@ -50,6 +60,40 @@ namespace mmd2timeline.Player
         protected UIDynamicToggle GetUIDynamicToggleByJSONStorableBool(JSONStorableBool json)
         {
             return toggleToJSONStorableBool.Where(t => t.Value == json).Select(t => t.Key).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 创建字符串选择器
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="entries"></param>
+        /// <param name="popupPanelHeight"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
+        internal JSONStorableStringChooser SetupStringChooser(string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        {
+            string defaultEntry = entries.Count > 0 ? entries[0] : "";
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(label, entries, defaultEntry, Lang.Get(label));
+            this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
+            this.RegisterStringChooser(storable);
+            return storable;
+        }
+
+        /// <summary>
+        /// 创建字符串选择器（不进行自动语言处理）
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="entries"></param>
+        /// <param name="popupPanelHeight"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
+        internal JSONStorableStringChooser SetupStringChooserNoLang(string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        {
+            string defaultEntry = entries.Count > 0 ? entries[0] : "";
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(label, entries, defaultEntry, label);
+            this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
+            this.RegisterStringChooser(storable);
+            return storable;
         }
 
         ///// <summary>
