@@ -135,14 +135,37 @@ namespace MacGruber
             return storable;
         }
 
+        /// <summary>
+        /// 创建带回调函数的范围可变Slider
+        /// </summary>
+        /// <param name="script"></param>
+        /// <param name="label"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
+        /// <param name="callback"></param>
+        /// <param name="rightSide"></param>
+        /// <param name="valueFormat"></param>
+        /// <returns></returns>
+        public static JSONStorableFloat SetupSliderFloatWithRange(MVRScript script, string label, float defaultValue, float minValue, float maxValue, Action<float> callback, bool rightSide, string valueFormat = "")
+        {
+            JSONStorableFloat storable = SetupSliderFloatWithRange(script, label, defaultValue, minValue, maxValue, rightSide, valueFormat);
+            storable.setCallbackFunction = v => callback(v);
+            return storable;
+        }
+
         // Create VaM-UI Float slider
-        public static JSONStorableFloat SetupSliderFloatWithRange(MVRScript script, string label, float defaultValue, float minValue, float maxValue, bool rightSide)
+        public static JSONStorableFloat SetupSliderFloatWithRange(MVRScript script, string label, float defaultValue, float minValue, float maxValue, bool rightSide, string valueFormat = "")
         {
             JSONStorableFloat storable = new JSONStorableFloat(label, defaultValue, minValue, maxValue, true, true);
             storable.storeType = JSONStorableParam.StoreType.Full;
             storable.constrained = false;
             UIDynamicSlider slider = script.CreateSlider(storable, rightSide);
             slider.rangeAdjustEnabled = true;
+            if (!string.IsNullOrEmpty(valueFormat))
+            {
+                slider.valueFormat = valueFormat;
+            }
             script.RegisterFloat(storable);
             return storable;
         }
