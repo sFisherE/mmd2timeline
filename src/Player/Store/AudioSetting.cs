@@ -28,6 +28,25 @@ namespace mmd2timeline
                 this["AudioPath"] = value;
             }
         }
+
+        /// <summary>
+        /// 延迟时间
+        /// </summary>
+        public float TimeDelay
+        {
+            get
+            {
+                if (this.HasKey("TimeDelay"))
+                    return this["TimeDelay"].AsFloat;
+                else
+                    return 0f;
+            }
+            set
+            {
+                this["TimeDelay"].AsFloat = value;
+            }
+        }
+
         /// <summary>
         /// 音频播放开始时间
         /// </summary>

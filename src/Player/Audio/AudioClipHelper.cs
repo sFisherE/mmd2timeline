@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
 namespace mmd2timeline
@@ -7,20 +6,8 @@ namespace mmd2timeline
     /// <summary>
     /// 音频片段控制器
     /// </summary>
-    /// <remarks>用于加载音频文件，获取音频文件的长度</remarks>
     internal class AudioClipHelper
     {
-        /// <summary>
-        /// 音频片段加载完成的回调委托
-        /// </summary>
-        /// <param name="length">返回音频长度</param>
-        public delegate void AudioClipLoadedCallback(float length);
-
-        /// <summary>
-        /// 音频片段加载完成的事件
-        /// </summary>
-        public event AudioClipLoadedCallback OnAudioClipLoaded;
-
         /// <summary>
         /// 音频片段
         /// </summary>
@@ -38,17 +25,6 @@ namespace mmd2timeline
         {
             get;
             private set;
-        }
-
-        /// <summary>
-        /// 是否已经加载音频
-        /// </summary>
-        public bool IsLoaded
-        {
-            get
-            {
-                return this.Length > 0f;
-            }
         }
 
         /// <summary>
@@ -79,7 +55,7 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 播放中的音频片段对象
+        /// 播放中的音频片段
         /// </summary>
         public NamedAudioClip PlayingAudio
         {
@@ -90,7 +66,7 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 获取当前音频片段文件名称
+        /// 音频片段文件名称
         /// </summary>
         public string AudioFileName
         {
@@ -101,9 +77,9 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 实例化音频片段控制器
+        /// 实例化音频片段助手
         /// </summary>
-        private AudioClipHelper()
+        public AudioClipHelper()
         {
             Inited = false;
             IsLoading = false;
@@ -113,45 +89,37 @@ namespace mmd2timeline
         /// 加载指定地址的音频
         /// </summary>
         /// <param name="audioPath"></param>
-        public IEnumerator LoadAudio(string audioPath)
+        public void LoadAudio(string audioPath)
         {
-            Inited = true;
-            IsLoading = true;
-
-            _AudioFileName = audioPath;
-
-            if (String.IsNullOrEmpty(audioPath))
+            try
             {
-                _AudioClip = null;
-            }
-            else
-            {
-                _AudioClip = GetAudio(audioPath);
-            }
+                Inited = true;
+                IsLoading = true;
 
-            if (_AudioClip != null)
-            {
-                _AudioClip?.sourceClip?.LoadAudioData();
+                _AudioFileName = audioPath;
 
-                // 等待到加载完成
-                while (IsLoading)
+                if (String.IsNullOrEmpty(audioPath))
                 {
-                    if (!CheckAudioLoaded())
-                    {
-                        break;
-                    }
+                    _AudioClip = null;
+                }
+                else
+                {
+                    _AudioClip = GetAudio(audioPath);
+                }
 
-                    // 等一帧再检查
-                    yield return null;
+                if (_AudioClip != null)
+                {
+                    _AudioClip?.sourceClip?.LoadAudioData();
+                }
+                else
+                {
+                    IsLoading = false;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                IsLoading = false;
+                LogUtil.LogError(ex, $"LoadAudio::");
             }
-
-            // 触发事件，通知音频偏度按加载完成
-            OnAudioClipLoaded?.Invoke(this.Length);
         }
 
         /// <summary>
@@ -173,19 +141,17 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 清理音频片段
+        /// 清理至初始状态
         /// </summary>
         public void Clear()
         {
-            Inited = false;
-            IsLoading = false;
             if (_AudioClip != null)
             {
-                _AudioClip.manager?.RemoveAllClips();
-
                 _AudioClip = null;
             }
-            _AudioFileName = null;
+
+            Inited = false;
+            IsLoading = false;
         }
 
         /// <summary>
@@ -245,28 +211,6 @@ namespace mmd2timeline
             }
 
             return nac;
-        }
-
-        /// <summary>
-        /// 音频片段控制器单例
-        /// </summary>
-        private static AudioClipHelper _instance;
-        private static object _lock = new object();
-
-        /// <summary>
-        /// 获取音频片段控制器的单例
-        /// </summary>
-        public static AudioClipHelper GetInstance()
-        {
-            lock (_lock)
-            {
-                if (_instance == null)
-                {
-                    _instance = new AudioClipHelper();
-                }
-
-                return _instance;
-            }
         }
     }
 }

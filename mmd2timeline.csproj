@@ -232,9 +232,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Player\Audio\AudioClipHelper.cs" />
-    <Compile Include="src\Player\Audio\AudioPlayHelper.AudioSource.cs" />
     <Compile Include="src\Player\Audio\AudioPlayHelper.cs" />
-    <Compile Include="src\Player\Audio\AudioPlayHelper.PlayControl.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.Progress.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.UI.cs" />
     <Compile Include="src\Player\Camera\CameraHelper.cs" />
     <Compile Include="src\Player\Camera\CameraHelper.Focus.cs" />
     <Compile Include="src\Player\Camera\CameraHelper.Follow.cs" />

@@ -1,48 +1,29 @@
+using mmd2timeline.Store;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
 namespace mmd2timeline
 {
     /// <summary>
     /// 音频播放控制器
     /// </summary>
-    /// <remarks>用于控制音频播放过程</remarks>
     internal partial class AudioPlayHelper
     {
         /// <summary>
-        /// 音频加载完成的回调委托
+        /// 音频设定
         /// </summary>
-        /// <param name="length">返回音频长度</param>
-        public delegate void AudioLoadedCallback(float length);
+        AudioSetting _AudioSetting;
 
         /// <summary>
-        /// 音频加载完成的事件
+        /// 音频片段控制器
         /// </summary>
-        public event AudioLoadedCallback OnAudioLoaded;
+        AudioClipHelper _AudioClipHelper;
 
         /// <summary>
-        /// 音频暂停回调委托
+        /// 音源
         /// </summary>
-        /// <param name="isPaused"></param>
-        public delegate void AudioIsPausedCallback(bool isPaused);
-
-        /// <summary>
-        /// 当播放暂停变化的事件
-        /// </summary>
-        public AudioIsPausedCallback OnAudioIsPaused;
-
-        /// <summary>
-        /// 音频片段处理器
-        /// </summary>
-        AudioClipHelper _AudioClipHelper = AudioClipHelper.GetInstance();
-
-        /// <summary>
-        /// 获取音频是否可以播放
-        /// </summary>
-        public bool CanPlay
-        {
-            get
-            {
-                return _AudioClipHelper.IsLoaded;
-            }
-        }
+        AudioSource _AudioSource;
 
         /// <summary>
         /// 是否正在加载
@@ -51,9 +32,12 @@ namespace mmd2timeline
         {
             get
             {
-                if (_AudioClipHelper.Inited)
+                if (AudioCliper != null)
                 {
-                    return _AudioClipHelper.IsLoading;
+                    if (AudioCliper.Inited)
+                    {
+                        return AudioCliper.IsLoading;
+                    }
                 }
 
                 return true;
@@ -61,26 +45,59 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 是否有音频剪辑
+        /// 是否有音频
         /// </summary>
         public bool HasAudio
         {
-            get { return _AudioClipHelper.HasAudio; }
+            get { return AudioCliper.HasAudio; }
         }
 
         /// <summary>
-        /// 播放中的音频剪辑
+        /// 播放中的音频
         /// </summary>
         public NamedAudioClip PlayingAudio
         {
             get
             {
-                return _AudioClipHelper.PlayingAudio;
+                return AudioCliper.PlayingAudio;
             }
         }
 
         /// <summary>
-        /// 音频播放控制器的单例
+        /// 获取音频是否正在播放
+        /// </summary>
+        public bool IsPlaying
+        {
+            get { return _AudioSource.isPlaying; }
+        }
+
+        /// <summary>
+        /// 设置音源音量
+        /// </summary>
+        /// <param name="volume"></param>
+        public void SetVolume(float volume)
+        {
+            _AudioSource.volume = volume;
+        }
+
+        /// <summary>
+        /// 获取音频片段助手的实例
+        /// </summary>
+        private AudioClipHelper AudioCliper
+        {
+            get
+            {
+                if (_AudioClipHelper == null)
+                {
+                    _AudioClipHelper = new AudioClipHelper();
+                }
+                return _AudioClipHelper;
+            }
+        }
+
+        #region 单例
+        /// <summary>
+        /// 音频播放助手的单例
         /// </summary>
         private static AudioPlayHelper _instance;
         private static object _lock = new object();
@@ -100,6 +117,8 @@ namespace mmd2timeline
                 return _instance;
             }
         }
+        #endregion
+
         /// <summary>
         /// 音频播放控制器
         /// </summary>
@@ -107,24 +126,6 @@ namespace mmd2timeline
         {
             // 初始化音频源
             _AudioSource = URLAudioClipManager.singleton.testAudioSource;
-
-            _AudioClipHelper.OnAudioClipLoaded += _AudioClipHelper_AudioClipLoaded;
-        }
-
-        /// <summary>
-        /// 音频片段加载完成的事件处理函数
-        /// </summary>
-        /// <param name="length">加载的音频长度</param>
-        private void _AudioClipHelper_AudioClipLoaded(float length)
-        {
-            // 更新音频最大事件
-            _maxTime = length;
-
-            // 音频长度大于0为可播放状态
-            isWaitingPlay = length > 0f;
-
-            // 触发音频加载完成的事件
-            OnAudioLoaded?.Invoke(length);
         }
 
         /// <summary>
@@ -132,21 +133,122 @@ namespace mmd2timeline
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        internal void InitPlay(float start, float end)
+        internal void InitPlay(AudioSetting settings, List<string> choices, List<string> displayChoices)
         {
-            StartTime = start;
-            EndTime = end;
+            _AudioSetting = settings;
+
+            // 记录设定中的延迟值
+            _delay = _AudioSetting.TimeDelay;
+
+            // 先设定范围
+            SetDelayRange(Mathf.Abs(_delay));
+            if (_delay != 0f)
+            {
+                SetTimeDelay(_delay);
+            }
+
+            this.SetChooser(displayChoices, choices, settings?.AudioPath);
         }
 
         /// <summary>
-        /// 加载音频
+        /// 设置播放速度
         /// </summary>
-        /// <param name="path"></param>
-        internal void LoadAudio(string path)
+        /// <param name="speed"></param>
+        public void SetPlaySpeed(float speed)
+        {
+            //_AudioSource.pitch = speed;
+
+            //if (speed == 1f)
+            //{
+            //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Auto;
+            //}
+            //else
+            //{
+            //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Fixed;
+            //}
+        }
+
+        /// <summary>
+        /// 获取音频的播放时间和进度
+        /// </summary>
+        /// <returns></returns>
+        public float GetAudioTime()
+        {
+            return _AudioSource.time;
+        }
+
+        /// <summary>
+        /// 音频停止
+        /// </summary>
+        public void Stop(int test = 0)
+        {
+            if (_AudioSource != null && _AudioSource.isPlaying)
+            {
+                _AudioSource.Stop();
+            }
+        }
+
+        /// <summary>
+        /// 设置音频源的播放时间
+        /// </summary>
+        /// <param name="time"></param>
+        public void SetAudioTime(float time, bool hardUpdate = false)
+        {
+            if (_AudioSource != null && (hardUpdate || Mathf.Abs(_AudioSource.time - time) > 0.1f))
+            {
+                _AudioSource.time = time;
+            }
+        }
+
+        /// <summary>
+        /// 播放音频
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public void Play()
+        {
+            if (!_AudioSource.isPlaying && PlayingAudio != null)
+            {
+                if (PlayingAudio?.clipToPlay?.loadState == AudioDataLoadState.Loaded)
+                {
+                    _AudioSource.clip = PlayingAudio.sourceClip;
+                    _AudioSource.Play();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 检查音频的加载状态
+        /// </summary>
+        internal void CheckLoad()
+        {
+            if (!HasAudio)
+                return;
+
+            var length = AudioCliper.TryGetAudioLength();
+
+            if (length.HasValue)
+            {
+                this.MaxTime = length.Value;
+
+                OnAudioLoaded?.Invoke(length.Value);
+            }
+        }
+
+        /// <summary>
+        /// 加载指定地址的音频
+        /// </summary>
+        /// <param name="audioPath"></param>
+        private void LoadAudio(string audioPath)
         {
             this.Clear(false);
 
-            _AudioClipHelper.LoadAudio(path);
+            if (audioPath == noneString)
+            {
+                audioPath = null;
+            }
+
+            AudioCliper.LoadAudio(audioPath);
         }
 
         /// <summary>
@@ -156,24 +258,16 @@ namespace mmd2timeline
         {
             this.Stop(2);
 
-            _AudioClipHelper.Clear();
+            AudioCliper.Clear();
+
+            if (cleanChooser)
+            {
+                this.MaxTime = 0;
+                this.ResetChooser();
+            }
 
             URLAudioClipManager.singleton.RemoveAllClips();
             URLAudioClipManager.singleton.RestoreAllFromDefaults();
-        }
-
-        /// <summary>
-        /// 销毁时执行的函数
-        /// </summary>
-        public void Dispose()
-        {
-            this.Clear();
-
-            this.OnAudioIsPaused = null;
-
-            this._AudioSource = null;
-
-            _instance = null;
         }
     }
 }
