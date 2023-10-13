@@ -7,6 +7,24 @@ namespace mmd2timeline.Store
     internal class MMDSetting : JSONClass
     {
         /// <summary>
+        /// 总播放长度
+        /// </summary>
+        public float Length
+        {
+            get
+            {
+                if (this.HasKey("Length"))
+                    return this["Length"].AsFloat;
+                else
+                    return 0f;
+            }
+            set
+            {
+                this["Length"].AsFloat = value;
+            }
+        }
+
+        /// <summary>
         /// 动作列表（多人）
         /// </summary>
         public List<PersonMotion> Motions

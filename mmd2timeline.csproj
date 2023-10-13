@@ -244,6 +244,8 @@
     <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
     <Compile Include="src\Player\Playlist\Playlist.cs" />
     <Compile Include="src\Player\Playlist\Playlist.ImportExport.cs" />
+    <Compile Include="src\Player\Progress\ProgressHelper.cs" />
+    <Compile Include="src\Player\Progress\ProgressHelper.UI.cs" />
     <Compile Include="src\Player\Store\AudioSetting.cs" />
     <Compile Include="src\Player\Store\CameraSetting.cs" />
     <Compile Include="src\Player\Store\MMDEntity.cs" />
@@ -323,6 +325,7 @@
     <None Include="src\Player\Folder\readme.md" />
     <None Include="src\Player\Motion\readme.md" />
     <None Include="src\Player\Playlist\readme.md" />
+    <None Include="src\Player\Progress\readme.md" />
     <None Include="src\Player\readme.md" />
     <None Include="src\Player\Store\readme.md" />
   </ItemGroup>
