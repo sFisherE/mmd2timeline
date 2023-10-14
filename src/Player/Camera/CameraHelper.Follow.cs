@@ -1,4 +1,5 @@
-﻿using MeshVR;
+﻿using Leap.Unity.Infix;
+using MeshVR;
 using System;
 using UnityEngine;
 
@@ -6,7 +7,9 @@ namespace mmd2timeline
 {
     /// <summary>
     /// 镜头动作控制，跟随。
-    /// 部分代码参考了Passenger的实现
+    /// 
+    /// Warning:::
+    /// 这部分代码参考了Passenger的部分实现代码，不知是否存在版权问题
     /// </summary>
     internal partial class CameraHelper
     {
@@ -15,20 +18,28 @@ namespace mmd2timeline
         /// 启用
         /// </summary>
         private bool _isActive = false;
+        private bool _rotationLock = true;
+        private bool _positionLock = true;
+
+        Quaternion _RotationOffset = Quaternion.Euler(0f, 0f, 0f);
+        Vector3 _PositionOffset = Vector3.zero;
 
         /// <summary>
-        /// 镜头位置偏移
+        /// 更新旋转偏移
         /// </summary>
-        Vector3 _positionOffset = Vector3.zero;
+        void UpdateRotationOffset()
+        {
+            _RotationOffset = Quaternion.Euler(_CameraSetting.RotationOffsetX, _CameraSetting.RotationOffsetY, _CameraSetting.RotationOffsetZ);
+        }
+
         /// <summary>
-        /// 镜头方向偏移
+        /// 更新位置偏移
         /// </summary>
-        Quaternion _rotationOffset = Quaternion.identity;
+        void UpdatePositionOffset()
+        {
+            _PositionOffset = new Vector3(_CameraSetting.PositionOffsetX, _CameraSetting.PositionOffsetY, _CameraSetting.PositionOffsetZ); ;
+        }
 
-        float _cameraScale = 0f;
-
-        //private JSONStorableStringChooser _linkJSON;
-        //private JSONStorableStringChooser _followerJSON;
         /// <summary>
         /// 是否启用全局缩放
         /// </summary>
@@ -67,6 +78,17 @@ namespace mmd2timeline
         /// 导航器快照，保存当前镜头状态
         /// </summary>
         private NavigationRigSnapshot _NavigationRigSnapshot;
+
+        /// <summary>
+        /// 获取导航装置
+        /// </summary>
+        Transform NavigationRig
+        {
+            get
+            {
+                return SuperController.singleton.navigationRig;
+            }
+        }
 
         /// <summary>
         /// 是否已经启用
@@ -145,31 +167,25 @@ namespace mmd2timeline
                     return;
                 }
 
-                // 如果没有通过健康检查，则返回
-                if (!HealthCheck()) return;
-
-                // 获取导航装置
-                var navigationRig = SuperController.singleton.navigationRig;
-
                 if (config.UseWindowCamera && WindowCamera != null)
                 {
                     if (config.UseOriginalCamera || (config.CameraPositionSmoothing <= 0f && config.CameraRotationSmoothing <= 0f && !_FocusOnAtom))
                     {
                         _CameraTransform.SetPositionAndRotation(position, rotation);
-                        //_CameraControl.cameraFOV = fov;
-                        //_CameraControl.cameraToControl.orthographic = orthographic;
                     }
                     else
                     {
-                        var targetPosition = GetPosition(position, rotation, _CameraTransform, isCamera: true);
+                        var navigationRigPosition = GetPosition(position, rotation, _CameraTransform, isCamera: true);
 
-                        _CameraTransform.position = targetPosition;
-
-                        if (!FocusOn())
+                        if (_positionLock)
                         {
-                            var targetRotation = GetRotation(rotation, _CameraTransform);
-                            _CameraTransform.rotation = targetRotation;
+                            _CameraTransform.position = navigationRigPosition;
+                        }
 
+                        if (!FocusOn(rotation.GetUp()) && _rotationLock)
+                        {
+                            var navigationRigRotation = GetRotation(navigationRigPosition, rotation, _CameraTransform);
+                            _CameraTransform.rotation = navigationRigRotation;
                         }
                     }
                     if (config.CameraFOVEnabled)
@@ -177,27 +193,27 @@ namespace mmd2timeline
                         _CameraControl.cameraFOV = fov;
                     }
                     _CameraControl.cameraToControl.orthographic = orthographic;
-
                 }
                 else
                 {
-                    var monitorCamera = SuperController.singleton.MonitorCenterCamera;
+                    var navigationRigPosition = GetPosition(position, rotation, NavigationRig);
 
-                    var targetPosition = GetPosition(position, rotation, navigationRig);
-
-                    navigationRig.position = targetPosition;
-
-                    if (!FocusOn())
+                    if (_positionLock)
                     {
-                        var targetRotation = GetRotation(rotation, navigationRig);
-                        navigationRig.rotation = targetRotation;
+                        NavigationRig.position = navigationRigPosition;
+                    }
+
+                    if (!FocusOn(rotation.GetUp()) && _rotationLock)
+                    {
+                        var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
+                        NavigationRig.rotation = navigationRigRotation;
                     }
 
                     if (config.CameraFOVEnabled)
                     {
                         SuperController.singleton.monitorCameraFOV = fov;
                     }
-                    monitorCamera.orthographic = orthographic;
+                    SuperController.singleton.MonitorCenterCamera.orthographic = orthographic;
                 }
             }
             catch (Exception e)
@@ -211,7 +227,7 @@ namespace mmd2timeline
         /// </summary>
         /// <param name="navigationRig">导航装置</param>
         /// <param name="rotationSmoothing">旋转平滑</param>
-        private Quaternion GetRotation(Quaternion rotation, Transform navigationRig)
+        private Quaternion GetRotation(Vector3 position, Quaternion rotation, Transform navigationRig)
         {
             // 获取导航装置的旋转
             var targetRotation = rotation;
@@ -221,11 +237,10 @@ namespace mmd2timeline
                 targetRotation = navigationRig.rotation;
             }
 
-            // TODO? Necessary?
             if (_startRotationOffset == Quaternion.identity)
                 targetRotation *= _startRotationOffset;
 
-            targetRotation *= _rotationOffset;
+            targetRotation *= _RotationOffset;
 
             if (config.CameraRotationSmoothing > 0)
             {
@@ -248,11 +263,11 @@ namespace mmd2timeline
             {
                 // 镜头三角
                 var cameraDelta = CameraTarget.centerTarget.transform.position - navigationRig.transform.position - CameraTarget.centerTarget.transform.rotation * new Vector3(0, 0, _eyesToHeadDistance);
-                targetPosition = position - cameraDelta + rotation * _positionOffset;
+                targetPosition = position - cameraDelta + rotation * _PositionOffset;
             }
             else
             {
-                targetPosition = position + rotation * _positionOffset;
+                targetPosition = position + rotation * _PositionOffset;
             }
 
             // 位置平滑大于0
@@ -261,34 +276,6 @@ namespace mmd2timeline
 
             // 更新导航仪的位置
             return targetPosition;
-        }
-
-        /// <summary>
-        /// 更新
-        /// </summary>
-        public void Update(Vector3 position, float fov, Quaternion rotation)
-        {
-            UpdateCamera(position, rotation, fov, false);
-        }
-
-        /// <summary>
-        /// 设置镜头位置偏移
-        /// </summary>
-        /// <param name="settings"></param>
-        internal void SetPositionOffset(float x, float y, float z)
-        {
-            _positionOffset = new Vector3(x, y, z);
-        }
-
-        /// <summary>
-        /// 设置镜头方向偏移
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        internal void SetRotationOffset(float x, float y, float z)
-        {
-            _rotationOffset = Quaternion.Euler(x, y, z);
         }
 
         /// <summary>
@@ -337,23 +324,16 @@ namespace mmd2timeline
         {
             // 如果已经时激活状态，返回
             if (_isActived) return;
-            // 进行健康度检查，如果检查不通过，返回
-            if (!HealthCheck()) return;
 
             _NavigationRigSnapshot = NavigationRigSnapshot.Snap();
 
             DisableNavigation();
 
-            // 超级控制器
-            var superController = SuperController.singleton;
-            // 导航装置
-            var navigationRig = superController.navigationRig;
-
             // 监控设备没有被激活
-            var offsetStartRotation = !superController.MonitorRig.gameObject.activeSelf;
+            var offsetStartRotation = !SuperController.singleton.MonitorRig.gameObject.activeSelf;
             // 设定开始旋转的偏移量
             if (offsetStartRotation)
-                _startRotationOffset = Quaternion.Euler(0, navigationRig.eulerAngles.y - _possessor.transform.eulerAngles.y, 0f);
+                _startRotationOffset = Quaternion.Euler(0, NavigationRig.eulerAngles.y - _possessor.transform.eulerAngles.y, 0f);
 
             // 应用全局缩放
             ApplyWorldScale();
@@ -401,37 +381,6 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 重新应用
-        /// </summary>
-        private void Reapply()
-        {
-            if (!_isActived) return;
-
-            Deactivate();
-            Activate();
-        }
-
-        /// <summary>
-        /// 健康度检查
-        /// </summary>
-        /// <returns></returns>
-        private bool HealthCheck()
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// 终止启用
-        /// </summary>
-        /// <param name="message"></param>
-        private void AbortActivation(string message)
-        {
-            LogUtil.Debug(message);
-            this.IsActive = false;
-            //Deactivate();
-        }
-
-        /// <summary>
         /// 销毁跟随对象
         /// </summary>
         private void DisposeFollow()
@@ -441,7 +390,7 @@ namespace mmd2timeline
 
         // Source: https://gist.github.com/maxattack/4c7b4de00f5c1b95a33b
         /// <summary>
-        /// 方向平滑计算
+        /// 方向平滑
         /// </summary>
         /// <param name="current">当前</param>
         /// <param name="target">目标</param>

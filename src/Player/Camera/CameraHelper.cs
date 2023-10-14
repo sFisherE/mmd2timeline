@@ -1,6 +1,8 @@
 ﻿using LibMMD.Motion;
 using LibMMD.Unity3D;
+using mmd2timeline.Store;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,51 +14,65 @@ namespace mmd2timeline
     internal partial class CameraHelper
     {
         /// <summary>
-        /// 镜头动作加载完成的回调委托
-        /// </summary>
-        /// <param name="length">返回音频长度</param>
-        public delegate void CameraMotionLoadedCallback(float length);
-
-        /// <summary>
-        /// 镜头动作加载完成的事件
-        /// </summary>
-        public event CameraMotionLoadedCallback OnCameraMotionLoaded;
-
-        /// <summary>
         /// 配置数据
         /// </summary>
         protected static readonly Config config = Config.GetInstance();
 
         /// <summary>
-        /// 镜头镜头vmd路径
+        /// 镜头设定
         /// </summary>
-        public string cameraVmdPath;
-
-        /// <summary>
-        /// 播放延迟
-        /// </summary>
-        float _delay = 0f;
+        CameraSetting _CameraSetting;
 
         /// <summary>
         /// MMD镜头对象
         /// </summary>
-        private MmdCameraObject _mmdCamera;
+        MmdCameraObject _MmdCamera;
+
+        #region 窗口相机
+        /// <summary>
+        /// 镜头控制器
+        /// </summary>
+        protected CameraControl _CameraControl;
+        /// <summary>
+        /// 镜头Transform
+        /// </summary>
+        protected Transform _CameraTransform;
 
         /// <summary>
-        /// 镜头数据对象
+        /// WindowCamera原子
         /// </summary>
-        CameraMotion _cameraMotion;
+        private Atom _WindowCameraAtom;
 
         /// <summary>
-        /// 获取MMD镜头对象
+        /// 获取WindowCamera原子
         /// </summary>
-        public MmdCameraObject MMDCamera
+        protected Atom WindowCamera
         {
             get
             {
-                return _mmdCamera;
+                if (_WindowCameraAtom == null)
+                {
+                    // 遍历所有原子，初始化镜头
+                    foreach (var atom in SuperController.singleton.GetAtoms())
+                    {
+                        // 如果找到原子类型为WindowCamera的原子
+                        if (atom.type == "WindowCamera")
+                        {
+                            // 将找到的原子赋值给窗口镜头原子变量
+                            _WindowCameraAtom = atom;
+
+                            _CameraControl = (CameraControl)_WindowCameraAtom.GetStorableByID("CameraControl");
+                            _CameraTransform = _WindowCameraAtom.mainController.transform;
+
+                            // 跳出
+                            break;
+                        }
+                    }
+                }
+                return _WindowCameraAtom;
             }
         }
+        #endregion
 
         #region 单例
         private static CameraHelper _instance;
@@ -95,45 +111,26 @@ namespace mmd2timeline
         {
             try
             {
-                // 创建MMD镜头对象，名称为MMDCameraObject
-                //this._MmdCamera = MmdCameraObject.CreateGameObject("MMDCameraObject").GetComponent<MmdCameraObject>();
-
                 GameObject root = new GameObject("mmd2timeline camera root");
                 root.transform.localPosition = Vector3.zero;
                 root.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
                 root.transform.localEulerAngles = new Vector3(0, 180, 0);
 
-                _mmdCamera = MmdCameraObject.CreateGameObject();
-                _mmdCamera.transform.SetParent(root.transform);
-                _mmdCamera.transform.localPosition = Vector3.zero;
-                _mmdCamera.transform.localScale = Vector3.one;
-                _mmdCamera.transform.localRotation = Quaternion.identity;
+                _MmdCamera = MmdCameraObject.CreateGameObject();
+                _MmdCamera.transform.SetParent(root.transform);
+                _MmdCamera.transform.localPosition = Vector3.zero;
+                _MmdCamera.transform.localScale = Vector3.one;
+                _MmdCamera.transform.localRotation = Quaternion.identity;
 
-                _mmdCamera.CameraUpdated += MmdCamera_CameraUpdated;
+                _MmdCamera.CameraUpdated += UpdateCamera;
+
+                // 获取拥有者
+                _possessor = SuperController.singleton.centerCameraTarget.transform.GetComponent<Possessor>();
             }
             catch (Exception ex)
             {
                 LogUtil.LogError(ex, $"CameraMotionController::Init:");
             }
-        }
-
-        /// <summary>
-        /// 镜头更新事件处理方法
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="rotation"></param>
-        /// <param name="fov"></param>
-        /// <param name="orthographic"></param>
-        private void MmdCamera_CameraUpdated(Vector3 position, Quaternion rotation, float fov, bool orthographic)
-        {
-            this.UpdateCamera(position, rotation, fov, orthographic);
-        }
-
-        /// <summary>
-        /// 开始
-        /// </summary>
-        private void Start()
-        {
         }
 
         /// <summary>
@@ -143,13 +140,28 @@ namespace mmd2timeline
         /// <param name="displayChoices"></param>
         /// <param name="choice"></param>
         /// <param name="settings"></param>
-        internal void InitPlay(float delay, float positionOffsetX, float positionOffsetY, float positionOffsetZ,float rotationOffsetX, float rotationOffsetY, float rotationOffsetZ)
+        internal void InitPlay(List<string> choices, List<string> displayChoices, string choice, CameraSetting settings)
         {
-            _delay = delay;
+            _CameraSetting = settings;
 
-            // 初始化镜头偏移设定值
-            SetPositionOffset(positionOffsetX, positionOffsetY, positionOffsetZ);
-            SetRotationOffset(rotationOffsetX, rotationOffsetY, rotationOffsetZ);
+            _delay = _CameraSetting?.TimeDelay ?? 0f;
+
+            if (_delay != 0f)
+            {
+                // 先设定范围
+                SetDelayRange(Mathf.Abs(_delay));
+
+                SetTimeDelay(_delay);
+            }
+            else
+            {
+                // 重置延迟范围
+                SetDelayRange(0f);
+            }
+
+            SetChooser(displayChoices, choices, settings?.CameraPath);
+
+            InitSettingValues();
         }
 
         /// <summary>
@@ -157,16 +169,7 @@ namespace mmd2timeline
         /// </summary>
         public void Clear()
         {
-        }
-
-        /// <summary>
-        /// 进度变化的处理
-        /// </summary>
-        /// <param name="value"></param>
-        internal void SetProgress(float value)
-        {
-            // 调用MMDCamera的播放进度
-            _mmdCamera.SetPlayPos((double)value/*, config.CameraOnlyKeyFrame*/);
+            ResetChooser();
         }
 
         /// <summary>
@@ -174,48 +177,42 @@ namespace mmd2timeline
         /// </summary>
         /// <param name="path"></param>
         /// <param name="audioSource"></param>
-        internal void ImportVmd(string path)
+        private void ImportVmd(string path, string audioSource = "")
         {
             try
             {
-                // 初始化MMD镜头的本地位置
-                _mmdCamera.transform.localPosition = Vector3.zero;
-                // 初始化MMD镜头的本地缩放
-                _mmdCamera.transform.localScale = Vector3.one;
-                // 初始化MMD镜头的本地旋转
-                _mmdCamera.transform.localRotation = Quaternion.identity;
-                // 加载MMD镜头数据文件
-                _mmdCamera.LoadCameraMotion(path);
+                if (path == noneString)
+                {
+                    path = null;
+                }
 
-                this._cameraMotion = _mmdCamera._cameraMotion;
+                // 初始化MMD镜头的本地位置
+                this._MmdCamera.transform.localPosition = Vector3.zero;
+                // 初始化MMD镜头的本地缩放
+                this._MmdCamera.transform.localScale = Vector3.one;
+                // 初始化MMD镜头的本地旋转
+                this._MmdCamera.transform.localRotation = Quaternion.identity;
+                // 加载MMD镜头数据文件
+                this._MmdCamera.LoadCameraMotion(path);
+
+                var cameraMotion = this._MmdCamera._cameraMotion;
 
                 // 获取MMD镜头的最后一帧
                 int key = 0;
-                if (_cameraMotion != null && _cameraMotion.KeyFrames.Count > 0)
+                if (cameraMotion != null && cameraMotion.KeyFrames.Count > 0)
                 {
-                    key = _cameraMotion.KeyFrames.Max(k => k.Key);
+                    key = cameraMotion.KeyFrames.Max(k => k.Key);
                 }
 
-                OnCameraMotionLoaded.Invoke((float)key / 30.0f);
+                // 更新最大播放时长
+                MaxTime = (float)((double)key / 30.0);
+
+                OnCameraMotionLoaded?.Invoke(MaxTime);
             }
             catch (Exception ex)
             {
                 LogUtil.LogError(ex);
             }
-        }
-
-        /// <summary>
-        /// 清理
-        /// </summary>
-        public void Dispose()
-        {
-            this.Clear();
-
-            DisposeFollow();
-
-            _mmdCamera = null;
-
-            _instance = null;
         }
     }
 }

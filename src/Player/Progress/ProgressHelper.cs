@@ -262,6 +262,10 @@ namespace mmd2timeline
             }
             else
             {
+                //// 限制最大帧数，刷新太快可能造成镜头抖动。暂时不启用这个设定
+                //if (Mathf.Abs(_progress - progress) < 1f / 120f)
+                //    return;
+
                 // 更新进度变量
                 _progress = progress;
 

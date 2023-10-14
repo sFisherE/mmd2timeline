@@ -141,6 +141,24 @@ namespace mmd2timeline.Store
         }
 
         /// <summary>
+        /// 镜头缩放
+        /// </summary>
+        public float CameraScale
+        {
+            get
+            {
+                if (this.HasKey("CameraScale"))
+                    return this["CameraScale"].AsFloat;
+                else
+                    return 1f;
+            }
+            set
+            {
+                this["CameraScale"].AsFloat = value;
+            }
+        }
+
+        /// <summary>
         /// 对比两个镜头配置是否一致
         /// </summary>
         /// <param name="target"></param>
