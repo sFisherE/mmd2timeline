@@ -1,10 +1,11 @@
 ﻿using mmd2timeline.Store;
+using System;
 using UnityEngine;
 
 namespace mmd2timeline
 {
     /// <summary>
-    /// 播放进度管理助手
+    /// 播放进度管理器
     /// </summary>
     internal partial class ProgressHelper
     {
@@ -168,12 +169,53 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 是否播放被冻结
+        /// </summary>
+        bool _PlayingFreezed = false;
+
+        /// <summary>
+        /// 播放冻结
+        /// </summary>
+        public void Freeze()
+        {
+            // 只有在播放状态才会冻结
+            if (_isPlaying)
+            {
+                _PlayingFreezed = true;
+                Stop();
+            }
+        }
+
+        /// <summary>
+        /// 冻结恢复
+        /// </summary>
+        public void FreezeRestore()
+        {
+            if (_PlayingFreezed)
+            {
+                _PlayingFreezed = false;
+                Play();
+            }
+        }
+
+        /// <summary>
         /// 设置播放速度
         /// </summary>
         /// <param name="speed"></param>
         public void SetPlaySpeed(float speed)
         {
             _speed = speed;
+
+            //_AudioSource.pitch = speed;
+
+            //if (speed == 1f)
+            //{
+            //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Auto;
+            //}
+            //else
+            //{
+            //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Fixed;
+            //}
         }
 
         /// <summary>
@@ -183,10 +225,9 @@ namespace mmd2timeline
         {
             var deltaTime = Time.deltaTime * _speed;
 
-            _progress += deltaTime;
+            var newProgress = _progress + deltaTime;
 
-            // 设置进度但不触发强制更新音频进度的处理
-            SetProgress(_progress, false);
+            SetProgress(newProgress, false);
         }
 
         /// <summary>
@@ -205,7 +246,7 @@ namespace mmd2timeline
 
             if (_length > 0f)
             {
-                // 将设定长度赋予最大时间属性
+                // 将设定长度赋予最大时间
                 MaxTime = _length;
 
                 // 设置播放长度
@@ -232,7 +273,7 @@ namespace mmd2timeline
             _progress = 0f;
             _maxTime = 0f;
 
-            // 重置速度（播放时间不是设定值，因此不重置速度）
+            // 重置速度
             //_speed = 1f;
         }
 
@@ -254,26 +295,36 @@ namespace mmd2timeline
         /// <param name="progress"></param>
         internal void SetProgress(float progress, bool hardUpdate = true)
         {
-            // 如果已经到结尾结束播放
-            if (IsEnd)
+            try
             {
-                //_isPlaying = false;
-                OnProgressEnded?.Invoke(true);
+                // 如果已经到结尾结束播放
+                if (IsEnd)
+                {
+                    //_isPlaying = false;
+                    OnProgressEnded?.Invoke(true);
+                }
+                else
+                {
+                    //// 调整精度
+                    //progress = (float)Math.Ceiling(progress * 10000f) / 10000f;
+
+                    // 限制最大帧数，刷新太快可能造成镜头抖动
+                    if (Mathf.Abs(_progress - progress) < (1f / 120f))
+                        return;
+
+                    // 更新进度变量
+                    _progress = progress;
+
+                    // 更新进度条进度（不触发UI控件的值更改事件）
+                    _progressJSON.valNoCallback = _progress;
+
+                    // 抛出进度更改事件
+                    OnProgressChanged?.Invoke(_progress, hardUpdate);
+                }
             }
-            else
+            catch (Exception e)
             {
-                //// 限制最大帧数，刷新太快可能造成镜头抖动。暂时不启用这个设定
-                //if (Mathf.Abs(_progress - progress) < 1f / 120f)
-                //    return;
-
-                // 更新进度变量
-                _progress = progress;
-
-                // 更新进度条进度（不触发UI控件的值更改事件）
-                _progressJSON.valNoCallback = _progress;
-
-                // 抛出进度更改事件
-                OnProgressChanged?.Invoke(_progress, hardUpdate);
+                LogUtil.LogError(e, $"SetProgress::");
             }
         }
 

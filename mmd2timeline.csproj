@@ -242,6 +242,16 @@
     <Compile Include="src\Player\Camera\CameraHelper.UI.cs" />
     <Compile Include="src\Player\Camera\NavigationRigSnapshot.cs" />
     <Compile Include="src\Player\Folder\MMDFolderHelper.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.AdjustBones.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.CloseLowerBones.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.EyeControl.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.HeightFix.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.MakeReady.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.Progress.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.UI.AdjustBones.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.UI.cs" />
+    <Compile Include="src\Player\Motion\MotionHelperGroup.cs" />
     <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
     <Compile Include="src\Player\Playlist\Playlist.cs" />
     <Compile Include="src\Player\Playlist\Playlist.ImportExport.cs" />
@@ -268,6 +278,7 @@
     <Compile Include="src\Player\Settings.cs" />
     <Compile Include="src\Player\Settings.MotionMode.cs" />
     <Compile Include="src\Player\Settings.UI.cs" />
+    <Compile Include="src\Utils\Config.Globle.cs" />
     <Compile Include="src\Utils\GroupUI.cs" />
     <Compile Include="src\Utils\MacGruber_Utils.cs" />
     <Compile Include="src\Utils\LogUtil.cs" />
