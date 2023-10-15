@@ -7,9 +7,7 @@ namespace mmd2timeline
 {
     /// <summary>
     /// 镜头动作控制，跟随。
-    /// 
-    /// Warning:::
-    /// 这部分代码参考了Passenger的部分实现代码，不知是否存在版权问题
+    /// 参考了Passenger的部分实现
     /// </summary>
     internal partial class CameraHelper
     {

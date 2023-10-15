@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace mmd2timeline
 {
-    internal abstract partial class BaseScript
+    internal partial class BaseScript
     {
         /// <summary>
         /// 全宽度UI元素清单

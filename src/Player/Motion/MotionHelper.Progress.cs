@@ -37,8 +37,8 @@ namespace mmd2timeline
             {
                 maxTime = value;
 
-                if (_progressJSON != null)
-                    _progressJSON.max = value;
+                if (_ProgressJSON != null)
+                    _ProgressJSON.max = value;
 
                 // 设置延迟范围
                 SetDelayRange(value);
@@ -51,10 +51,10 @@ namespace mmd2timeline
         /// <param name="length"></param>
         void SetDelayRange(float length)
         {
-            if (_timeDelayJSON != null)
+            if (_TimeDelayJSON != null)
             {
-                _timeDelayJSON.min = 0 - length;
-                _timeDelayJSON.max = length;
+                _TimeDelayJSON.min = 0 - length;
+                _TimeDelayJSON.max = length;
             }
         }
 
@@ -90,7 +90,7 @@ namespace mmd2timeline
         {
             //_delay = delay;
             // 更新设定条但不触发回调含税
-            _timeDelayJSON.valNoCallback = delay;
+            _TimeDelayJSON.valNoCallback = delay;
 
             // 更新数据
             _MotionSetting.TimeDelay = delay;
@@ -116,12 +116,12 @@ namespace mmd2timeline
         {
             var progress = this.GetDelayedProgress(value);
 
-            // 如果进度在0和最大值之外，说明现在不需要进行播放，停止播放
-            if (progress < 0 || progress > maxTime)
-            {
-                //Stop();
-                return;
-            }
+            //// 如果进度在0和最大值之外，说明现在不需要进行播放，停止播放
+            //if (progress < 0 || progress > maxTime)
+            //{
+            //    //Stop();
+            //    return;
+            //}
             //LogUtil.Log($"{progress}");
 
             //// 限制最大帧数，刷新太快可能造成镜头抖动
@@ -132,8 +132,8 @@ namespace mmd2timeline
 
             //_progress = progress;
 
-            if (_progressJSON != null)
-                _progressJSON.valNoCallback = progress;
+            if (_ProgressJSON != null)
+                _ProgressJSON.valNoCallback = progress;
 
             //LogUtil.Log($"({play})isPlaying:{_AudioSource.isPlaying} - PlayingAudio:{PlayingAudio?.displayName} - {progress} to {GetAudioTime()}");
 

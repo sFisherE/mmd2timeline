@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
-namespace mmd2timeline
+﻿namespace mmd2timeline
 {
     internal partial class AudioPlayHelper
     {
@@ -92,7 +86,7 @@ namespace mmd2timeline
             // 如果进度在0和最大值之外，说明现在不需要进行播放，停止播放
             if (progress < 0 || progress > maxTime)
             {
-                Stop();
+                Stop(0);
                 return;
             }
 

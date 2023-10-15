@@ -1,6 +1,4 @@
-using mmd2timeline.Store;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace mmd2timeline
@@ -147,7 +145,7 @@ namespace mmd2timeline
                 SetTimeDelay(_delay);
             }
 
-            this.SetChooser(displayChoices, choices, settings?.AudioPath);
+            SetChooser(displayChoices, choices, settings?.AudioPath);
         }
 
         /// <summary>
@@ -229,7 +227,7 @@ namespace mmd2timeline
 
             if (length.HasValue)
             {
-                this.MaxTime = length.Value;
+                MaxTime = length.Value;
 
                 OnAudioLoaded?.Invoke(length.Value);
             }
@@ -241,7 +239,7 @@ namespace mmd2timeline
         /// <param name="audioPath"></param>
         private void LoadAudio(string audioPath)
         {
-            this.Clear(false);
+            Clear(false);
 
             if (audioPath == noneString)
             {
@@ -256,18 +254,48 @@ namespace mmd2timeline
         /// </summary>
         public void Clear(bool cleanChooser = true)
         {
-            this.Stop(2);
+            Stop(2);
 
             AudioCliper.Clear();
 
             if (cleanChooser)
             {
-                this.MaxTime = 0;
-                this.ResetChooser();
+                MaxTime = 0;
+                ResetChooser();
             }
 
             URLAudioClipManager.singleton.RemoveAllClips();
             URLAudioClipManager.singleton.RestoreAllFromDefaults();
+        }
+
+        /// <summary>
+        /// 销毁时执行的函数
+        /// </summary>
+        public void OnDestroy()
+        {
+            Clear(true);
+
+            _AudioSource = null;
+            _AudioClipHelper = null;
+            _AudioSetting = null;
+
+            _instance = null;
+        }
+
+        /// <summary>
+        /// 禁用时执行的函数
+        /// </summary>
+        public void OnDisable()
+        {
+            Stop(3);
+        }
+
+        /// <summary>
+        /// 启用时执行的函数
+        /// </summary>
+        public void OnEnable()
+        {
+
         }
     }
 }

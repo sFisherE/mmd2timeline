@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace mmd2timeline
 {
-    internal abstract partial class BaseScript
+    internal partial class BaseScript
     {
         /// <summary>
         /// 左侧

@@ -5,7 +5,7 @@ using System.Linq;
 namespace mmd2timeline
 {
     // 此部分代码实现显示隐藏UI元素的便捷方法
-    internal abstract partial class BaseScript
+    internal partial class BaseScript
     {
         public void ShowSlider(JSONStorableFloat jsf, bool show = true)
         {

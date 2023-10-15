@@ -80,5 +80,16 @@ namespace mmd2timeline
                 }
             }
         }
+
+        /// <summary>
+        /// 恢复眼动模式
+        /// </summary>
+        void RestoreEyeBehavior()
+        {
+            if (_eyeBehavior != null && _eyeBehavior.currentLookMode != _eyeBehaviorRestoreLookMode)
+            {
+                _eyeBehavior.currentLookMode = _eyeBehaviorRestoreLookMode;
+            }
+        }
     }
 }

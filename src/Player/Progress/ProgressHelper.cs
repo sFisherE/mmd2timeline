@@ -122,14 +122,24 @@ namespace mmd2timeline
         {
             get
             {
-                if (_mmdSetting.Length > 0f)
-                {
-                    return _progress > _mmdSetting.Length;
-                }
-                else
-                {
-                    return _progress > _maxTime;
-                }
+                return CheckEnd(_progress);
+            }
+        }
+
+        /// <summary>
+        /// 检查指定进度是否为结束
+        /// </summary>
+        /// <param name="progress"></param>
+        /// <returns></returns>
+        internal bool CheckEnd(float progress)
+        {
+            if (_mmdSetting.Length > 0f)
+            {
+                return progress > _mmdSetting.Length;
+            }
+            else
+            {
+                return progress > _maxTime;
             }
         }
 
@@ -161,8 +171,9 @@ namespace mmd2timeline
         /// <summary>
         /// 停止
         /// </summary>
-        public void Stop()
+        public void Stop(int test)
         {
+            LogUtil.Debug($"Progress Stop:{test}");
             _isPlaying = false;
 
             OnPlayStatusChanged?.Invoke(_progress, _isPlaying);
@@ -174,6 +185,17 @@ namespace mmd2timeline
         bool _PlayingFreezed = false;
 
         /// <summary>
+        /// 获取播放是否被冻结
+        /// </summary>
+        internal bool IsFreezed
+        {
+            get
+            {
+                return _PlayingFreezed;
+            }
+        }
+
+        /// <summary>
         /// 播放冻结
         /// </summary>
         public void Freeze()
@@ -182,7 +204,7 @@ namespace mmd2timeline
             if (_isPlaying)
             {
                 _PlayingFreezed = true;
-                Stop();
+                Stop(1);
             }
         }
 
@@ -255,6 +277,17 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 清理播放数据
+        /// </summary>
+        internal void Clear()
+        {
+            _mmdSetting = null;
+            _length = 0f;
+
+            ResetProgress();
+        }
+
+        /// <summary>
         /// 重置进度条
         /// </summary>
         private void ResetProgress()
@@ -298,7 +331,7 @@ namespace mmd2timeline
             try
             {
                 // 如果已经到结尾结束播放
-                if (IsEnd)
+                if (CheckEnd(progress))
                 {
                     //_isPlaying = false;
                     OnProgressEnded?.Invoke(true);
@@ -370,5 +403,34 @@ namespace mmd2timeline
             }
         }
         #endregion
+
+
+        /// <summary>
+        /// 销毁时执行的函数
+        /// </summary>
+        public void OnDestroy()
+        {
+            Stop(0);
+
+            Clear();
+
+            _instance = null;
+        }
+
+        /// <summary>
+        /// 禁用时执行的函数
+        /// </summary>
+        public void OnDisable()
+        {
+            Freeze();
+        }
+
+        /// <summary>
+        /// 启用时执行的函数
+        /// </summary>
+        public void OnEnable()
+        {
+            FreezeRestore();
+        }
     }
 }

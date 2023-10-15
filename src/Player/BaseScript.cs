@@ -9,7 +9,7 @@ namespace mmd2timeline
     /// 基础脚本类
     /// </summary>
     /// <remarks>主要提供可继承的通用的UI处理方法</remarks>
-    internal abstract partial class BaseScript : MVRScript
+    internal partial class BaseScript : MVRScript
     {
         public const string PLUGIN_NAME = "MMD2TimelinePlayer";
 

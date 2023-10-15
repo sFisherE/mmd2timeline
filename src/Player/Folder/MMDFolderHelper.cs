@@ -1,5 +1,4 @@
 ﻿using mmd2timeline.Store;
-using MVR.FileManagement;
 using MVR.FileManagementSecure;
 using System;
 using System.Collections;
@@ -58,7 +57,7 @@ namespace mmd2timeline
         /// MMD选中的回调函数
         /// </summary>
         /// <param name="entity"></param>
-        public delegate void MMDSelectedCallback(MMDEntity entity, bool addListImmediately = false);
+        public delegate void MMDSelectedCallback(MMDEntity entity);
 
         /// <summary>
         /// MMD被选中的回调函数
@@ -203,26 +202,6 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 检查目录是否安全可读取
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private bool CheckSecureRead(string path)
-        {
-            return FileManager.IsSecureReadPath(path);
-        }
-
-        /// <summary>
-        /// 检查目录是否安全可写入
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private bool CheckSecureWrite(string path)
-        {
-            return FileManager.IsSecureWritePath(path);
-        }
-
-        /// <summary>
         /// 导入目录中的文件。
         /// </summary>
         /// <param name="path"></param>
@@ -359,13 +338,29 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 销毁
+        /// 销毁时执行的函数
         /// </summary>
-        internal void Dispose()
+        public void OnDestroy()
         {
-            this.Clear();
+            Clear();
 
             _instance = null;
+        }
+
+        /// <summary>
+        /// 禁用时执行的函数
+        /// </summary>
+        public void OnDisable()
+        {
+
+        }
+
+        /// <summary>
+        /// 启用时执行的函数
+        /// </summary>
+        public void OnEnable()
+        {
+
         }
     }
 }

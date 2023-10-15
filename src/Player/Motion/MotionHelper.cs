@@ -24,6 +24,50 @@ namespace mmd2timeline
         private string PMXPath = null;
 
         /// <summary>
+        /// 获取或设置人物原子
+        /// </summary>
+        public Atom PersonAtom
+        {
+            get { return _PersonAtom; }
+            set { _PersonAtom = value; }
+        }
+
+        /// <summary>
+        /// 人物原子
+        /// </summary>
+        private Atom _PersonAtom;
+
+        /// <summary>
+        /// 人物游戏对象
+        /// </summary>
+        public MmdGameObject _MmdPersonGameObject;
+
+        /// <summary>
+        /// 选择人物
+        /// </summary>
+        private Coroutine _ChoosePerson;
+
+        /// <summary>
+        /// 面部变形字典
+        /// </summary>
+        public Dictionary<string, DAZMorph> _FaceMorphs = new Dictionary<string, DAZMorph>();
+
+        /// <summary>
+        /// 控制器字典
+        /// </summary>
+        private Dictionary<Transform, FreeControllerV3> controllerLookup;
+
+        /// <summary>
+        /// 控制器名称字典
+        /// </summary>
+        private Dictionary<string, FreeControllerV3> controllerNameLookup;
+
+        /// <summary>
+        /// 根处理器
+        /// </summary>
+        public Transform rootHandler;
+
+        /// <summary>
         /// 当前人物的动作数据
         /// </summary>
         PersonMotion _MotionSetting;
@@ -37,45 +81,6 @@ namespace mmd2timeline
         /// 最大可选择动作文件数量
         /// </summary>
         const int MAX_MOTION_COUNT = 4;
-        ///// <summary>
-        ///// 眼睛行为
-        ///// </summary>
-        //private EyesControl _eyeBehavior;
-        ///// <summary>
-        ///// 观看模式
-        ///// </summary>
-        //private EyesControl.LookMode _eyeBehaviorRestoreLookMode;
-
-        ///// <summary>
-        ///// 动作选择器清单
-        ///// </summary>
-        //public List<JSONStorableStringChooser> MotionChoosers = new List<JSONStorableStringChooser>();
-
-        ///// <summary>
-        ///// 位置X
-        ///// </summary>
-        //public JSONStorableFloat positionX;
-        ///// <summary>
-        ///// 位置Y
-        ///// </summary>
-        //public JSONStorableFloat positionY;
-        ///// <summary>
-        ///// 位置Z
-        ///// </summary>
-        //public JSONStorableFloat positionZ;
-
-        ///// <summary>
-        ///// 方向X
-        ///// </summary>
-        //public JSONStorableFloat rotationX;
-        ///// <summary>
-        ///// 方向Y
-        ///// </summary>
-        //public JSONStorableFloat rotationY;
-        ///// <summary>
-        ///// 方向Z
-        ///// </summary>
-        //public JSONStorableFloat rotationZ;
 
         /// <summary>
         /// 获取动作缩放率
@@ -84,15 +89,11 @@ namespace mmd2timeline
         {
             get
             {
-                if (this._motionScaleJSON != null)
+                if (this._MotionScaleJSON != null)
                 {
-                    return this._motionScaleJSON.val;// * config.GlobalMotionScale;
+                    return this._MotionScaleJSON.val;
                 }
                 return 1f;
-                //else
-                //{
-                //    return config.GlobalMotionScale;
-                //}
             }
         }
 
@@ -137,17 +138,8 @@ namespace mmd2timeline
         public MotionHelper(Atom personAtom)
         {
             _PersonAtom = personAtom;
-            //this.PMXPath = pmxPath;
 
             InitEyeBehavior();
-
-            // 不在VR中
-            //if (!config.IsInVR)
-            //{
-            //_eyeBehavior = (EyesControl)_PersonAtom.GetStorableByID("Eyes");
-            //if (_eyeBehavior == null) throw new NullReferenceException(nameof(_eyeBehavior));
-            //_eyeBehaviorRestoreLookMode = _eyeBehavior.currentLookMode;
-            //}
 
             #region 因舞蹈动作比较大时，嘴部会变形，找到嘴部的物理网格，并将其禁用
             DAZCharacterRun characterRun = _PersonAtom.GetComponentInChildren<DAZCharacterRun>();
@@ -183,93 +175,6 @@ namespace mmd2timeline
         /// </summary>
         private void Init()
         {
-            //if (this.WithAsset())
-            //{
-            //    this._AssetBoneProcess = new AssetBoneProcess();
-            //    this._AssetBoneProcess.Init(this);
-            //}
-
-            //base.Init(_PersonAtom.uid + " Motion");
-
-            //_enableHeelJSON = new JSONStorableBool(_PersonAtom.uid + $"\\{Lang.Get("Enable High Heel")}", false);
-            //this.holdRotationMaxForceAdjust = new JSONStorableFloat(_PersonAtom.uid + $"\\{Lang.Get("Foot Hold Rotation Max Force")}", 0f, new JSONStorableFloat.SetFloatCallback(v => this.UpateHeelJointDriveXAngle()), 0f, 1000f, true, true);
-            //this.footJointDriveXTargetAdjust = new JSONStorableFloat(_PersonAtom.uid + $"\\{Lang.Get("Foot Joint Drive X Angle")}", -45f, new JSONStorableFloat.SetFloatCallback(v => this.UpateHeelJointDriveXAngle()), -65f, 40f, true, true);
-            //this.toeJointDriveXTargetAdjust = new JSONStorableFloat(_PersonAtom.uid + $"\\{Lang.Get("Toe Joint Drive X Angle")}", 35f, new JSONStorableFloat.SetFloatCallback(v => this.UpateHeelJointDriveXAngle()), -40f, 75f, true, true);
-
-            //this.heelHeightAdjust = new JSONStorableFloat(_PersonAtom.uid + $"\\{Lang.Get("Heel Height Fixing")}", 0.075f, new JSONStorableFloat.SetFloatCallback(v => this.UpateHeelJointDriveXAngle()), 0f, 1f, true, true);
-
-            //this.positionX = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Position X"), 0f, -10f, 10f, false, true)
-            //{
-            //    setCallbackFunction = v => this.UpdatePositionAndRotation()
-            //};
-
-            //this.positionY = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Position Y"), 0f, -10f, 10f, false, true)
-            //{
-            //    setCallbackFunction = v => this.UpdatePositionAndRotation()
-            //};
-
-            //this.positionZ = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Position Z"), 0f, -10f, 10f, false, true)
-            //{
-            //    setCallbackFunction = v => this.UpdatePositionAndRotation()
-            //};
-
-            //this.rotationX = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Rotation X"), 0f, -180f, 180f, true, true)
-            //{
-            //    setCallbackFunction = v => this.UpdatePositionAndRotation()
-            //};
-
-            //this.rotationY = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Rotation Y"), 0f, -180f, 180f, true, true)
-            //{
-            //    setCallbackFunction = v => this.UpdatePositionAndRotation()
-            //};
-
-            //this.rotationZ = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Rotation Z"), 0f, -180f, 180f, true, true)
-            //{
-            //    setCallbackFunction = v => this.UpdatePositionAndRotation()
-            //};
-
-            //this.motionScale = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Motion Scale"), 1f, (float v) => ReUpdateMotion(), 0.1f, 2f, true, true);
-
-            //this.UseAllJointsSettingsJSON = new JSONStorableBool(_PersonAtom.uid + "\\" + Lang.Get("Use Joints Settings"), false);
-
-            //this.AllJointsSpringPercentJSON = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Joints Spring Percent"), config.AllJointsSpringPercent, 0f, 1f);
-            //this.AllJointsSpringPercentJSON.setCallbackFunction = v =>
-            //{
-            //    if (this.UseAllJointsSettingsJSON.val)
-            //    {
-            //        this.SetPersonAllJointsSpringPercent(v);
-            //    }
-            //};
-            //this.AllJointsDamperPercentJSON = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Joints Damper Percent"), config.AllJointsDamperPercent, 0f, 1f);
-            //this.AllJointsDamperPercentJSON.setCallbackFunction = v =>
-            //{
-            //    if (this.UseAllJointsSettingsJSON.val)
-            //    {
-            //        this.SetPersonAllJointsDamperPercent(v);
-            //    }
-            //};
-
-            //this.AllJointsMaxVelocityJSON = new JSONStorableFloat(_PersonAtom.uid + "\\" + Lang.Get("Joints Max Velocity"), config.AllJointsMaxVelocity, 0f, 1f);
-            //this.AllJointsMaxVelocityJSON.setCallbackFunction = v =>
-            //{
-            //    if (this.UseAllJointsSettingsJSON.val)
-            //    {
-            //        this.SetPersonAllJointsMaxVelocity(v);
-            //    }
-            //};
-
-            //this.enableFace = new JSONStorableBool(_PersonAtom.uid + "\\" + Lang.Get("Enable Face"), true, (bool v) => this.ReUpdateMotion());
-
-            //// 生成动作选择器
-            //for (var i = 0; i < MAX_MOTION_COUNT; i++)
-            //{
-            //    var motionChooser = new JSONStorableStringChooser(_PersonAtom.uid + "\\" + $"{Lang.Get("Motion")} " + (i + 1), noneStrings, noneStrings, noneString, $"{Lang.Get("Motion")} " + (i + 1), (string t) => ReloadMotions());
-            //    MotionChoosers.Add(motionChooser);
-            //}
-
-            //// 初始化关闭下半身骨骼参数
-            //InitCloseLowerBones();
-
             // 初始化原子及模型
             InitAtom();
 
@@ -334,8 +239,6 @@ namespace mmd2timeline
                 SetDelayRange(0f);
             }
 
-            LogUtil.Log($"displayChoices:{displayChoices.Count},choices:{choices.Count},Files:{settings?.Files}");
-
             SetChoosers(displayChoices, choices, settings?.Files);
 
             InitSettingValues();
@@ -357,7 +260,7 @@ namespace mmd2timeline
                 _MmdPersonGameObject.ClearMotion();
             }
 
-            foreach (var motionChooser in MotionChoosers)
+            foreach (var motionChooser in _MotionChoosers)
             {
                 if (motionChooser.val != noneString)
                 {
@@ -371,23 +274,12 @@ namespace mmd2timeline
         /// </summary>
         public void Reset()
         {
-            ResetChoosers();
-            //foreach (var motionChooser in MotionChoosers)
-            //{
-            //    motionChooser.choices = noneStrings;
-            //    motionChooser.displayChoices = noneStrings;
-            //    motionChooser.val = noneString;
-            //}
-        }
+            MaxTime = 0f;
 
-        ///// <summary>
-        ///// 是否使用自定义资源
-        ///// </summary>
-        ///// <returns></returns>
-        //public virtual bool WithAsset()
-        //{
-        //    return false;
-        //}
+            SetDelayRange(0f);
+
+            ResetChoosers();
+        }
 
         /// <summary>
         /// 更新动作
@@ -409,8 +301,8 @@ namespace mmd2timeline
             Quaternion rat = Quaternion.identity;
             if (UICreated)
             {
-                pos = new Vector3(positionX.val, positionY.val, positionZ.val);
-                rat = new Quaternion(rotationX.val, rotationY.val, rotationZ.val, 1);
+                pos = new Vector3(_PositionX.val, _PositionY.val, _PositionZ.val);
+                rat = new Quaternion(_RotationX.val, _RotationY.val, _RotationZ.val, 1);
             }
 
             Vector3 localPosition = _PersonAtom.mainController.transform.localPosition;
@@ -418,19 +310,6 @@ namespace mmd2timeline
             _PersonAtom.mainController.transform.localRotation = rat;
             this.UpdateTransform();
         }
-
-        //protected override void OnProgressChange(float value)
-        //{
-        //    base.OnProgressChange(value);
-        //    this._MmdPersonGameObject?.SetMotionPos(value, true, motionScale: motionScaleRate);
-        //}
-
-        //protected override bool CheckEnd(float value)
-        //{
-        //    return base.CheckEnd(value);
-        //}
-
-        //List<string> ignoreBoneNames = new List<string>();
 
         /// <summary>
         /// 导入VMD
@@ -447,8 +326,6 @@ namespace mmd2timeline
 
                 _MmdPersonGameObject.LoadMotion(path);
                 _MmdPersonGameObject.SetMotionPos(0f, true, motionScale: motionScaleRate);
-
-                //ignoreBoneNames.Clear();
 
                 #region 新的动作处理模式需要进行的关节筛选
                 //var bones = _MmdPersonGameObject._poser.BoneImages;
@@ -469,7 +346,6 @@ namespace mmd2timeline
 
                 MaxTime = _MmdPersonGameObject.MotionLength;
 
-                //OnLengthGot(MaxTime);
                 OnMotionLoaded?.Invoke(MaxTime);
             }
             catch (Exception ex)
@@ -503,13 +379,6 @@ namespace mmd2timeline
                     SuperController.singleton.StopCoroutine(this._ChoosePerson);
                     this._ChoosePerson = null;
                 }
-                //if (this._SampleCoroutine != null)
-                //{
-                //    SuperController.singleton.StopCoroutine(this._SampleCoroutine);
-                //    this._SampleCoroutine = null;
-                //}
-
-                //this.IsSampling = false;
 
                 this._PersonAtom.tempFreezePhysics = true;
                 this._PersonAtom.ResetPhysics(true, true);
@@ -518,15 +387,15 @@ namespace mmd2timeline
                 this._PersonAtom.tempFreezePhysics = false;
                 this._ChoosePerson = null;
 
-                if (!config.LockPersonPosition)
+                if (!config.LockPersonPosition && UICreated)
                 {
-                    this.positionX.SetValToDefault();
-                    this.positionY.SetValToDefault();
-                    this.positionZ.SetValToDefault();
+                    this._PositionX.SetValToDefault();
+                    this._PositionY.SetValToDefault();
+                    this._PositionZ.SetValToDefault();
 
-                    this.rotationX.SetValToDefault();
-                    this.rotationY.SetValToDefault();
-                    this.rotationZ.SetValToDefault();
+                    this._RotationX.SetValToDefault();
+                    this._RotationY.SetValToDefault();
+                    this._RotationZ.SetValToDefault();
                 }
                 else
                 {
@@ -568,9 +437,9 @@ namespace mmd2timeline
                 return;
 
             var v = config.AllJointsSpringPercent;
-            if (this.UseAllJointsSettingsJSON.val)
+            if (this._UseAllJointsSettingsJSON.val)
             {
-                v = this.AllJointsSpringPercentJSON.val;
+                v = this._AllJointsSpringPercentJSON.val;
             }
             SetPersonAllJointsSpringPercent(v, allJointsController);
         }
@@ -602,9 +471,9 @@ namespace mmd2timeline
                 return;
 
             var v = config.AllJointsDamperPercent;
-            if (this.UseAllJointsSettingsJSON.val)
+            if (this._UseAllJointsSettingsJSON.val)
             {
-                v = this.AllJointsDamperPercentJSON.val;
+                v = this._AllJointsDamperPercentJSON.val;
             }
             SetPersonAllJointsDamperPercent(v, allJointsController);
         }
@@ -635,9 +504,9 @@ namespace mmd2timeline
                 return;
 
             var v = config.AllJointsMaxVelocity;
-            if (this.UseAllJointsSettingsJSON.val)
+            if (this._UseAllJointsSettingsJSON.val)
             {
-                v = this.AllJointsMaxVelocityJSON.val;
+                v = this._AllJointsMaxVelocityJSON.val;
             }
             SetPersonAllJointsMaxVelocity(v, allJointsController);
         }
@@ -738,7 +607,7 @@ namespace mmd2timeline
                     controller.currentRotationState = FreeControllerV3.RotationState.Off;
                     controller.currentPositionState = FreeControllerV3.PositionState.Off;
                     // 设置脚趾关节驱动X目标设定
-                    controller.GetFloatJSONParam("jointDriveXTarget").val = this.toeJointDriveXTargetAdjust.val;
+                    controller.GetFloatJSONParam("jointDriveXTarget").val = this._ToeJointDriveXTargetAdjust.val;
 
                     continue;
                 }
@@ -763,8 +632,8 @@ namespace mmd2timeline
                     if (EnableHeel)
                     {
                         // 设定参数
-                        holdRotationMaxForce.val = this.holdRotationMaxForceAdjust.val;
-                        jointDriveXTarget.val = this.footJointDriveXTargetAdjust.val;
+                        holdRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
+                        jointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
                     }
                     else
                     {
@@ -789,7 +658,7 @@ namespace mmd2timeline
         internal void ResetControlState()
         {
             // 如果关闭下半身
-            if (this.CloseLowerBonesJSON.val)
+            if (this._CloseLowerBonesJSON.val)
             {
                 foreach (var item in this.controllerLookup)
                 {
@@ -914,21 +783,6 @@ namespace mmd2timeline
             try
             {
                 SetLookMode();
-                //// 只有在非VR下才运行
-                //if (/*!config.IsInVR &&*/ config.UseWindowCamera && config.AutoGazeToWindowCamera)
-                //{
-                //    // 眼睛同步
-                //    if (_eyeBehaviorRestoreLookMode == EyesControl.LookMode.Player && config.EnableCamera && config.CameraActive)
-                //    {
-                //        _eyeBehavior.currentLookMode = EyesControl.LookMode.Target;
-
-                //        _eyeBehavior.lookAt = WindowCamera.mainController.transform;
-                //    }
-                //    else if (_eyeBehavior?.currentLookMode != _eyeBehaviorRestoreLookMode)
-                //    {
-                //        _eyeBehavior.currentLookMode = _eyeBehaviorRestoreLookMode;
-                //    }
-                //}
 
                 // 手指关节游戏对象
                 List<GameObject> listFingerGameObject = new List<GameObject>();
@@ -937,7 +791,7 @@ namespace mmd2timeline
                 GameObject[] bones = mmd._bones.Where(b => validBoneNames.ContainsKey(b.name)).ToArray();
 
                 // 计算地板高度
-                var floorHeight = config.AutoCorrectFloorHeight + positionY.val;
+                var floorHeight = config.AutoCorrectFloorHeight + _PositionY.val;
 
                 // 修正高度
                 var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
@@ -956,7 +810,7 @@ namespace mmd2timeline
                     string bonename = mmdbone.name;
 
                     // 如果选中关闭下半身，并且骨骼在下半身字典中，则不更新骨骼动作
-                    if (this.CloseLowerBonesJSON.val && lowerBones.ContainsKey(bonename))
+                    if (this._CloseLowerBonesJSON.val && lowerBones.ContainsKey(bonename))
                     {
                         continue;
                     }
@@ -970,21 +824,6 @@ namespace mmd2timeline
                             Quaternion rotation = mmdbone.transform.rotation;
                             Vector3 position = mmdbone.transform.position;
                             var freeControllerV = this.controllerLookup[boneTransform];
-
-                            //if (config.MotionEngineMode == MotionEngine.MMD2Timeline11)
-                            //{
-                            //    #region 忽略的关节
-                            //    if (ignoreBoneNames.Contains(freeControllerV.name))
-                            //    {
-                            //        //LogUtil.Debug($"UpdateMotion::ignoreBoneNames:::bonename:{bonename}");
-
-                            //        freeControllerV.currentPositionState = FreeControllerV3.PositionState.Off;
-                            //        freeControllerV.currentRotationState = FreeControllerV3.RotationState.Off;
-
-                            //        continue;
-                            //    }
-                            //    #endregion
-                            //}
 
                             // 如果开启了高跟，跳过脚趾的更新
                             if (EnableHeel && freeControllerV.name.EndsWith("ToeControl"))
@@ -1099,7 +938,7 @@ namespace mmd2timeline
                     }
 
                     float relativeTime = this.GetRelativeTime();
-                    if (this._enableFaceJSON.val)
+                    if (this._EnableFaceJSON.val)
                     {
                         foreach (KeyValuePair<string, float> keyValuePair in mmd.GetUpdatedMorph(relativeTime))
                         {
@@ -1165,29 +1004,6 @@ namespace mmd2timeline
             fingerOutput.UpdateOutput();
         }
 
-        ///// <summary>
-        ///// 获取附加物品初始位置
-        ///// </summary>
-        //public Vector3 AssetInitPosition
-        //{
-        //    get
-        //    {
-        //        Vector3 result = Vector3.zero;
-        //        if (this._MmdAssetGameObject != null)
-        //        {
-        //            foreach (Bone bone in this._MmdAssetGameObject.Model.Bones)
-        //            {
-        //                if (bone.Name == this._AssetBoneProcess._BoneName)
-        //                {
-        //                    result = bone.InitPosition * 0.1f;
-        //                    break;
-        //                }
-        //            }
-        //        }
-        //        return result;
-        //    }
-        //}
-
         /// <summary>
         /// 更新高跟设置
         /// </summary>
@@ -1202,7 +1018,7 @@ namespace mmd2timeline
                     {
                         freeControllerV.currentRotationState = FreeControllerV3.RotationState.Off;
                         freeControllerV.currentPositionState = FreeControllerV3.PositionState.Off;
-                        toeJointDriveXTarget.val = this.toeJointDriveXTargetAdjust.val;
+                        toeJointDriveXTarget.val = this._ToeJointDriveXTargetAdjust.val;
                     }
                     else
                     {
@@ -1219,8 +1035,8 @@ namespace mmd2timeline
                     var footJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
                     if (EnableHeel)
                     {
-                        footHoldRotationMaxForce.val = this.holdRotationMaxForceAdjust.val;
-                        footJointDriveXTarget.val = this.footJointDriveXTargetAdjust.val;
+                        footHoldRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
+                        footJointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
                     }
                     else
                     {
@@ -1247,13 +1063,13 @@ namespace mmd2timeline
                 {
                     var footHoldRotationMaxForce = freeControllerV.GetFloatJSONParam("holdRotationMaxForce");
                     var footJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
-                    footHoldRotationMaxForce.val = this.holdRotationMaxForceAdjust.val;
-                    footJointDriveXTarget.val = this.footJointDriveXTargetAdjust.val;
+                    footHoldRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
+                    footJointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
                 }
                 else if (freeControllerV.name == "lToeControl" || freeControllerV.name == "rToeControl")
                 {
                     var toeJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
-                    toeJointDriveXTarget.val = this.toeJointDriveXTargetAdjust.val;
+                    toeJointDriveXTarget.val = this._ToeJointDriveXTargetAdjust.val;
                 }
             }
         }
@@ -1264,194 +1080,51 @@ namespace mmd2timeline
         /// <returns></returns>
         public float GetRelativeTime()
         {
-            float value = _progressJSON.val;//this.Progress - this.timeDelay.val;
+            float value = _ProgressJSON.val;//this.Progress - this.timeDelay.val;
             float min = 0f;
             float max = this.MaxTime;
             return Mathf.Clamp(value, min, max);
         }
 
-        //bool isDisabled = false;
-
-        //public override void OnDisable()
-        //{
-        //    isDisabled = true;
-        //    if (_eyeBehavior != null)
-        //    {
-        //        _eyeBehavior.currentLookMode = _eyeBehaviorRestoreLookMode;
-        //    }
-        //}
-
-        //public override void OnEnable()
-        //{
-        //    if (isDisabled)
-        //    {
-        //        //ReloadMotions(init: true);
-        //    }
-
-        //    isDisabled = false;
-        //}
-
-        //public override void OnDestroy()
-        //{
-        //    this.Reset();
-
-        //    if (PhysicsMeshs != null)
-        //    {
-        //        foreach (var item in PhysicsMeshs)
-        //        {
-        //            var mesh = item.Value;
-
-        //            SetPhysicsMesh(mesh, true);
-        //        }
-
-        //        this.PhysicsMeshs?.Clear();
-        //        this.PhysicsMeshs = null;
-        //    }
-
-        //    this.controllerLookup?.Clear();
-        //    this.controllerLookup = null;
-        //    this.controllerNameLookup?.Clear();
-        //    this.controllerNameLookup = null;
-
-        //    this._FaceMorphs?.Clear();
-        //    this._FaceMorphs = null;
-
-        //    //this._MmdAssetGameObject = null;
-        //    this._MmdPersonGameObject = null;
-        //    this._PersonAtom = null;
-        //    this.personMotion = null;
-
-        //    base.OnDestroy();
-        //}
-
-        /// <summary>
-        /// 获取或设置人物原子
-        /// </summary>
-        public Atom PersonAtom
+        public void OnDisable()
         {
-            get { return _PersonAtom; }
-            set { _PersonAtom = value; }
+            RestoreEyeBehavior();
         }
 
-        /// <summary>
-        /// 人物原子
-        /// </summary>
-        private Atom _PersonAtom;
-        ///// <summary>
-        ///// 物品骨骼处理
-        ///// </summary>
-        //private AssetBoneProcess _AssetBoneProcess;
+        public void OnEnable()
+        {
 
-        ///// <summary>
-        ///// 是否使用全部关节设置
-        ///// </summary>
-        //public JSONStorableBool UseAllJointsSettingsJSON;
-        ///// <summary>
-        ///// 所有关节阻尼比例
-        ///// </summary>
-        //public JSONStorableFloat AllJointsDamperPercentJSON;
-        ///// <summary>
-        ///// 所有关节弹簧比例
-        ///// </summary>
-        //public JSONStorableFloat AllJointsSpringPercentJSON;
-        ///// <summary>
-        ///// 所有关节最大速度比例
-        ///// </summary>
-        //public JSONStorableFloat AllJointsMaxVelocityJSON;
-        ///// <summary>
-        ///// 动作缩放
-        ///// </summary>
-        //public JSONStorableFloat motionScale;
+        }
 
-        /// <summary>
-        /// 人物游戏对象
-        /// </summary>
-        public MmdGameObject _MmdPersonGameObject;
+        public void OnDestroy()
+        {
+            Reset();
 
-        /// <summary>
-        /// 选择人物
-        /// </summary>
-        private Coroutine _ChoosePerson;
+            if (PhysicsMeshs != null)
+            {
+                foreach (var item in PhysicsMeshs)
+                {
+                    var mesh = item.Value;
 
-        /// <summary>
-        /// 面部变形字典
-        /// </summary>
-        public Dictionary<string, DAZMorph> _FaceMorphs = new Dictionary<string, DAZMorph>();
+                    SetPhysicsMesh(mesh, true);
+                }
 
-        /// <summary>
-        /// 控制器字典
-        /// </summary>
-        private Dictionary<Transform, FreeControllerV3> controllerLookup;
+                this.PhysicsMeshs?.Clear();
+                this.PhysicsMeshs = null;
+            }
 
-        /// <summary>
-        /// 控制器名称字典
-        /// </summary>
-        private Dictionary<string, FreeControllerV3> controllerNameLookup;
+            this.controllerLookup?.Clear();
+            this.controllerLookup = null;
+            this.controllerNameLookup?.Clear();
+            this.controllerNameLookup = null;
 
-        /// <summary>
-        /// 根处理器
-        /// </summary>
-        public Transform rootHandler;
+            this._FaceMorphs?.Clear();
+            this._FaceMorphs = null;
 
-        ///// <summary>
-        ///// MMD资源GameObject
-        ///// </summary>
-        //private MmdGameObject _MmdAssetGameObject;
-
-        ///// <summary>
-        ///// 开启表情
-        ///// </summary>
-        //public JSONStorableBool enableFace;
-
-        ///// <summary>
-        ///// 开启高跟
-        ///// </summary>
-        //public JSONStorableBool _enableHeelJSON;
-
-        ///// <summary>
-        ///// 脚部关节驱动X目标调整
-        ///// </summary>
-        //public JSONStorableFloat footJointDriveXTargetAdjust;
-
-        ///// <summary>
-        ///// 脚趾关节驱动X目标调整
-        ///// </summary>
-        //public JSONStorableFloat toeJointDriveXTargetAdjust;
-
-        ///// <summary>
-        ///// 保持角度最大力调整
-        ///// </summary>
-        //public JSONStorableFloat holdRotationMaxForceAdjust;
-
-        ///// <summary>
-        ///// 高跟高度修正
-        ///// </summary>
-        //public JSONStorableFloat heelHeightAdjust;
-
-        ///// <summary>
-        ///// 当前帧
-        ///// </summary>
-        //public int CurrentFrame
-        //{
-        //    get
-        //    {
-        //        return (int)this.Progress * 30;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 滞空时间
-        ///// </summary>
-        //public float _HangTime;
-
-        ///// <summary>
-        ///// 是否采样
-        ///// </summary>
-        //public bool IsSampling;
-
-        ///// <summary>
-        ///// 采样历程
-        ///// </summary>
-        //private Coroutine _SampleCoroutine;
+            //this._MmdAssetGameObject = null;
+            this._MmdPersonGameObject = null;
+            this._PersonAtom = null;
+            this._MotionSetting = null;
+        }
     }
 }

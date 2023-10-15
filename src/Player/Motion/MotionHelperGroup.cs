@@ -42,8 +42,6 @@ namespace mmd2timeline
             {
                 if (person.type == "Person")
                 {
-                    LogUtil.Log($"TryGetInitedMotionHelper");
-
                     motionHelper = new MotionHelper(person);
 
                     _group.Add(person, motionHelper);
@@ -265,5 +263,31 @@ namespace mmd2timeline
             }
         }
         #endregion
+
+
+        public void OnDisable()
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.OnDisable();
+            }
+        }
+
+        public void OnEnable()
+        {
+
+        }
+
+        public void OnDestroy()
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.OnDestroy();
+            }
+
+            _group.Clear();
+
+            _instance = null;
+        }
     }
 }

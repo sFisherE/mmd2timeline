@@ -166,17 +166,17 @@ namespace mmd2timeline
         {
             if (close)
             {
-                _motionScaleJSON.val = 0.1f;
+                _MotionScaleJSON.val = 0.1f;
             }
             else
             {
                 if (_MotionSetting != null)
                 {
-                    _motionScaleJSON.val = _MotionSetting.MotionScale;
+                    _MotionScaleJSON.val = _MotionSetting.MotionScale;
                 }
                 else
                 {
-                    _motionScaleJSON.val = 1f;
+                    _MotionScaleJSON.val = 1f;
                 }
             }
 

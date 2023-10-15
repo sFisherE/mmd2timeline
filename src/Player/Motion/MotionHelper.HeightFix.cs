@@ -99,7 +99,7 @@ namespace mmd2timeline
                             {
                                 if (!kneeFixed && !heelFixed)
                                 {
-                                    fix += _heelHeightAdjustJSON.val;
+                                    fix += _HeelHeightAdjustJSON.val;
                                     heelFixed = true;
                                 }
 
@@ -120,7 +120,7 @@ namespace mmd2timeline
                                     // 如果跪地修正时
                                     if (heelFixed)
                                     {
-                                        fix -= _heelHeightAdjustJSON.val;
+                                        fix -= _HeelHeightAdjustJSON.val;
                                         heelFixed = false;
                                     }
                                 }

@@ -165,14 +165,6 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 清理播放数据
-        /// </summary>
-        public void Clear()
-        {
-            ResetChooser();
-        }
-
-        /// <summary>
         /// 导入VMD文件
         /// </summary>
         /// <param name="path"></param>
@@ -213,6 +205,54 @@ namespace mmd2timeline
             {
                 LogUtil.LogError(ex);
             }
+        }
+
+        /// <summary>
+        /// 清理播放数据
+        /// </summary>
+        public void Clear()
+        {
+            MaxTime = 0f;
+
+            _CameraSetting = null;
+
+            SetDelayRange(0f);
+
+            ResetChooser();
+        }
+
+        /// <summary>
+        /// 销毁时执行的函数
+        /// </summary>
+        public void OnDestroy()
+        {
+            Clear();
+
+            DisposeFollow();
+
+            _MmdCamera = null;
+            _CameraControl = null;
+            _CameraSetting = null;
+            _FocusAtom = null;
+            _WindowCameraAtom = null;
+
+            _instance = null;
+        }
+
+        /// <summary>
+        /// 禁用时执行的函数
+        /// </summary>
+        public void OnDisable()
+        {
+
+        }
+
+        /// <summary>
+        /// 启用时执行的函数
+        /// </summary>
+        public void OnEnable()
+        {
+
         }
     }
 }

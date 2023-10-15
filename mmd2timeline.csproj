@@ -252,6 +252,12 @@
     <Compile Include="src\Player\Motion\MotionHelper.UI.AdjustBones.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.UI.cs" />
     <Compile Include="src\Player\Motion\MotionHelperGroup.cs" />
+    <Compile Include="src\Player\Player.cs" />
+    <Compile Include="src\Player\Player.HUD.cs" />
+    <Compile Include="src\Player\Player.PlayConfirm.cs" />
+    <Compile Include="src\Player\Player.Playlist.cs" />
+    <Compile Include="src\Player\Player.Tip.cs" />
+    <Compile Include="src\Player\Player.UI.cs" />
     <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
     <Compile Include="src\Player\Playlist\Playlist.cs" />
     <Compile Include="src\Player\Playlist\Playlist.ImportExport.cs" />

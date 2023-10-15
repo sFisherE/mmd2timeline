@@ -239,6 +239,8 @@ namespace mmd2timeline.Store
                 defaultMotion = candidateMotion.FirstOrDefault();
             }
 
+            // TODO 支持识别和加载表情、口型等动作
+
             return new FilesData()
             {
                 AudioPaths = musicList,
