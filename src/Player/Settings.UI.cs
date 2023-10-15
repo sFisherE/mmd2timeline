@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal partial class Settings : BaseScript
     {

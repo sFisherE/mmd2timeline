@@ -96,33 +96,6 @@ namespace mmd2timeline
             return storable;
         }
 
-        ///// <summary>
-        ///// 创建带语言适配的 StringChooser for Enum
-        ///// </summary>
-        ///// <typeparam name="TEnum"></typeparam>
-        ///// <param name="self"></param>
-        ///// <param name="label"></param>
-        ///// <param name="defaultValue"></param>
-        ///// <param name="rightSide"></param>
-        ///// <param name="callback"></param>
-        ///// <returns></returns>
-        //public JSONStorableStringChooser SetupEnumChooser<TEnum>(string label, TEnum defaultValue, bool rightSide, EnumSetCallback<TEnum> callback)
-        //    where TEnum : struct, IComparable, IConvertible, IFormattable
-        //{
-        //    label = Lang.Get(label);
-
-        //    List<string> names = Enum.GetNames(typeof(TEnum)).Select(e => Lang.Get(e)).ToList();
-        //    JSONStorableStringChooser storable = new JSONStorableStringChooser(label, names, Lang.Get(defaultValue.ToString()), label);
-        //    storable.setCallbackFunction += (string name) =>
-        //    {
-        //        TEnum v = (TEnum)Enum.Parse(typeof(TEnum), Lang.From(name));
-        //        callback(v);
-        //    };
-        //    this.CreateScrollablePopup(storable, rightSide);
-        //    this.RegisterStringChooser(storable);
-        //    return storable;
-        //}
-
         /// <summary>
         /// 静态枚举类回调函数
         /// </summary>

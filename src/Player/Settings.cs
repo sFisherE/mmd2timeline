@@ -2,9 +2,8 @@ using MacGruber;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal partial class Settings : BaseScript
     {
@@ -20,24 +19,14 @@ namespace mmd2timeline.Player
         }
 
         /// <summary>
-        /// 初始化
-        /// </summary>
-        public override void Init()
-        {
-            base.Init();
-
-            Lang.Init(PluginPath);
-
-            Utils.OnInitUI(this, CreateAllUIElement);
-        }
-
-        /// <summary>
         /// 首次调用Update之前调用的方法
         /// </summary>
         public virtual void Start()
         {
             try
             {
+                InitScript();
+
                 InitSettingUI();
             }
             catch (Exception ex)

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal partial class Settings : BaseScript
     {

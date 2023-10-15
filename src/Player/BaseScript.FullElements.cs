@@ -61,10 +61,9 @@ namespace mmd2timeline
                     }
                 }
             }
-            catch// (Exception ex)
+            catch (Exception ex)
             {
-                // 不清楚什么原因，所有代码执行完了还是会报异常。忽略掉
-                //LogUtil.Debug(ex, "Director::InitFullWidthUI");
+                LogUtil.Debug(ex, "Director::InitFullWidthUI");
             }
         }
 
