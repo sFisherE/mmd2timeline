@@ -238,6 +238,11 @@ namespace mmd2timeline
                 SetDelayRange(0f);
             }
 
+            foreach (var file in settings.Files)
+            {
+                LogUtil.Log($"Chooser-{file}");
+            }
+
             SetChoosers(displayChoices, choices, settings?.Files);
 
             InitSettingValues();
@@ -248,7 +253,7 @@ namespace mmd2timeline
         /// <summary>
         /// 重新加载动作数据
         /// </summary>
-        public void ReloadMotions(bool init = false)
+        public void ReloadMotions(int test, bool init = false)
         {
             if (init || config.ResetPhysicalWhenLoadMotion)
             {
@@ -259,11 +264,30 @@ namespace mmd2timeline
                 _MmdPersonGameObject.ClearMotion();
             }
 
+            _MotionSetting.Files.Clear();
+
             foreach (var motionChooser in _MotionChoosers)
             {
                 if (motionChooser.val != noneString)
                 {
+                    _MotionSetting.Files.Add(motionChooser.val);
                     this.ImportVmd(motionChooser.val);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 保存动作设定到Settings
+        /// </summary>
+        internal void UpdateMotionsToSettings()
+        {
+            _MotionSetting.Files.Clear();
+
+            foreach (var motionChooser in _MotionChoosers)
+            {
+                if (motionChooser.val != noneString)
+                {
+                    _MotionSetting.Files.Add(motionChooser.val);
                 }
             }
         }
@@ -274,8 +298,6 @@ namespace mmd2timeline
         public void Reset()
         {
             MaxTime = 0f;
-
-            SetDelayRange(0f);
 
             ResetChoosers();
         }
@@ -935,14 +957,15 @@ namespace mmd2timeline
                         this.UpdateFinger(item);
                     }
 
-                    float relativeTime = this.GetRelativeTime();
+                    float time = GetRelativeTime();
                     if (this._EnableFaceJSON.val)
                     {
-                        foreach (KeyValuePair<string, float> keyValuePair in mmd.GetUpdatedMorph(relativeTime))
+                        var morphs = mmd.GetUpdatedMorph(time);
+                        foreach (var item in morphs)
                         {
-                            if (this._FaceMorphs.ContainsKey(keyValuePair.Key))
+                            if (this._FaceMorphs.ContainsKey(item.Key))
                             {
-                                this._FaceMorphs[keyValuePair.Key].morphValue = keyValuePair.Value;
+                                this._FaceMorphs[item.Key].morphValue = item.Value;
                             }
                         }
                     }
@@ -950,7 +973,7 @@ namespace mmd2timeline
             }
             catch (Exception e)
             {
-                LogUtil.LogError(e, $"PersonMotionController::UpdateMotion:");
+                LogUtil.LogError(e, $"MotionHelper::UpdateMotion:{_MotionSetting.ToString()}");
             }
         }
 

@@ -114,14 +114,14 @@ namespace mmd2timeline
                 return;
             }
 
-            if (_PlaylistChooser.val != arg.GUID)
-            {
-                _PlaylistChooser.SetVal(arg.GUID);
-            }
-            else
-            {
-                _PlaylistChooser.valNoCallback = arg.GUID;
-            }
+            //if (_PlaylistChooser.val != arg.GUID)
+            //{
+            //    _PlaylistChooser.SetVal(arg.GUID);
+            //}
+            //else
+            //{
+            _PlaylistChooser.valNoCallback = arg.GUID;
+            //}
 
             LoadMMD(this.Playlist.CurrentMMD);
         }

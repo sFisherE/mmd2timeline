@@ -61,7 +61,7 @@ namespace mmd2timeline
         /// 保存骨骼旋转微调数据
         /// </summary>
         /// <param name="motion"></param>
-        private void SaveBoneRotationAdjustValues()
+        internal void UpdateBoneRotationAdjustValuesToSettings()
         {
             var boneAdjusts = GetBoneAdjustValues();
 

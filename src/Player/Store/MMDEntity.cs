@@ -1,8 +1,10 @@
-﻿using MVR.FileManagementSecure;
+﻿using Leap.Unity;
+using MVR.FileManagementSecure;
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -190,7 +192,8 @@ namespace mmd2timeline.Store
             var defaultCamera = noneString;
             var defaultMotion = noneString;
 
-            var candidateMotion = new List<string>();
+            var motions = new List<string>();
+            var expressions = new List<string>();
 
             // 轮询MMD文件，并对文件自动选择进行预处理
             foreach (MMDFile file in this.Files)
@@ -223,20 +226,25 @@ namespace mmd2timeline.Store
                     else if (file.FileType == MMDFileType.Motion)
                     {
                         // 将认定为动作的vmd文件放在候选动作列表的前端
-                        candidateMotion.Insert(0, fullFileName);
+                        motions.Insert(0, fullFileName);
                     }
                     else if (file.FileType == MMDFileType.VMD)
                     {
                         // 将位置vmd文件放在首选动作列表的末尾
-                        candidateMotion.Add(fullFileName);
+                        motions.Add(fullFileName);
+                    }
+                    else if (file.FileType == MMDFileType.Expression)
+                    {
+                        // 将指定的动作添加到表情列表
+                        expressions.Add(fullFileName);
                     }
                 }
             }
 
             // 如果默认动作为None并且候选动作列表不为空
-            if (defaultMotion == noneString && candidateMotion.Count > 0)
+            if (defaultMotion == noneString && motions.Count > 0)
             {
-                defaultMotion = candidateMotion.FirstOrDefault();
+                defaultMotion = motions.FirstOrDefault();
             }
 
             // TODO 支持识别和加载表情、口型等动作
@@ -251,6 +259,7 @@ namespace mmd2timeline.Store
                 DefaultAudio = defaultMusic,
                 DefaultCamera = defaultCamera,
                 DefaultMotion = defaultMotion,
+                Expressions = expressions
             };
         }
 
@@ -261,6 +270,7 @@ namespace mmd2timeline.Store
         {
             var data = this.GetFileData();
 
+            // 设定默认镜头文件路径
             if (string.IsNullOrEmpty(this.CameraSetting.CameraPath)
                 || this.CameraSetting.CameraPath == noneString
                 || (forceUpdate && this.CameraSetting.CameraPath != data.DefaultCamera))
@@ -268,12 +278,14 @@ namespace mmd2timeline.Store
                 this.CameraSetting.CameraPath = data.DefaultCamera;
             }
 
+            // 设定默认音频文件路径
             if (string.IsNullOrEmpty(this.AudioSetting.AudioPath) || this.AudioSetting.AudioPath == noneString
                 || (forceUpdate && this.AudioSetting.AudioPath != data.DefaultAudio))
             {
                 this.AudioSetting.AudioPath = data.DefaultAudio;
             }
 
+            // 设定默认动作文件
             if (data.DefaultMotion != noneString)
             {
                 if (this.Motions.Count == 0)
@@ -290,6 +302,23 @@ namespace mmd2timeline.Store
                     {
                         motion.Files.Clear();
                         motion.Files.Add(data.DefaultMotion);
+                    }
+                }
+            }
+
+            // 设定默认表情
+            if (data.Expressions != null && data.Expressions.Count > 0)
+            {
+                // 默认最大只能选择3个表情文件
+                var maxExpressions = Math.Min(3, data.Expressions.Count);
+
+                var motion = Motions.FirstOrDefault();
+
+                if (motion != null)
+                {
+                    for (var i = 0; i < maxExpressions; i++)
+                    {
+                        motion.Files?.Add(data.Expressions[i]);
                     }
                 }
             }
@@ -522,8 +551,22 @@ namespace mmd2timeline.Store
             internal List<string> MotionPaths;
             internal List<string> MotionNames;
 
+            /// <summary>
+            /// 表情清单
+            /// </summary>
+            internal List<string> Expressions;
+
+            /// <summary>
+            /// 识别到的默认音频文件
+            /// </summary>
             internal string DefaultAudio;
+            /// <summary>
+            /// 识别到的默认动作文件
+            /// </summary>
             internal string DefaultMotion;
+            /// <summary>
+            /// 识别到的镜头文件
+            /// </summary>
             internal string DefaultCamera;
         }
     }

@@ -39,13 +39,13 @@ src\FingerMorph.cs
 src\FingerOutputExt.cs
 src\TimelineJson.cs
 src\Utility.cs
-src\JSONClasses\MSJSONClass.cs
-src\JSONClasses\Enums.cs
+src\Utils\MSJSONClass.cs
+src\Utils\Enums.cs
 src\Utils\GroupUI.cs
 src\Utils\Config.cs
 src\Utils\Config.Settings.cs
 src\Utils\Config.Globle.cs
-src\JSONClasses\Lang.cs
+src\Utils\Lang.cs
 src\Player\Audio\AudioClipHelper.cs
 src\Player\Audio\AudioPlayHelper.cs
 src\Player\Audio\AudioPlayHelper.Progress.cs

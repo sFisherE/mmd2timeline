@@ -431,6 +431,9 @@ namespace mmd2timeline
                     OutEditMode();
                 }
 
+                // 更新动作设定数据
+                _MotionHelperGroup.UpdateValuesToSettings();
+
                 Playlist.AddPlayItem(item);
 
                 item.Save();
@@ -1071,7 +1074,7 @@ namespace mmd2timeline
             }
             catch (Exception ex)
             {
-                LogUtil.LogError(ex, "Player::InitPersonMotionController:");
+                LogUtil.LogError(ex, "Player::InitMotionHelper:");
             }
 
             return null;
@@ -1098,7 +1101,7 @@ namespace mmd2timeline
             catch (Exception ex)
             {
 #if DEBUG
-                LogUtil.LogError(ex, $"Player::RemovePersonMotionController");
+                LogUtil.LogError(ex, $"Player::RemoveMotionHelper");
 #endif
             }
         }
@@ -1164,7 +1167,7 @@ namespace mmd2timeline
 
                 yield return null;
 
-                item.ReloadMotions(init: true);
+                item.ReloadMotions(3,init: true);
 
                 // 允许初始动作修正时调用
                 if (config.EnableInitialMotionAdjustment)

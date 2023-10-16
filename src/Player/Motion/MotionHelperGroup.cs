@@ -126,6 +126,18 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 更新设定值到设置
+        /// </summary>
+        internal void UpdateValuesToSettings()
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.UpdateBoneRotationAdjustValuesToSettings();
+                pair.Value.UpdateMotionsToSettings();
+            }
+        }
+
+        /// <summary>
         /// 检查是否全部已经完成准备
         /// </summary>
         /// <returns></returns>

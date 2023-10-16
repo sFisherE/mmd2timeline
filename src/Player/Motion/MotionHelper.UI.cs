@@ -1,4 +1,5 @@
 ﻿using MacGruber;
+using System;
 using System.Collections.Generic;
 
 namespace mmd2timeline
@@ -169,11 +170,7 @@ namespace mmd2timeline
             for (var i = 0; i < MAX_MOTION_COUNT; i++)
             {
                 var motionChooser = self.SetupStringChooserNoLang($"{Lang.Get("Motion")} {(i + 1)}", self.noneStrings, rightSide: rightSide);
-                motionChooser.setCallbackFunction = v =>
-                {
-                    // TODO 选中动作文件的处理
-                    ReloadMotions();
-                };
+                motionChooser.setCallbackFunction = UpdateMotionValue;
                 _MotionSettingsUI.OtherElements.Add(motionChooser);
                 _MotionChoosers.Add(motionChooser);
             }
@@ -367,6 +364,19 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 更新动作值
+        /// </summary>
+        /// <param name="v"></param>
+        void UpdateMotionValue(string v)
+        {
+            if (string.IsNullOrEmpty(v))
+            {
+                // 选中动作文件的处理
+                ReloadMotions(1);
+            }
+        }
+
+        /// <summary>
         /// 移除人物动作UI
         /// </summary>
         /// <param name="controller"></param>
@@ -404,11 +414,6 @@ namespace mmd2timeline
         {
             for (var i = 0; i < _MotionChoosers.Count; i++)
             {
-                var chooser = _MotionChoosers[i];
-
-                chooser.choices = choices.ToArray().ToList();
-                chooser.displayChoices = displayChoices.ToArray().ToList();
-
                 var choice = noneString;
 
                 if (targets?.Count > i)
@@ -416,10 +421,14 @@ namespace mmd2timeline
                     choice = targets[i];
                 }
 
+                var chooser = _MotionChoosers[i];
+                chooser.valNoCallback = "";
+                chooser.choices = choices.ToArray().ToList();
+                chooser.displayChoices = displayChoices.ToArray().ToList();
                 chooser.valNoCallback = choice;
             }
 
-            ReloadMotions();
+            ReloadMotions(2);
         }
 
         /// <summary>
