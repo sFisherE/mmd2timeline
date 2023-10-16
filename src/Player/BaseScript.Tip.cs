@@ -20,8 +20,6 @@ namespace mmd2timeline
         /// <param name="name"></param>
         protected void InitTip(string name)
         {
-            LogUtil.Debug($"::InitTip::{name}");
-
             _TipsJSON = new JSONStorableString("Tips", $"{name} {Lang.Get("is Ready.\nPlease select the Content to play in the Player.")}");
             _TipField = CreateFullTextField(_TipsJSON);
             _TipField.backgroundColor = new Color(1f, 0.92f, 0.016f, 0f);
@@ -39,7 +37,7 @@ namespace mmd2timeline
         {
             if (_TipField == null)
             {
-                LogUtil.LogError("The Tip is Not Inited.");
+                LogUtil.LogWarning("The Tip is Not Inited.");
                 return;
             }
             if (message != null)
@@ -59,7 +57,7 @@ namespace mmd2timeline
         {
             if (_TipField == null)
             {
-                LogUtil.LogError("The Tip is Not Inited.");
+                LogUtil.LogWarning("The Tip is Not Inited.");
                 return;
             }
             _TipField.gameObject.SetActive(false);

@@ -16,10 +16,6 @@ namespace mmd2timeline
                 {
                     this.ShowSlider(componentInParent, show);
                 }
-                else
-                {
-                    LogUtil.Debug($"Settings:::ShowSlider:false:{jsf.name}");
-                }
             }
         }
 

@@ -213,7 +213,7 @@ namespace mmd2timeline
             // 位置
             _PositionX = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position X")}", 0f, -10f, 10f, v =>
             {
-                // TODO 位置调整的处理
+                // 位置调整的处理
                 _MotionSetting.PositionX = v;
                 UpdatePositionAndRotation();
             }, rightSide, "F4");
@@ -221,7 +221,7 @@ namespace mmd2timeline
 
             _PositionY = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Y")}", 0f, -10f, 10f, v =>
             {
-                // TODO 位置调整的处理
+                // 位置调整的处理
                 _MotionSetting.PositionY = v;
                 UpdatePositionAndRotation();
             }, rightSide, "F4");
@@ -229,7 +229,7 @@ namespace mmd2timeline
 
             _PositionZ = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Z")}", 0f, -10f, 10f, v =>
             {
-                // TODO 位置调整的处理
+                // 位置调整的处理
                 _MotionSetting.PositionZ = v;
                 UpdatePositionAndRotation();
             }, rightSide, "F4");
@@ -238,7 +238,7 @@ namespace mmd2timeline
             //角度
             _RotationX = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation X")}", 0f, -180f, 180f, v =>
             {
-                // TODO 角度调整的处理
+                // 角度调整的处理
                 _MotionSetting.RotationX = v;
                 UpdatePositionAndRotation();
             }, rightSide);
@@ -246,7 +246,7 @@ namespace mmd2timeline
 
             _RotationY = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Y")}", 0f, -180f, 180f, v =>
             {
-                // TODO 角度调整的处理
+                // 角度调整的处理
                 _MotionSetting.RotationY = v;
                 UpdatePositionAndRotation();
             }, rightSide);
@@ -254,7 +254,7 @@ namespace mmd2timeline
 
             _RotationZ = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Z")}", 0f, -180f, 180f, v =>
             {
-                // TODO 角度调整的处理
+                // 角度调整的处理
                 _MotionSetting.RotationZ = v;
                 UpdatePositionAndRotation();
             }, rightSide);
@@ -263,7 +263,7 @@ namespace mmd2timeline
             #endregion
             _MotionScaleJSON = Utils.SetupSliderFloat(self, $"{GetLabelText("Motion Scale")}", 1f, 0.1f, 2f, v =>
             {
-                // TODO 动作缩放的处理
+                // 动作缩放的处理
                 _MotionSetting.MotionScale = v;
                 ReUpdateMotion();
             }, rightSide);
@@ -272,7 +272,7 @@ namespace mmd2timeline
             #region 全部关节设置
             _UseAllJointsSettingsJSON = Utils.SetupToggle(self, $"{GetLabelText("Use Joints Settings")}", false, v =>
             {
-                // TODO 处理开启所有关节设置
+                // 处理开启所有关节设置
                 _MotionSetting.UseAllJointsSettings = v;
                 allJointsSettingsGroup.RefreshView(v);
                 SetPersonAllJoints();
@@ -282,7 +282,7 @@ namespace mmd2timeline
 
             _AllJointsSpringPercentJSON = Utils.SetupSliderFloat(self, $"{GetLabelText("Joints Spring Percent")}", config.AllJointsSpringPercent, 0f, 1f, v =>
             {
-                // TODO 处理关节弹簧百分比变更
+                // 处理关节弹簧百分比变更
                 if (_MotionSetting.UseAllJointsSettings)
                 {
                     _MotionSetting.AllJointsSpringPercent = v;
@@ -293,7 +293,7 @@ namespace mmd2timeline
 
             _AllJointsDamperPercentJSON = Utils.SetupSliderFloat(self, $"{GetLabelText("Joints Damper Percent")}", config.AllJointsDamperPercent, 0f, 1f, v =>
             {
-                // TODO 处理关节阻尼百分比变更
+                // 处理关节阻尼百分比变更
                 if (_MotionSetting.UseAllJointsSettings)
                 {
                     _MotionSetting.AllJointsDamperPercent = v;
@@ -304,7 +304,7 @@ namespace mmd2timeline
 
             _AllJointsMaxVelocityJSON = Utils.SetupSliderFloat(self, $"{GetLabelText("Joints Max Velocity")}", config.AllJointsMaxVelocity, 0f, 100f, v =>
             {
-                // TODO 处理关节最大速度变更
+                // 处理关节最大速度变更
                 if (_MotionSetting.UseAllJointsSettings)
                 {
                     _MotionSetting.AllJointsMaxVelocity = v;
@@ -454,8 +454,6 @@ namespace mmd2timeline
                 _RotationY.val = _MotionSetting.RotationY;
                 _RotationZ.val = _MotionSetting.RotationZ;
             }
-
-            //this.MakeReady();
 
             // 未关闭下半身骨骼的情况下更新动作缩放
             if (!_CloseLowerBonesJSON.val)

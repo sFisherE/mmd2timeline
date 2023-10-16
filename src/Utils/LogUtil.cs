@@ -18,10 +18,10 @@ namespace mmd2timeline
             }
 
             Debug($"\n{source}\n---\n" + ex.Message);
-            //#if DEBUG
+#if DEBUG
             Debug(
                "\nStackTrace ---\n" + ex.StackTrace);
-            //#endif
+#endif
         }
         public static void Log(string log)
         {

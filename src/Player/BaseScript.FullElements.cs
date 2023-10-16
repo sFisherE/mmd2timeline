@@ -154,10 +154,6 @@ namespace mmd2timeline
                 {
                     this.RemoveSlider(componentInParent);
                 }
-                else
-                {
-                    LogUtil.Debug($"Settings:::RemoveSlider:false:{jsf.name}");
-                }
             }
         }
 

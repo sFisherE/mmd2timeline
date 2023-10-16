@@ -174,52 +174,6 @@ namespace mmd2timeline.Store
         }
         #endregion
 
-        ///// <summary>
-        ///// 文件类型名称清单
-        ///// </summary>
-        //public static List<string> TypeNames
-        //{
-        //    get
-        //    {
-
-        //        return Enum.GetNames(typeof(MMDFileType)).ToList();
-        //    }
-        //}
-
-        //private static List<string> _TypeValues = null;
-
-        ///// <summary>
-        ///// 文件类型值清单
-        ///// </summary>
-        //public static List<string> TypeValues
-        //{
-        //    get
-        //    {
-        //        if (_TypeValues == null)
-        //        {
-        //            _TypeValues = new List<string>();
-        //            var values = Enum.GetValues(typeof(MMDFileType));
-
-        //            foreach (var v in values)
-        //            {
-        //                _TypeValues.Add($"{v}");
-        //            }
-        //        }
-
-        //        return _TypeValues;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 从字符串获取类型
-        ///// </summary>
-        ///// <param name="s"></param>
-        ///// <returns></returns>
-        //public static MMDFileType GetTypeFromString(string s)
-        //{
-        //    return (MMDFileType)Enum.Parse(typeof(MMDFileType), s);
-        //}
-
         /// <summary>
         /// 转换文件类型数据
         /// </summary>

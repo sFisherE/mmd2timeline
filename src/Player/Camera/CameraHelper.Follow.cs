@@ -282,8 +282,6 @@ namespace mmd2timeline
         /// <param name="disable"></param>
         internal void DisableNavigation(bool disable = true)
         {
-            LogUtil.Debug($"DisableNavigation::{disable}");
-
             // 未启用镜头，跳过处理
             if (!config.EnableCamera)
                 return;

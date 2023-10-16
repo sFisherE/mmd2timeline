@@ -237,8 +237,6 @@ namespace mmd2timeline
         /// <param name="total"></param>
         void OnMMDImported(MMDEntity entity, string info, int step, int total)
         {
-            LogUtil.Debug($"Player::OnMMDImported:{step}/{total}");
-
             if (entity != null)
             {
                 // 添加播放列表但不触发事件通知
@@ -388,8 +386,6 @@ namespace mmd2timeline
         /// <exception cref="NotImplementedException"></exception>
         private void UpdateFavoriteLabel(MMDEntity obj)
         {
-            LogUtil.Debug($"obj.InFavorite:{obj.InFavorite}");
-
             _FavoriteLabel.text = obj.InFavorite ? Lang.Get("UnFavorite") : Lang.Get("Favorite");
         }
 
@@ -435,8 +431,6 @@ namespace mmd2timeline
                     OutEditMode();
                 }
 
-                LogUtil.Debug($"AddPlayItem::::BEGIN");
-
                 Playlist.AddPlayItem(item);
 
                 item.Save();
@@ -457,8 +451,6 @@ namespace mmd2timeline
                 // 停止播放
                 StopPlaying();
                 CurrentItem = null;
-
-                LogUtil.Debug($"Player::Clear:ClearPlayList.");
 
                 ClearMotions();
 
@@ -621,7 +613,7 @@ namespace mmd2timeline
             }
 
             // 检查是否可以播放
-            if (!IsPlaying || _AudioPlayHelper.IsLoading || _IsLoading) return;
+            if (!IsPlaying || _ProgressHelper.IsEnd || _AudioPlayHelper.IsLoading || _IsLoading) return;
 
             try
             {
@@ -877,8 +869,6 @@ namespace mmd2timeline
         /// <param name="mmdItem"></param>
         void LoadMMD(MMDEntity mmdItem)
         {
-            LogUtil.Debug($"Player::LoadMMD:{mmdItem?.Key},SettingIndex:{mmdItem?.SettingIndex}");
-
             if (mmdItem == null)
             {
                 this.ClearPlayList();
@@ -1276,8 +1266,6 @@ namespace mmd2timeline
         {
             LogUtil.Debug("---------------OnDestroy!!!!!");
 
-            base.OnDestroy();
-
             DestroyHUDUI();
 
             RemovePlaylistEvent();
@@ -1319,7 +1307,7 @@ namespace mmd2timeline
 
             SuperController.singleton.BroadcastMessage("OnActionsProviderDestroyed", this, SendMessageOptions.DontRequireReceiver);
 
-            Utils.OnDestroyUI(this);
+            base.OnDestroy();
         }
     }
 }

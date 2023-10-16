@@ -167,9 +167,6 @@ namespace mmd2timeline
             {
                 SuperController.singleton.fileBrowserUI.fileFormat = null;
 
-                LogUtil.Debug($"HandleSavePlayListPreset::filePath:{filePath}");
-                LogUtil.Debug($"HandleSavePlayListPreset::FavoriteFileName:{FavoriteFileName}");
-
                 if (string.IsNullOrEmpty(filePath) || filePath == FavoriteFileName)
                 {
                     return;
@@ -257,8 +254,6 @@ namespace mmd2timeline
             var guids = MMDEntity.GetAllGUID();
             yield return null;
 
-            LogUtil.Debug($"LoadAll::{guids.Count}");
-
             var i = 0;
 
             foreach (var item in guids)
@@ -296,8 +291,6 @@ namespace mmd2timeline
         {
             isListLoaded = false;
             var fileName = FileManagerSecure.GetFileName(SaveFileName);
-
-            LogUtil.Debug($"Playlist::LoadList:{fileName}");
 
             if (this.IsNewPlaylist)
             {

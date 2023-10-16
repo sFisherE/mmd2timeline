@@ -272,10 +272,10 @@
     <Compile Include="src\Player\Store\MMDSetting.cs" />
     <Compile Include="src\Player\Store\PersonMotion.cs" />
     <Compile Include="src\Utils\Config.cs" />
-    <Compile Include="src\JSONClasses\Enums.cs" />
-    <Compile Include="src\JSONClasses\Lang.cs" />
+    <Compile Include="src\Utils\Enums.cs" />
+    <Compile Include="src\Utils\Lang.cs" />
     <Compile Include="src\LibMmd\Motion\VmdVisibleIK.cs" />
-    <Compile Include="src\JSONClasses\MSJSONClass.cs" />
+    <Compile Include="src\Utils\MSJSONClass.cs" />
     <Compile Include="src\Player\BaseScript.cs" />
     <Compile Include="src\Player\BaseScript.FullElements.cs" />
     <Compile Include="src\Player\BaseScript.Tip.cs" />
@@ -337,7 +337,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\JSONClasses\readme.md" />
     <None Include="src\Player\Audio\readme.md" />
     <None Include="src\Player\Camera\readme.md" />
     <None Include="src\Player\Folder\readme.md" />

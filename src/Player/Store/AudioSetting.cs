@@ -48,41 +48,6 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 音频播放开始时间
-        /// </summary>
-        public float StartTime
-        {
-            get
-            {
-                if (this.HasKey("StartTime"))
-                    return this["StartTime"].AsFloat;
-                else
-                    return 0f;
-            }
-            set
-            {
-                this["StartTime"].AsFloat = value;
-            }
-        }
-        /// <summary>
-        /// 音频播放结束时间
-        /// </summary>
-        public float EndTime
-        {
-            get
-            {
-                if (this.HasKey("EndTime"))
-                    return this["EndTime"].AsFloat;
-                else
-                    return 0f;
-            }
-            set
-            {
-                this["EndTime"].AsFloat = value;
-            }
-        }
-
-        /// <summary>
         /// 对比两个音频配置是否一致
         /// </summary>
         /// <param name="target"></param>

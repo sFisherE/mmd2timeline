@@ -84,8 +84,6 @@ namespace mmd2timeline
         /// <param name="list"></param>
         private void OnPlaylistUpdated(Playlist sender, List<PlaylistItem> list)
         {
-            LogUtil.Debug($"Playlist_PlaylistUpdated::{list.Count}");
-
             if (list.Count > 0)
             {
                 var playlistNames = list.Select(x => x.Name).ToList();
@@ -113,7 +111,6 @@ namespace mmd2timeline
         {
             if (arg == null)
             {
-                LogUtil.Debug($"Player::Playlist_PlayItemSelected:arg==null");
                 return;
             }
 

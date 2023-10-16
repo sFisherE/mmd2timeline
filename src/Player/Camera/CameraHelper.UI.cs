@@ -234,7 +234,10 @@ namespace mmd2timeline
         {
             if (_CameraSetting == null)
             {
-                LogUtil.LogWarning($"_CameraSetting:::CameraHelper Is Not Inited.");
+                if (path != noneString)
+                {
+                    LogUtil.LogWarning($"_CameraSetting:::CameraHelper Is Not Inited.{path}");
+                }
                 return;
             }
 

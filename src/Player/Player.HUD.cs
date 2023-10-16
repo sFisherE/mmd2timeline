@@ -23,8 +23,6 @@ namespace mmd2timeline
         {
             try
             {
-                LogUtil.Debug($"InitHUDUI::Start");
-
                 hudText = new JSONStorableString("HUDText", "");
 
                 Canvas canvas = new GameObject(HUD_CANVAS_NAME).AddComponent<Canvas>();

@@ -19,8 +19,6 @@ namespace mmd2timeline
         /// <param name="v"></param>
         void SetValueByMode(int v)
         {
-            LogUtil.Debug($"SetValueByMode::{v}");
-
             if (springSlider == null || damperSlider == null)
             {
                 return;

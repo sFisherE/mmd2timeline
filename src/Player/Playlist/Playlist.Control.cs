@@ -133,8 +133,6 @@ namespace mmd2timeline
         {
             _PlayList = null;
 
-            LogUtil.Debug($"Playlist::ResetPlayList:PlayMode:{this.PlayMode}");
-
             // 如果是随机模式，则重新组织
             if (this.PlayMode == MMDPlayMode.Random)
             {
@@ -166,8 +164,6 @@ namespace mmd2timeline
 
             if (targetItem == null)
             {
-                LogUtil.Debug($"Playlist::Select:GUID:{guid} Not in the Playlist");
-
                 return;
             }
 
@@ -193,8 +189,6 @@ namespace mmd2timeline
 
             if (targetItem == null)
             {
-                LogUtil.Debug($"Playlist::Select:Name:{name} Not in the Playlist");
-
                 return;
             }
 
@@ -339,8 +333,6 @@ namespace mmd2timeline
 
                 if (notify)
                 {
-                    LogUtil.Debug($"Playlist::AddPlayItem::::notify:{notify}");
-
                     PlayItemAdded?.Invoke(this, item);
                 }
             }
@@ -392,8 +384,6 @@ namespace mmd2timeline
         /// </summary>
         private void OnPlaylistUpdated()
         {
-            LogUtil.Debug($"Playlist::OnPlaylistUpdated:{this.List.Count}");
-
             this.ClearPlayList();
 
             PlaylistUpdated?.Invoke(this, this.List);

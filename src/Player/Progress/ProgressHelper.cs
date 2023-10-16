@@ -173,7 +173,6 @@ namespace mmd2timeline
         /// </summary>
         public void Stop(int test)
         {
-            LogUtil.Debug($"Progress Stop:{test}");
             _isPlaying = false;
 
             OnPlayStatusChanged?.Invoke(_progress, _isPlaying);

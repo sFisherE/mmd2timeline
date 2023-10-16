@@ -111,7 +111,6 @@ namespace mmd2timeline
         {
             if (mesh != null)
             {
-                LogUtil.Debug($"SetPhysicsMesh:{mesh.name}:{on}");
                 mesh.on = on;
             }
         }
@@ -894,7 +893,6 @@ namespace mmd2timeline
                                             if (outTimes > 120)
                                             {
                                                 outTimes = 0;
-                                                LogUtil.Debug($"=========>{freeControllerV.name}::OUT FLOOR!!!");
                                             }
                                         }
                                     }
@@ -1099,6 +1097,8 @@ namespace mmd2timeline
         public void OnDestroy()
         {
             Reset();
+
+            RestoreEyeBehavior();
 
             if (PhysicsMeshs != null)
             {

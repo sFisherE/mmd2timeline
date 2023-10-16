@@ -20,11 +20,6 @@ namespace mmd2timeline
         /// </summary>
         GroupUI _SettingsUI;
 
-        ///// <summary>
-        ///// 选择器UI
-        ///// </summary>
-        //GroupUI _ChooserUI;
-
         /// <summary>
         /// 进度
         /// </summary>
@@ -61,39 +56,5 @@ namespace mmd2timeline
         {
             _SettingsUI?.Show(show);
         }
-
-        ///// <summary>
-        ///// 显示选择器UI
-        ///// </summary>
-        ///// <param name="show"></param>
-        //internal void ShowChooserUI(bool show)
-        //{
-        //    _ChooserUI?.ShowSelf(show);
-        //}
-
-        ///// <summary>
-        ///// 创建选择器UI
-        ///// </summary>
-        ///// <param name="self"></param>
-        ///// <param name="rightSide"></param>
-        //internal void CreateChooserUI(BaseScript self, bool rightSide = false)
-        //{
-        //    if (_ChooserUI != null)
-        //        return;
-
-        //    _ChooserUI = new GroupUI(self);
-
-        //    // 音频选择
-        //    var musicPopup = self.SetupStringChooser("Music", noneStrings, 600f, rightSide);
-        //    musicPopup.setCallbackFunction = v =>
-        //    {
-        //        // TODO 音频选中的处理
-        //        _audioSetting.AudioPath = v;
-
-        //        LoadAudio(v);
-        //    };
-
-        //    _ChooserUI.Elements.Add(musicPopup);
-        //}
     }
 }

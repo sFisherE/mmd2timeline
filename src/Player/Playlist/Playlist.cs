@@ -75,9 +75,6 @@ namespace mmd2timeline
                     var fromRepeat = _PlayMode == MMDPlayMode.Repeat;
                     var toRepeat = value == MMDPlayMode.Repeat;
 
-                    LogUtil.Debug($"_FromPlayMode::{_PlayMode}");
-                    LogUtil.Debug($"_ToPlayMode::{value}");
-
                     _PlayMode = value;
 
                     // 如果不是切换到重播模式或从重播模式切换到其他模式
@@ -98,8 +95,6 @@ namespace mmd2timeline
         {
             get
             {
-                LogUtil.Debug($"Playlist::IsNewPlaylist:{this.HasKey("MMDShowPlaylist")}");
-
                 if (this.HasKey("MMDShowPlaylist"))
                 {
                     return this["MMDShowPlaylist"].Value == "v2.0";

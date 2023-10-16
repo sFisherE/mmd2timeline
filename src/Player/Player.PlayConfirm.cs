@@ -62,8 +62,6 @@ namespace mmd2timeline
         /// <param name="confirm"></param>
         void OnMMDSelectedConfirm(MMDEntity entity, CurrentItemChangedHandle sender = null, bool confirm = false)
         {
-            LogUtil.Debug($"Player::OnMMDSelectedConfirm:{entity}");
-
             if (sender != null)
             {
                 if (waitingForConfirm.ContainsKey(sender))

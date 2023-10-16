@@ -264,8 +264,6 @@ namespace mmd2timeline
             {
                 file = SuperController.singleton.NormalizeLoadPath(file);
 
-                LogUtil.Debug($"ImportFile:{file}");
-
                 if (entity != null)
                 {
                     this.tempMMDEntity = entity.Clone();

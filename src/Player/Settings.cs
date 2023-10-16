@@ -20,8 +20,6 @@ namespace mmd2timeline
         /// </summary>
         public virtual void Start()
         {
-            LogUtil.Debug("Settings::START!!!");
-
             try
             {
                 InitScript();
@@ -51,6 +49,11 @@ namespace mmd2timeline
                 }
                 return _WindowCameraAtom;
             }
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
         }
     }
 }

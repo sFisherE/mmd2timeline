@@ -82,7 +82,7 @@ namespace mmd2timeline
 
                 _group.Remove(person);
 
-                //motionHelper.OnDisable();
+                motionHelper.OnDestroy();
 
                 return motionHelper;
             }
