@@ -55,8 +55,8 @@ namespace mmd2timeline
 
             _FocusOnAtomJSON = Utils.SetupToggle(self, Lang.Get("Focus On ..."), _FocusOnAtom, v =>
             {
-                _FocusUI.RefreshView(v);
                 _FocusOnAtom = v;
+                _FocusUI.RefreshView(v);
             }, rightSide);
             _FocusUI.ToggleBool = _FocusOnAtomJSON;
 
@@ -154,6 +154,11 @@ namespace mmd2timeline
         /// </summary>
         bool FocusOn(Vector3 up, string tagetId = null)
         {
+            if (!_FocusOnAtom)
+            {
+                return false;
+            }
+
             if (_FocusAtom == null)
             {
                 _FocusAtom = SuperController.singleton.GetAtomByUid(_FocusAtomJSON.val);
