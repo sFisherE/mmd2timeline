@@ -269,8 +269,14 @@ namespace mmd2timeline
 
             #endregion
 
+            var cameraHelper = CameraHelper.GetInstance();
             // 创建镜头聚焦UI
-            CameraHelper.GetInstance().CreateFocusUI(this, RightSide);
+            cameraHelper.CreateFocusUI(this, RightSide);
+
+            if (containingAtom.type == "Person")
+            {
+                cameraHelper.SetFocusTarget(containingAtom.uid, "neckControl");
+            }
 
             Utils.SetupSpacer(this, 10f, RightSide);
         }

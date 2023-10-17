@@ -516,11 +516,6 @@ namespace mmd2timeline
 
             HideHUDMessage();
 
-            if (containingAtom.type == "Person")
-            {
-                _CameraHelper.SetFocusTarget(containingAtom.uid, "neckControl");
-            }
-
             // 从默认播放列表加载内容
             StartCoroutine(this.Playlist.LoadFromDefalut());
         }
