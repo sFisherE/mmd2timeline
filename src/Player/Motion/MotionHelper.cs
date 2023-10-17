@@ -798,6 +798,11 @@ namespace mmd2timeline
         {
             try
             {
+                if (mmd._motion == null)
+                {
+                    return;
+                }
+
                 SetLookMode();
 
                 // 手指关节游戏对象
