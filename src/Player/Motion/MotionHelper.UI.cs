@@ -369,7 +369,7 @@ namespace mmd2timeline
         /// <param name="v"></param>
         void UpdateMotionValue(string v)
         {
-            if (string.IsNullOrEmpty(v))
+            if (!string.IsNullOrEmpty(v))
             {
                 // 选中动作文件的处理
                 ReloadMotions(1);

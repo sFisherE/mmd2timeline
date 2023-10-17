@@ -145,8 +145,19 @@ namespace mmd2timeline
         /// <param name="atom"></param>
         void CheckAtomAdded(Atom atom)
         {
-            // 实例化MMD人物
-            InitMotionHelper(atom);
+            if (atom.type == "Person")
+            {
+                var index = PersonAtoms.IndexOf(atom);
+                if (index < 0)
+                {
+                    PersonAtoms.Add(atom);
+                }
+                atom.collisionEnabled = false;
+                if (CurrentItem != null)
+                {
+                    InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData());
+                }
+            }
         }
         /// <summary>
         /// 原子被移除的接收方法
@@ -300,10 +311,17 @@ namespace mmd2timeline
             // 创建UI
             CreateUI();
 
-            // 轮询和检查原子
-            foreach (var atom in SuperController.singleton.GetAtoms())
+            try
             {
-                CheckAtomAdded(atom);
+                // 轮询和检查原子
+                foreach (var atom in SuperController.singleton.GetAtoms())
+                {
+                    CheckAtomAdded(atom);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUtil.LogError(ex, "CheckAtomAdded::");
             }
         }
 
@@ -948,22 +966,23 @@ namespace mmd2timeline
             // 加载镜头动作
             LoadCameraSettings(entity.CameraSetting, fileData.MotionPaths, fileData.MotionNames);
 
-            for (var i = 0; i < PersonAtoms.Count; i++)
+            try
             {
-                // 如果没有足够的动作，则为后边的人物设定新的动作数据对象
-                if (entity.Motions.Count <= i)
+                foreach (var atom in PersonAtoms)
                 {
-                    entity.Motions.Add(new PersonMotion());
+                    InitPersonAtomMotionHelper(atom, fileData);
+
+                    // 允许初始动作修正时调用
+                    if (config.EnableInitialMotionAdjustment)
+                    {
+                        SetPersonOff(atom);
+                    }
                 }
-
-                var atom = PersonAtoms[i];
-
-                var motion = entity.Motions[i];
-
-                // 设置人物动作
-                LoadPersonMotion(atom, motion, fileData.MotionPaths, fileData.MotionNames);
             }
-
+            catch (Exception e)
+            {
+                LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
+            }
             // 加载音频设置
             LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
 
@@ -993,6 +1012,34 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 初始化人物原子动作助手
+        /// </summary>
+        /// <param name="atom"></param>
+        /// <param name="fileData"></param>
+        void InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
+        {
+            if (CurrentItem != null)
+            {
+                var index = PersonAtoms.IndexOf(atom);
+
+                // 如果没有足够的动作数据，则为后边的人物设定新的动作数据对象
+                if (CurrentItem.Motions.Count <= index)
+                {
+                    CurrentItem.Motions.Add(new PersonMotion());
+                }
+
+                var motion = CurrentItem.Motions[index];
+
+                // 设置人物动作
+
+                // 实例化MMD人物
+                var motionHelper = InitMotionHelper(atom);
+
+                motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
+            }
+        }
+
+        /// <summary>
         /// 加载音频设置
         /// </summary>
         /// <param name="settings"></param>
@@ -1017,32 +1064,6 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 设置人物动画
-        /// </summary>
-        /// <param name="person"></param>
-        /// <param name="motion"></param>
-        private void LoadPersonMotion(Atom person, PersonMotion motion, List<string> motionList, List<string> motionNameList)
-        {
-            try
-            {
-                // 实例化MMD人物
-                var motionHelper = InitMotionHelper(person);
-
-                motionHelper.InitSettings(motionList, motionNameList, motion);
-
-                // 允许初始动作修正时调用
-                if (config.EnableInitialMotionAdjustment)
-                {
-                    SetPersonOff(person);
-                }
-            }
-            catch (Exception e)
-            {
-                LogUtil.LogError(e);
-            }
-        }
-
-        /// <summary>
         /// 初始化人物动作管理器
         /// </summary>
         /// <param name="atom"></param>
@@ -1054,12 +1075,6 @@ namespace mmd2timeline
             {
                 if (atom?.type == "Person")
                 {
-                    if (!PersonAtoms.Contains(atom))
-                    {
-                        // 将人物原子添加到人物原子列表中
-                        PersonAtoms.Add(atom);
-                    }
-
                     MotionHelper helper;
 
                     if (!MotionHelperGroup.GetInstance().TryGetInitedMotionHelper(atom, out helper))
@@ -1090,9 +1105,14 @@ namespace mmd2timeline
             {
                 if (atom?.type == "Person")
                 {
-                    if (PersonAtoms.Contains(atom))
+                    var index = PersonAtoms.IndexOf(atom);
+
+                    if (index > -1)
                     {
-                        PersonAtoms.Remove(atom);
+                        PersonAtoms.RemoveAt(index);
+
+                        // 移除对应的动作数据
+                        CurrentItem?.Motions.RemoveAt(index);
                     }
 
                     _MotionHelperGroup.RemoveMotionHelper(atom);
@@ -1167,7 +1187,7 @@ namespace mmd2timeline
 
                 yield return null;
 
-                item.ReloadMotions(3,init: true);
+                item.ReloadMotions(3, init: true);
 
                 // 允许初始动作修正时调用
                 if (config.EnableInitialMotionAdjustment)

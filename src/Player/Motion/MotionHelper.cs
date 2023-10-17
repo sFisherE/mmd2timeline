@@ -238,11 +238,6 @@ namespace mmd2timeline
                 SetDelayRange(0f);
             }
 
-            foreach (var file in settings.Files)
-            {
-                LogUtil.Log($"Chooser-{file}");
-            }
-
             SetChoosers(displayChoices, choices, settings?.Files);
 
             InitSettingValues();
