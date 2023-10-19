@@ -211,7 +211,7 @@ namespace mmd2timeline
             #endregion
 
             // 锁定人物位置
-            _MMDUIs.Add(Utils.SetupToggle(this, "Lock Person Position", config.LockPersonPosition, v => config.LockPersonPosition = v, RightSide));
+            _MMDUIs.Add(Utils.SetupToggle(this, Lang.Get("Lock Person Position"), config.LockPersonPosition, v => config.LockPersonPosition = v, RightSide));
 
             //_MMDUIs.Add(CreateUISpacer(LeftSide));
 
@@ -221,11 +221,11 @@ namespace mmd2timeline
                 versionStr +
                 "\n\n<b>" +
                 $"v{this.Version}" +
-                $"</b>\n\n" +
-                Lang.Get("<size=24><b>IMPORTANT!!!</b></size>") +
-                "\n" +
-                Lang.Get("<size=24>The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path.</size>") +
-                "\n" +
+                $"</b>\n\n<size=32><b>" +
+                Lang.Get("IMPORTANT!!!") +
+                "</b></size>\n<size=24><b>" +
+                Lang.Get("The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path.") +
+                "</b></size>\n" +
                 "\n" +
                 "\n" +
                 "<size=18>" +
