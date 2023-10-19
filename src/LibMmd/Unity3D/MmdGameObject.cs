@@ -50,9 +50,19 @@ namespace LibMMD.Unity3D
 
         public MotionPlayer _motionPlayer;
         public float _playTime;
-        private List<List<int>> _partIndexes;
-        private List<Vector3[]> _partMorphVertexCache;
-        private UnityEngine.Material[] _materials;
+        bool _forceDisableIK = false;
+        public bool ForceDisableIK
+        {
+            set
+            {
+                _forceDisableIK = value;
+                if (_poser != null)
+                {
+                    _poser.ForceDisableIK = value;
+                }
+            }
+        }
+
 
         private GameObject _boneRootGameObject;
 
@@ -247,6 +257,7 @@ namespace LibMMD.Unity3D
             Release();
 
             _poser = new Poser(_model);
+            _poser.ForceDisableIK = _forceDisableIK;
 
             Debug.LogFormat("load model finished");
         }

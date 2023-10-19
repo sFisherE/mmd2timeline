@@ -88,6 +88,8 @@ namespace mmd2timeline
         public string Min = "0";
         public string Max = "1";
 
+        public string Atom = null;
+
         [NonSerialized]
         public Dictionary<int, TimelineFrameJson> ValueLookup = new Dictionary<int, TimelineFrameJson>();
 
@@ -100,6 +102,10 @@ namespace mmd2timeline
                 { "Min", Min },
                 { "Max", Max },
             };
+            if (!string.IsNullOrEmpty(Atom))
+            {
+                clipJSON.Add("Atom", Atom);
+            }
             var val = new JSONArray();
             foreach (var frame in Value) val.Add(frame.GetJSONClass());
             clipJSON.Add("Value", val);

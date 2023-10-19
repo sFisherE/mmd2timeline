@@ -10,8 +10,8 @@ namespace LibMMD.Motion
 {
     public class Poser
     {
-
-       public BoneImage[] EnumIKBone()
+        public bool ForceDisableIK = false;
+        public BoneImage[] EnumIKBone()
         {
             List<BoneImage> list = new List<BoneImage>();
             foreach (var boneImage in BoneImages)
@@ -288,6 +288,7 @@ namespace LibMMD.Motion
             UpdateLocalMatrix(image);
 
             if (!image.HasIk) return;
+            if (ForceDisableIK) return;
 
             if (!image.IKEnable)
             {

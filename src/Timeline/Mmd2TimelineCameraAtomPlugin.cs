@@ -73,9 +73,12 @@ namespace mmd2timeline
                     slider.quickButtonsEnabled = false;
 
                 CreateHeader("Step 2:", false, Color.black);
-                btn = CreateButton("Export");
+                btn = CreateButton("Export For WindowCamera");
                 if (btn != null)
-                    btn.button.onClick.AddListener(Sample);
+                    btn.button.onClick.AddListener(SampleForWindowCamera);
+                //btn = CreateButton("Export For Empty");
+                //if (btn != null)
+                //    btn.button.onClick.AddListener(SampleForEmpty);
             }
             catch (Exception e)
             {
@@ -156,10 +159,19 @@ namespace mmd2timeline
         }
         Quaternion quat = new Quaternion(0, 1, 0, 0);
         TimelineJson json;
-        public void Sample()
+
+        void SampleForWindowCamera()
+        {
+            Sample("WindowCamera");
+        }
+        void SampleForEmpty()
+        {
+            Sample("Empty");
+        }
+        public void Sample(string atomType)
         {
             json = new TimelineJson();
-            json.AtomType = "WindowCamera";
+            json.AtomType = atomType;
             json.Clips = new List<TimelineClipJson>();
             TimelineClipJson clipJson = new TimelineClipJson();
             json.Clips.Add(clipJson);
@@ -178,6 +190,8 @@ namespace mmd2timeline
             fovJson.Name = "FOV";
             fovJson.Min = "10";
             fovJson.Max = "100";
+            if (atomType == "Empty")
+                fovJson.Atom = "WindowCamera";
             clipJson.FloatParams.Add(fovJson);
 
             var list = m_MmdCamera._cameraMotion.KeyFrames;
