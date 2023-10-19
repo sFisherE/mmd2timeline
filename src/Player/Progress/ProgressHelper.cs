@@ -133,7 +133,7 @@ namespace mmd2timeline
         /// <returns></returns>
         internal bool CheckEnd(float progress)
         {
-            if (_mmdSetting.Length > 0f)
+            if (_mmdSetting != null && _mmdSetting.Length > 0f)
             {
                 return progress > _mmdSetting.Length;
             }
