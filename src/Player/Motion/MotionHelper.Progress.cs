@@ -149,7 +149,14 @@ namespace mmd2timeline
 
             // 调用MMDCamera的播放进度
             //_MmdCamera.SetPlayPos((double)value/*, config.CameraOnlyKeyFrame*/);
-            _MmdPersonGameObject?.SetMotionPos(value, true, motionScale: motionScaleRate);
+            try
+            {
+                _MmdPersonGameObject?.SetMotionPos(value, true, motionScale: motionScaleRate);
+            }
+            catch (Exception e)
+            {
+                LogUtil.Debug(e);
+            }
         }
     }
 }

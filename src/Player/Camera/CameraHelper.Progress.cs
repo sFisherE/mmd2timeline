@@ -1,4 +1,6 @@
-﻿namespace mmd2timeline
+﻿using System;
+
+namespace mmd2timeline
 {
     internal partial class CameraHelper
     {
@@ -119,8 +121,15 @@
             if (_progressJSON != null)
                 _progressJSON.valNoCallback = progress;
 
-            // 调用MMDCamera的播放进度
-            _MmdCamera.SetPlayPos((double)value);
+            try
+            {
+                // 调用MMDCamera的播放进度
+                _MmdCamera.SetPlayPos((double)value);
+            }
+            catch (Exception e)
+            {
+                LogUtil.Debug(e);
+            }
         }
     }
 }
