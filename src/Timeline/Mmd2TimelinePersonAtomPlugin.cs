@@ -43,6 +43,7 @@ namespace mmd2timeline
         public JSONStorableFloat posY;
         public JSONStorableFloat startTime;
         public JSONStorableFloat endTime;
+        public JSONStorableBool forceDisableIK;
 
         public JSONStorableFloat sampleSpeed;
 
@@ -76,6 +77,7 @@ namespace mmd2timeline
             posY = new JSONStorableFloat("PosY", 0, SetPosY, 0, 1, true, true);
             startTime = new JSONStorableFloat("Start Time", 0, SetStartTime, 0, 10, true, true);
             endTime = new JSONStorableFloat("End Time", 0, SetEndTime, 0, 10, true, true);
+            forceDisableIK = new JSONStorableBool("Force Disable IK", false, ForceDisableIK);
 
             motionScale = new JSONStorableFloat("Motion Scale", 1f, SetMotionScale, 0.1f, 2, true);
             sampleSpeed = new JSONStorableFloat("Sample Speed", 2, SetSampleSpeed, 0.1f, 3);
@@ -138,6 +140,7 @@ namespace mmd2timeline
                 if (slider != null)
                     slider.quickButtonsEnabled = false;
             }
+            CreateToggle(forceDisableIK, true);
 
             CreateHeader("Edit At Any Time:", true, Color.black);
             CreateSlider(posY, true);
@@ -258,6 +261,12 @@ namespace mmd2timeline
         }
         public Dictionary<string, HashSet<int>> fingerKeyFrames;
         public HashSet<int> bodyKeyFrames;
+
+        void ForceDisableIK(bool val)
+        {
+            if (m_MmdPersonGameObject == null) return;
+            m_MmdPersonGameObject.ForceDisableIK = val;
+        }
 
         void SetBone(JSONStorableStringChooser js)
         {

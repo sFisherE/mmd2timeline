@@ -28,7 +28,7 @@ src\LibMmd\Util\MmdReaderUtil2.cs
 src\LibMmd\Util\Tools.cs
 src\Utils\LogUtil.cs
 src\Utils\MacGruber_Utils.cs
-src\Utils\config.Settings.cs
+src\Utils\Config.Settings.cs
 src\Utils\SJISToUnicode.cs
 src\Utils\ToEncoding.cs
 src\Utils\BufferBinaryReader.cs
