@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
-    internal abstract partial class BaseScript
+    internal partial class BaseScript
     {
         /// <summary>
         /// 全宽度UI元素清单
@@ -61,10 +61,9 @@ namespace mmd2timeline.Player
                     }
                 }
             }
-            catch// (Exception ex)
+            catch (Exception ex)
             {
-                // 不清楚什么原因，所有代码执行完了还是会报异常。忽略掉
-                //LogUtil.Debug(ex, "Director::InitFullWidthUI");
+                LogUtil.Debug(ex, "Director::InitFullWidthUI");
             }
         }
 
@@ -154,10 +153,6 @@ namespace mmd2timeline.Player
                 if (componentInParent != null)
                 {
                     this.RemoveSlider(componentInParent);
-                }
-                else
-                {
-                    LogUtil.Debug($"Settings:::RemoveSlider:false:{jsf.name}");
                 }
             }
         }

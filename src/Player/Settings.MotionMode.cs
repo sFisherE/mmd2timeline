@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal partial class Settings : BaseScript
     {
@@ -19,8 +19,6 @@ namespace mmd2timeline.Player
         /// <param name="v"></param>
         void SetValueByMode(int v)
         {
-            LogUtil.Debug($"SetValueByMode::{v}");
-
             if (springSlider == null || damperSlider == null)
             {
                 return;

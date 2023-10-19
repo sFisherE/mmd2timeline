@@ -231,11 +231,51 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\JSONClasses\Config.cs" />
-    <Compile Include="src\JSONClasses\Enums.cs" />
-    <Compile Include="src\JSONClasses\Lang.cs" />
+    <Compile Include="src\Player\Audio\AudioClipHelper.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.Progress.cs" />
+    <Compile Include="src\Player\Audio\AudioPlayHelper.UI.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.Focus.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.Follow.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.Progress.cs" />
+    <Compile Include="src\Player\Camera\CameraHelper.UI.cs" />
+    <Compile Include="src\Player\Camera\NavigationRigSnapshot.cs" />
+    <Compile Include="src\Player\Folder\MMDFolderHelper.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.AdjustBones.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.CloseLowerBones.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.EyeControl.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.HeightFix.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.MakeReady.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.Progress.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.UI.AdjustBones.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.UI.cs" />
+    <Compile Include="src\Player\Motion\MotionHelperGroup.cs" />
+    <Compile Include="src\Player\Player.cs" />
+    <Compile Include="src\Player\Player.HUD.cs" />
+    <Compile Include="src\Player\Player.PlayConfirm.cs" />
+    <Compile Include="src\Player\Player.Playlist.cs" />
+    <Compile Include="src\Player\Player.Tip.cs" />
+    <Compile Include="src\Player\Player.UI.cs" />
+    <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
+    <Compile Include="src\Player\Playlist\Playlist.cs" />
+    <Compile Include="src\Player\Playlist\Playlist.ImportExport.cs" />
+    <Compile Include="src\Player\Progress\ProgressHelper.cs" />
+    <Compile Include="src\Player\Progress\ProgressHelper.UI.cs" />
+    <Compile Include="src\Player\Store\AudioSetting.cs" />
+    <Compile Include="src\Player\Store\CameraSetting.cs" />
+    <Compile Include="src\Player\Store\MMDEntity.cs" />
+    <Compile Include="src\Player\Store\MMDEntity.Favorite.cs" />
+    <Compile Include="src\Player\Store\MMDEntity.Store.cs" />
+    <Compile Include="src\Player\Store\MMDFile.cs" />
+    <Compile Include="src\Player\Store\MMDSetting.cs" />
+    <Compile Include="src\Player\Store\PersonMotion.cs" />
+    <Compile Include="src\Utils\Config.cs" />
+    <Compile Include="src\Utils\Enums.cs" />
+    <Compile Include="src\Utils\Lang.cs" />
     <Compile Include="src\LibMmd\Motion\VmdVisibleIK.cs" />
-    <Compile Include="src\JSONClasses\MSJSONClass.cs" />
+    <Compile Include="src\Utils\MSJSONClass.cs" />
     <Compile Include="src\Player\BaseScript.cs" />
     <Compile Include="src\Player\BaseScript.FullElements.cs" />
     <Compile Include="src\Player\BaseScript.Tip.cs" />
@@ -244,6 +284,7 @@
     <Compile Include="src\Player\Settings.cs" />
     <Compile Include="src\Player\Settings.MotionMode.cs" />
     <Compile Include="src\Player\Settings.UI.cs" />
+    <Compile Include="src\Utils\Config.Globle.cs" />
     <Compile Include="src\Utils\GroupUI.cs" />
     <Compile Include="src\Utils\MacGruber_Utils.cs" />
     <Compile Include="src\Utils\LogUtil.cs" />
@@ -287,7 +328,7 @@
     <Compile Include="src\LibMmd\Util\MatrixExtensions.cs" />
     <Compile Include="src\LibMmd\Util\MmdReaderUtil2.cs" />
     <Compile Include="src\LibMmd\Util\Tools.cs" />
-    <Compile Include="src\Utils\Settings.cs" />
+    <Compile Include="src\Utils\Config.Settings.cs" />
     <Compile Include="src\Utils\SJISToUnicode.cs" />
     <Compile Include="src\Utils\ToEncoding.cs" />
     <Compile Include="src\Utility.cs" />
@@ -296,15 +337,18 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\JSONClasses\readme.md" />
     <None Include="src\Player\Audio\readme.md" />
     <None Include="src\Player\Camera\readme.md" />
+    <None Include="src\Player\Folder\readme.md" />
     <None Include="src\Player\Motion\readme.md" />
     <None Include="src\Player\Playlist\readme.md" />
+    <None Include="src\Player\Progress\readme.md" />
     <None Include="src\Player\readme.md" />
+    <None Include="src\Player\Store\readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) e:\vam\Custom\Scripts\mmd2timeline</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

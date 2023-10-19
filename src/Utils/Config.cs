@@ -246,7 +246,7 @@ namespace mmd2timeline
                 {
                     return _CameraPositionSmoothing.Value;
                 }
-                else return 0.1f;//默认值
+                else return 0.0f;//默认值
             }
             set
             {
@@ -277,7 +277,7 @@ namespace mmd2timeline
                     return (_CameraRotationSmoothing.Value);
                 }
                 else
-                    return 0.1f;
+                    return 0.0f;
             }
             set
             {
@@ -369,26 +369,26 @@ namespace mmd2timeline
             }
         }
 
-        /// <summary>
-        /// 全局动作缩放
-        /// </summary>
-        public float GlobalMotionScale
-        {
-            get
-            {
-                if (this.HasKey("GlobalMotionScale"))
-                    return this["GlobalMotionScale"].AsFloat;
-                else return 1f;
-            }
-            set
-            {
-                if (this.GlobalMotionScale != value)
-                {
-                    this["GlobalMotionScale"].AsFloat = value;
-                    this.Save();
-                }
-            }
-        }
+        ///// <summary>
+        ///// 全局动作缩放
+        ///// </summary>
+        //public float GlobalMotionScale
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("GlobalMotionScale"))
+        //            return this["GlobalMotionScale"].AsFloat;
+        //        else return 1f;
+        //    }
+        //    set
+        //    {
+        //        if (this.GlobalMotionScale != value)
+        //        {
+        //            this["GlobalMotionScale"].AsFloat = value;
+        //            this.Save();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// 全局弹簧百分比
@@ -541,7 +541,7 @@ namespace mmd2timeline
                 }
                 else
                 {
-                    return AutoCorrectHeightMode.WholeBody;
+                    return AutoCorrectHeightMode.None;
                 }
             }
             set
@@ -1114,7 +1114,7 @@ namespace mmd2timeline
                 {
                     return this["EnableInitialMotionAdjustment"].AsBool;
                 }
-                else return true;
+                else return false;
             }
             set
             {
@@ -1137,7 +1137,7 @@ namespace mmd2timeline
                 {
                     return this["EnableKneeingCorrections"].AsBool;
                 }
-                else return true;
+                else return false;
             }
             set
             {

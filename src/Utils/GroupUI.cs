@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MacGruber;
+using System.Collections.Generic;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     internal class GroupUI
     {
@@ -19,10 +20,6 @@ namespace mmd2timeline.Player
         /// </summary>
         public List<GroupUI> ChildGroups = new List<GroupUI>();
 
-        ///// <summary>
-        ///// 显示切换组件
-        ///// </summary>
-        //public UIDynamicToggle VisibleToggle;
         /// <summary>
         /// 显示切换组件对应的JSONStorable对象
         /// </summary>
@@ -40,22 +37,101 @@ namespace mmd2timeline.Player
         }
 
         /// <summary>
+        /// 显示元素
+        /// </summary>
+        /// <param name="show"></param>
+        public void ShowElements(bool show)
+        {
+            _Script?.ShowUIElements(Elements, show);
+        }
+
+        /// <summary>
+        /// 显示其他元素
+        /// </summary>
+        /// <param name="show"></param>
+        public void ShowOtherElements(bool show)
+        {
+            _Script?.ShowUIElements(OtherElements, show);
+        }
+
+        /// <summary>
+        /// 显示或隐藏
+        /// </summary>
+        /// <param name="show"></param>
+        public void Show(bool show)
+        {
+            foreach (var ui in ChildGroups)
+            {
+                ui.Show(show);
+            }
+
+            _Script?.ShowUIElement(this.ToggleBool, show);
+
+            this.RefreshView();
+
+            // 如果显示自己刷新视图
+            if (show)
+            {
+                ShowOtherElements(true);
+            }
+            else // 否则隐藏所有元素
+            {
+                ShowElements(false);
+                ShowOtherElements(false);
+            }
+        }
+
+        /// <summary>
+        /// 清理所有子元素
+        /// </summary>
+        public void Clear()
+        {
+            if (_Script == null)
+                return;
+
+            var uiList = new List<object>() { this.ToggleBool };
+
+            if (this.ChildGroups.Count > 0)
+            {
+                // 逐一移除子组中的元素
+                foreach (var childGroup in this.ChildGroups)
+                {
+                    childGroup.Clear();
+                }
+            }
+
+            // 移除所有设定UI
+            Utils.RemoveUIElements(_Script, this.Elements);
+
+            // 移除其他UI
+            Utils.RemoveUIElements(_Script, this.OtherElements);
+
+            // 移除Toggle
+            Utils.RemoveUIElements(_Script, uiList);
+
+            this.ToggleBool = null;
+            this.ChildGroups.Clear();
+        }
+
+        /// <summary>
         /// 更新UI
         /// </summary>
         /// <param name="on"></param>
         public void RefreshView(bool? on = null)
         {
             //refresh view
-            var isOn = ToggleBool?.val;
+            var isOn = true;
 
             if (on.HasValue)
             {
                 isOn = on.Value;
             }
+            else if (ToggleBool != null)
+            {
+                isOn = ToggleBool.val;
+            }
 
-            var open = isOn ?? false;
-
-            _Script?.ShowUIElements(Elements, open);
+            var open = isOn;
 
             // 更新子UI组
             foreach (var child in ChildGroups)
@@ -69,6 +145,8 @@ namespace mmd2timeline.Player
                     child.RefreshView(false);
                 }
             }
+
+            _Script?.ShowUIElements(Elements, open);
         }
     }
 }

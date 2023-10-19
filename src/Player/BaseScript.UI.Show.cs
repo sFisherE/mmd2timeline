@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
-    internal abstract partial class BaseScript
+    // 此部分代码实现显示隐藏UI元素的便捷方法
+    internal partial class BaseScript
     {
         public void ShowSlider(JSONStorableFloat jsf, bool show = true)
         {
@@ -14,10 +15,6 @@ namespace mmd2timeline.Player
                 if (componentInParent != null)
                 {
                     this.ShowSlider(componentInParent, show);
-                }
-                else
-                {
-                    LogUtil.Debug($"Settings:::ShowSlider:false:{jsf.name}");
                 }
             }
         }

@@ -2,18 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
-    internal abstract partial class BaseScript
+    internal partial class BaseScript
     {
-        // 左侧
+        /// <summary>
+        /// 左侧
+        /// </summary>
         protected const bool LeftSide = false;
-        // 右侧
+        /// <summary>
+        /// 右侧
+        /// </summary>
         protected const bool RightSide = true;
 
-        protected readonly string noneString = "None";
+        /// <summary>
+        /// 空字符串选项
+        /// </summary>
+        internal const string noneString = "None";
 
-        protected readonly List<string> noneStrings = new List<string>(new string[1] { "None" });
+        /// <summary>
+        /// 空字符串列表
+        /// </summary>
+        internal readonly List<string> noneStrings = new List<string> { noneString };
 
         /// <summary>
         /// 创建标题UI
@@ -52,32 +62,39 @@ namespace mmd2timeline.Player
             return toggleToJSONStorableBool.Where(t => t.Value == json).Select(t => t.Key).FirstOrDefault();
         }
 
-        ///// <summary>
-        ///// 创建带语言适配的 StringChooser for Enum
-        ///// </summary>
-        ///// <typeparam name="TEnum"></typeparam>
-        ///// <param name="self"></param>
-        ///// <param name="label"></param>
-        ///// <param name="defaultValue"></param>
-        ///// <param name="rightSide"></param>
-        ///// <param name="callback"></param>
-        ///// <returns></returns>
-        //public JSONStorableStringChooser SetupEnumChooser<TEnum>(string label, TEnum defaultValue, bool rightSide, EnumSetCallback<TEnum> callback)
-        //    where TEnum : struct, IComparable, IConvertible, IFormattable
-        //{
-        //    label = Lang.Get(label);
+        /// <summary>
+        /// 创建字符串选择器
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="entries"></param>
+        /// <param name="popupPanelHeight"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
+        internal JSONStorableStringChooser SetupStringChooser(string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        {
+            string defaultEntry = entries.Count > 0 ? entries[0] : "";
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(label, entries, defaultEntry, Lang.Get(label));
+            this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
+            this.RegisterStringChooser(storable);
+            return storable;
+        }
 
-        //    List<string> names = Enum.GetNames(typeof(TEnum)).Select(e => Lang.Get(e)).ToList();
-        //    JSONStorableStringChooser storable = new JSONStorableStringChooser(label, names, Lang.Get(defaultValue.ToString()), label);
-        //    storable.setCallbackFunction += (string name) =>
-        //    {
-        //        TEnum v = (TEnum)Enum.Parse(typeof(TEnum), Lang.From(name));
-        //        callback(v);
-        //    };
-        //    this.CreateScrollablePopup(storable, rightSide);
-        //    this.RegisterStringChooser(storable);
-        //    return storable;
-        //}
+        /// <summary>
+        /// 创建字符串选择器（不进行自动语言处理）
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="entries"></param>
+        /// <param name="popupPanelHeight"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
+        internal JSONStorableStringChooser SetupStringChooserNoLang(string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        {
+            string defaultEntry = entries.Count > 0 ? entries[0] : "";
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(label, entries, defaultEntry, label);
+            this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
+            this.RegisterStringChooser(storable);
+            return storable;
+        }
 
         /// <summary>
         /// 静态枚举类回调函数

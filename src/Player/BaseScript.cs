@@ -3,17 +3,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace mmd2timeline.Player
+namespace mmd2timeline
 {
     /// <summary>
     /// 基础脚本类
     /// </summary>
     /// <remarks>主要提供可继承的通用的UI处理方法</remarks>
-    internal abstract partial class BaseScript : MVRScript
+    internal partial class BaseScript : MVRScript
     {
-        public const string PLUGIN_NAME = "Player";
+        public const string PLUGIN_NAME = "MMD2TimelinePlayer";
 
-        public const string VERSION = "2.1.6";
+        public const string VERSION = "1.0.0a";
 
         /// <summary>
         /// 获取插件的版本号
@@ -56,28 +56,6 @@ namespace mmd2timeline.Player
         /// </summary>
         protected static readonly Config config = Config.GetInstance();
 
-        //Player _Player;
-
-        ///// <summary>
-        ///// 获取Player
-        ///// </summary>
-        //protected Player Player
-        //{
-        //    get
-        //    {
-        //        if (_Player == null)
-        //        {
-        //            _Player = MacGruber.Utils.FindWithinSamePlugin<Player>(this);
-
-        //            if (_Player == null)
-        //            {
-        //                LogUtil.Debug("Plugin 'Player' not found.");
-        //            }
-        //        }
-        //        return _Player;
-        //    }
-        //}
-
         /// <summary>
         /// 忽略这个基类
         /// </summary>
@@ -87,28 +65,17 @@ namespace mmd2timeline.Player
             return true;
         }
 
-        public override void InitUI()
+        /// <summary>
+        /// 初始化脚本
+        /// </summary>
+        protected void InitScript()
         {
-            //if (LibMMD.Util.Settings.varPmxPath == null && this.name.IndexOf('_') > 0)
-            //{
-            //    LibMMD.Util.Settings.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
-            //    LogUtil.Debug("pmx path:" + LibMMD.Util.Settings.varPmxPath);
-            //}
+            Lang.Init(PluginPath);
 
-            base.InitUI();
+            Utils.OnInitUI(this, CreateAllUIElement);
+
             InitFullWidthUI();
         }
-
-        ///// <summary>
-        ///// 在后台运行
-        ///// </summary>
-        ///// <param name="action"></param>
-        //protected void RunInBackground(ThreadStart action)
-        //{
-        //    Thread loadThread = new Thread(action);
-        //    loadThread.IsBackground = true;
-        //    loadThread.Start();
-        //}
 
         /// <summary>
         /// 等待n秒后执行方法
