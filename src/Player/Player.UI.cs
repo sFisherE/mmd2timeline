@@ -210,6 +210,9 @@ namespace mmd2timeline
             _PlayUIs.Add(_PlaySpeedJSON);
             #endregion
 
+            // 锁定人物位置
+            _MMDUIs.Add(Utils.SetupToggle(this, "Lock Person Position", config.LockPersonPosition, v => config.LockPersonPosition = v, RightSide));
+
             //_MMDUIs.Add(CreateUISpacer(LeftSide));
 
             #region 版本信息

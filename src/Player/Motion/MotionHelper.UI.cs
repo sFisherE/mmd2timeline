@@ -207,9 +207,6 @@ namespace mmd2timeline
             _MotionSettingsUI.Elements.Add(_EnableFaceJSON);
             #region 位置设置UI
 
-            // 锁定人物位置
-            _MotionSettingsUI.Elements.Add(Utils.SetupToggle(self, "Lock Person Position", config.LockPersonPosition, v => config.LockPersonPosition = v, rightSide));
-
             // 位置
             _PositionX = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position X")}", 0f, -10f, 10f, v =>
             {
