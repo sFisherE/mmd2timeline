@@ -859,7 +859,7 @@ namespace mmd2timeline
         /// </summary>
         public void StopAndStartOver()
         {
-            _AudioPlayHelper.Stop(5);
+            StopPlaying();
 
             // 重置进度到开头
             _ProgressHelper.SetProgress(0f, true);
