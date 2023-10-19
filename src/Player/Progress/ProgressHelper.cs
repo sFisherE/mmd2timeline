@@ -340,9 +340,9 @@ namespace mmd2timeline
                     //// 调整精度
                     //progress = (float)Math.Ceiling(progress * 10000f) / 10000f;
 
-                    // 限制最大帧数，刷新太快可能造成镜头抖动
-                    if (Mathf.Abs(_progress - progress) < (1f / 120f))
-                        return;
+                    //// 限制最大帧数，刷新太快可能造成镜头抖动
+                    //if (Mathf.Abs(_progress - progress) < (1f / 120f))
+                    //    return;
 
                     // 更新进度变量
                     _progress = progress;
