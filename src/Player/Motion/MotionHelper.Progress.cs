@@ -12,7 +12,7 @@ namespace mmd2timeline
         /// 动作加载完成的回调委托
         /// </summary>
         /// <param name="length">返回动作长度</param>
-        public delegate void MotionLoadedCallback(float length);
+        public delegate void MotionLoadedCallback(MotionHelper sender, float length);
 
         /// <summary>
         /// 动作加载完成的事件

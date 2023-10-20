@@ -362,7 +362,7 @@ namespace mmd2timeline
 
                 MaxTime = _MmdPersonGameObject.MotionLength;
 
-                OnMotionLoaded?.Invoke(MaxTime);
+                OnMotionLoaded?.Invoke(this, MaxTime);
             }
             catch (Exception ex)
             {
@@ -415,8 +415,8 @@ namespace mmd2timeline
                 //}
                 //else
                 //{
-                    // 更新位置
-                    UpdatePositionAndRotation();
+                // 更新位置
+                UpdatePositionAndRotation();
                 //}
 
                 SetPersonAllJoints();
