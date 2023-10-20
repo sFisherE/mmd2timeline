@@ -498,7 +498,14 @@ namespace mmd2timeline
 
             isEditing = false;
 
-            this.ShowPlayUI();
+            if (this.Playlist.MMDCount > 0)
+            {
+                this.ShowPlayUI();
+            }
+            else
+            {
+                ClearPlayList();
+            }
             _MMDFolderHelper.Clear();
         }
         #endregion

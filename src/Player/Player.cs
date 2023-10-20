@@ -442,17 +442,10 @@ namespace mmd2timeline
         /// <param name="item"></param>
         internal IEnumerator SaveSettings(MMDEntity item)
         {
-            yield return null;
-
             if (item != null)
             {
                 // 克隆一下
                 item = item.Clone();
-
-                if (isEditing)
-                {
-                    OutEditMode();
-                }
 
                 // 更新动作设定数据
                 _MotionHelperGroup.UpdateValuesToSettings();
@@ -463,8 +456,13 @@ namespace mmd2timeline
 
                 yield return null;
 
+                if (isEditing)
+                {
+                    OutEditMode();
+                }
                 //LoadMMD(item);
             }
+            yield break;
         }
 
         /// <summary>
