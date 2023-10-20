@@ -202,7 +202,7 @@ namespace mmd2timeline
             if (playing)
             {
                 // 隐藏主HUD
-                //SuperController.singleton.HideMainHUD();
+                SuperController.singleton.HideMainHUD();
 
                 _AudioPlayHelper.SetProgress(progress, true);
             }
@@ -736,7 +736,7 @@ namespace mmd2timeline
             }
             catch (Exception ex)
             {
-                LogUtil.LogError(ex);
+                LogUtil.Debug(ex);
             }
         }
 
@@ -859,7 +859,7 @@ namespace mmd2timeline
         /// </summary>
         public void StopAndStartOver()
         {
-            _AudioPlayHelper.Stop(5);
+            StopPlaying();
 
             // 重置进度到开头
             _ProgressHelper.SetProgress(0f, true);

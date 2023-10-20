@@ -133,7 +133,7 @@ namespace mmd2timeline
         /// <returns></returns>
         internal bool CheckEnd(float progress)
         {
-            if (_mmdSetting!=null && _mmdSetting.Length > 0f)
+            if (_mmdSetting != null && _mmdSetting.Length > 0f)
             {
                 return progress > _mmdSetting.Length;
             }
@@ -337,13 +337,15 @@ namespace mmd2timeline
                 }
                 else
                 {
-                    //// 调整精度
-                    //progress = (float)Math.Ceiling(progress * 10000f) / 10000f;
-
-                    // 限制最大帧数，刷新太快可能造成镜头抖动
-                    if (Mathf.Abs(_progress - progress) < (1f / 120f))
-                        return;
-
+                    // 强制更新时不进行精度调整和帧数限制
+                    if (!hardUpdate)
+                    {
+                        //// 调整精度
+                        //progress = (float)Math.Ceiling(progress * 10000f) / 10000f;
+                        // 限制最大帧数，刷新太快可能造成镜头抖动
+                        if (Mathf.Abs(_progress - progress) < (1f / 120f))
+                            return;
+                    }
                     // 更新进度变量
                     _progress = progress;
 

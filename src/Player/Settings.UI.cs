@@ -38,7 +38,7 @@ namespace mmd2timeline
         {
             InitGeneralSettingUI();
             InitPhysicsMeshUI();
-            InitAutoCorrectUI();
+            //InitAutoCorrectUI();
             InitCameraSettingUI();
             InitShortcutKeyUI();
             InitLanguageUI();
@@ -63,18 +63,18 @@ namespace mmd2timeline
         /// </summary>
         void InitShortcutKeyUI()
         {
-            CreateTitleUI("Shortcut Keys", RightSide);
+            CreateTitleUI("Shortcut Keys", LeftSide);
 
-            SetupToggle(config.EnableSpacePlay, "Enable Space to Toggle Play/Pause", dft.EnableSpacePlay, RightSide);
-            SetupToggle(config.EnableRightArrow, "Enable Right Arrow to Forward 1s", dft.EnableRightArrow, RightSide);
-            SetupToggle(config.EnableLeftArrow, "Enable Left Arrow to Back 1s", dft.EnableLeftArrow, RightSide);
-            SetupToggle(config.EnableUpArrow, "Enable Up Arrow to Play Previous", dft.EnableUpArrow, RightSide);
-            SetupToggle(config.EnableDownArrow, "Enable Down Arrow to Play Next", dft.EnableDownArrow, RightSide);
+            SetupToggle(config.EnableSpacePlay, "Enable Space to Toggle Play/Pause", dft.EnableSpacePlay, LeftSide);
+            SetupToggle(config.EnableRightArrow, "Enable Right Arrow to Forward 1s", dft.EnableRightArrow, LeftSide);
+            SetupToggle(config.EnableLeftArrow, "Enable Left Arrow to Back 1s", dft.EnableLeftArrow, LeftSide);
+            SetupToggle(config.EnableUpArrow, "Enable Up Arrow to Play Previous", dft.EnableUpArrow, LeftSide);
+            SetupToggle(config.EnableDownArrow, "Enable Down Arrow to Play Next", dft.EnableDownArrow, LeftSide);
 
-            Utils.SetupInfoOneLine(this, Lang.Get("U - Toggle UI Hidden/Visible"), RightSide);
-            Utils.SetupInfoOneLine(this, Lang.Get("M - Toggle WindowCamera View"), RightSide);
+            Utils.SetupInfoOneLine(this, Lang.Get("U - Toggle UI Hidden/Visible"), LeftSide);
+            Utils.SetupInfoOneLine(this, Lang.Get("M - Toggle WindowCamera View"), LeftSide);
 
-            Utils.SetupSpacer(this, 10f, RightSide);
+            Utils.SetupSpacer(this, 10f, LeftSide);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace mmd2timeline
                 Lang.GenerateProfile();
             }, RightSide);
 
-            var textInfo = Utils.SetupInfoTextNoScroll(this, Lang.Get("If you need to set your own language, press the \"Generate Language Profile\" button, it will generate the Saves\\PluginData\\mmd2timeline\\lang.json file, you can modify the content in it to get your own language profiles."), 240, RightSide);
+            var textInfo = Utils.SetupInfoTextNoScroll(this, Lang.Get("If you need to set your own language, press the \"Generate Language Profile\" button, it will generate the Saves\\PluginData\\mmd2timeline\\lang.json file, you can modify the content in it to get your own language profiles."), 180, RightSide);
             textInfo.text.alignment = TextAnchor.MiddleCenter;
 
             Utils.SetupSpacer(this, 10f, RightSide);
@@ -113,9 +113,9 @@ namespace mmd2timeline
                 AudioPlayHelper.GetInstance().SetVolume(config.Volume);
             }, LeftSide, "F4");
 
-            SetupToggle(config.ResetPhysicalWhenLoadMotion, "Reset Person Physical When Motion Reset", dft.ResetPhysicalWhenLoadMotion, v => config.ResetPhysicalWhenLoadMotion = v, LeftSide);
+            //SetupToggle(config.ResetPhysicalWhenLoadMotion, "Reset Person Physical When Motion Reset", dft.ResetPhysicalWhenLoadMotion, v => config.ResetPhysicalWhenLoadMotion = v, LeftSide);
 
-            SetupToggle(config.LockPersonPosition, "Lock Person Position", dft.LockPersonPosition, v => config.LockPersonPosition = v, LeftSide);
+            //SetupToggle(config.LockPersonPosition, "Lock Person Position", dft.LockPersonPosition, v => config.LockPersonPosition = v, LeftSide);
 
             var motionModeChooser = SetupStaticEnumsChooser<MotionMode>("Motion Mode", MotionMode.Names, MotionMode.GetName(MotionMode.Normal), LeftSide, v => { SetValueByMode(MotionMode.GetValue(v)); });
 
@@ -228,7 +228,7 @@ namespace mmd2timeline
                 config.CameraFOVEnabled = v;
             }, RightSide);
 
-            SetupToggle(config.AutoGazeToWindowCamera, "Auto Gaze to WindowCamera", dft.AutoGazeToWindowCamera, v => config.AutoGazeToWindowCamera = v, RightSide);
+            //SetupToggle(config.AutoGazeToWindowCamera, "Auto Gaze to WindowCamera", dft.AutoGazeToWindowCamera, v => config.AutoGazeToWindowCamera = v, RightSide);
 
             SetupStaticEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control Mode", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
             {
@@ -241,7 +241,7 @@ namespace mmd2timeline
 
             _CameraControlUI.Add(SetupSliderFloat(config.CameraRotationSmoothing, "Camera Rotation Smoothing", dft.CameraRotationSmoothing, 0f, 1f, (v) => config.CameraRotationSmoothing = v, RightSide, "F4"));
 
-            _CameraControlUI.Add(SetupToggle(config.DeactiveCameraWhenMainHUDOpened, "Deactive when MainHUD Opened", dft.DeactiveCameraWhenMainHUDOpened, (v) => config.DeactiveCameraWhenMainHUDOpened = v, RightSide));
+            //_CameraControlUI.Add(SetupToggle(config.DeactiveCameraWhenMainHUDOpened, "Deactive when MainHUD Opened", dft.DeactiveCameraWhenMainHUDOpened, (v) => config.DeactiveCameraWhenMainHUDOpened = v, RightSide));
 
             #region 窗口镜头同步
 

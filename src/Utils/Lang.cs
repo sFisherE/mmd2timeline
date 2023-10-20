@@ -287,8 +287,10 @@ namespace mmd2timeline
                 = "<color=#000><size=24>点击上面的按钮，准备开始表演！</size></color>\n\n<b>加载播放列表</b> - 从保存的文件中导入播放列表设置。\n\n<b>从文件夹载入</b> - 将多个 MMD 载入播放列表。请选择存储 MMD 文件的上层目录。 \n\n<b>加载文件夹</b> - 将 MMD 文件夹载入临时存储器，您可以测试或调整其播放设置，设置好后可以将其添加到播放列表中。\n\n<b>加载文件</b> - 加载一个文件到当前 MMD。\n\n<b>加载收藏</b> - 将您收藏的 MMD 载入到当前播放列表。\n\n<b>加载所有</b> - 将所有 MMD 载入当前播放列表。";
             this["Show Camera Settings"] = "显示镜头设置";
             this["Play Speed"] = "播放速度";
-            this["\n\nhttps://space.bilibili.com/1016760606\n\n<b>Follow the page get latest versions.</b>\n\n<size=24><b>IMPORTANT!!!</b></size>\n<size=24>The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path.</size>\n"]
-                = "\n\nhttps://space.bilibili.com/1016760606\n\n<b>关注以上页面获取最新版本</b>\n\n<size=24><b>重要！！！</b></size>\n<size=24>MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。</size>\n";
+            //this["\n\nhttps://space.bilibili.com/1016760606\n\n<b>Follow the page get latest versions.</b>\n\n<size=24><b>IMPORTANT!!!</b></size>\n<size=24>The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path.</size>\n"]
+            //    = "\n\nhttps://space.bilibili.com/1016760606\n\n<b>关注以上页面获取最新版本</b>\n\n<size=24><b>重要！！！</b></size>\n<size=24>MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。</size>\n";
+            this["IMPORTANT!!!"] = "注意";
+            this["The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path."] = "MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。";
             this["Show Debug Info"] = "显示调试信息";
             this["Motion Scale"] = "动作缩放";
             this["Sample Speed"] = "采样速度";
