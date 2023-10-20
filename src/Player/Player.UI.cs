@@ -277,6 +277,12 @@ namespace mmd2timeline
             _ShowDebugInfoJSON = new JSONStorableBool(Lang.Get("Show Debug Info"), false);
             _ShowDebugInfoJSON.setCallbackFunction = v =>
             {
+                // 隐藏HUD信息
+                if (config.showDebugInfo && !v)
+                {
+                    this.HideHUDMessage();
+                }
+
                 config.showDebugInfo = v;
                 _DebugUIs.RefreshView(v);
             };

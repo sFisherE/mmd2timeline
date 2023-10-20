@@ -415,6 +415,30 @@ namespace mmd2timeline
             this["U - Toggle UI Hidden/Visible"] = "U键 - 切换UI显示/隐藏";
             this["M - Toggle WindowCamera View"] = "M键 - 切换窗口相机视图";
             this["Shortcut Keys"] = "快捷键";
+            this["Max Length"] = "播放时长";
+            this["Audio Delay"] = "音频延迟";
+            this["Motion Delay"] = "动作延迟";
+            this["FOV Enabled"] = "开启FOV";
+            this["Heel Height Fixing"] = "高跟身体高度修正";
+            this["Motion Correction Setting"] = "动作修正设置";
+            this["Enable Initial Motion Adjustment"] = "启用初始动作调整";
+            this["Enable Kneeing Corrections"] = "启用跪姿矫正";
+            this["Height Correction Mode"] = "高度修正模式";
+            this["Bone Rotation Adjust"] = "骨骼旋转调节";
+            this["Shoulder"] = "肩";
+            this["Arm"] = "臂";
+            this["Elbow"] = "肘";
+            this["Hand"] = "手";
+            this["Thigh"] = "胯";
+            this["Knee"] = "膝";
+            this["Foot"] = "足";
+            this["Toe"] = "趾";
+            this["Adjust Bone Rotation X"] = "调节骨骼旋转 X";
+            this["Adjust Bone Rotation Y"] = "调节骨骼旋转 Y";
+            this["Adjust Bone Rotation Z"] = "调节骨骼旋转 Z";
+            this["Clear Bone Rotation Adjust"] = "清除骨骼旋转调节";
+            this["Camera Control Mode"] = "镜头\n控制模式";
+            this["Original"] = "原始";
         }
     }
 }

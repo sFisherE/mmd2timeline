@@ -184,14 +184,14 @@ namespace mmd2timeline
             _MotionSettingsUI.ToggleBool = toggleJSON;
 
             // 动作播放进度
-            _ProgressJSON = Utils.SetupSliderFloat(self, $"Progress", 0f, 0f, 0f, v =>
+            _ProgressJSON = Utils.SetupSliderFloat(self, Lang.Get("Progress"), 0f, 0f, 0f, v =>
             {
                 // TODO 更新动作
                 //_MmdPersonGameObject?.SetMotionPos(v, true, motionScale: motionScaleRate);
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_ProgressJSON);
 
-            _TimeDelayJSON = Utils.SetupSliderFloat(self, $"Motion {Lang.Get("Delay")}", 0f, 0f, 0f, v =>
+            _TimeDelayJSON = Utils.SetupSliderFloat(self, Lang.Get("Motion Delay"), 0f, 0f, 0f, v =>
             {
                 // 设置时间延迟
                 SetTimeDelay(v);
