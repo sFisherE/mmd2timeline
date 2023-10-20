@@ -217,39 +217,45 @@ namespace mmd2timeline
 
             #region 版本信息
             var versionStr = $"<color=#000><size=35><b>{PLUGIN_NAME}</b></size></color>";
-            var pluginInfo =
+            var pluginInfo = "\n" +
                 versionStr +
                 "\n\n<b>" +
                 $"v{this.Version}" +
-                $"</b>\n\n<size=32><b>" +
+                $"</b>" +
+                $"\n" +
+                $"\n<size=32><b>" +
                 Lang.Get("IMPORTANT!!!") +
                 "</b></size>\n<size=24><b>" +
                 Lang.Get("The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path.") +
                 "</b></size>\n" +
                 "\n" +
                 "\n" +
-                "<size=18>" +
-                Lang.Get("Technical References Catalog:") +
-                "\n" +
-                "https://github.com/x3bits/libmmd-for-unity" +
-                "\n" +
-                Lang.Get("mmd2timeline has been improved based on Libmmd-for-Unity.") +
-                "\n" +
-                "\n" +
-                "https://hub.virtamate.com/resources/macgruber-essentials.160/" +
-                "\n" +
-                Lang.Get("Some of UI processing uses MacGruber_Utils from MacGruber Essentials, and we've made a few feature tweaks and added some functionality. " +
-                "The Capturer module, which we haven't publicly released yet, uses the SuperShot module from that plugin, and we modified its operation rules " +
-                "and added memory release handling to meet the needs of frame-by-frame recording.That Plugin available for free under \"CC BY-SA\" license.") +
-                "\n" +
-                "\n" +
-                "https://github.com/acidbubbles/vam-passenger" +
-                "\n" +
-                Lang.Get("The follow-the-camera feature is learned from Passenger, Passenger complies with the MIT license.") +
-                "\n" +
-                "\n" +
-                Lang.Get("This is a free VAM plugin. \nSource code is licensed under the AGPL 3.0 license, except for the code referenced above, which is licensed under the original license. \nDo not use it for unauthorized commercial use or in closed source projects.") +
-                "</size>";
+                "<size=24>" +
+                //Lang.Get("Technical References Catalog:") +
+                //"\n" +
+                //"https://github.com/x3bits/libmmd-for-unity" +
+                //"\n" +
+                //Lang.Get("mmd2timeline has been improved based on Libmmd-for-Unity.") +
+                //"\n" +
+                //"\n" +
+                //"https://hub.virtamate.com/resources/macgruber-essentials.160/" +
+                //"\n" +
+                //Lang.Get("Some of UI processing uses MacGruber_Utils from MacGruber Essentials, and we've made a few feature tweaks and added some functionality. " +
+                //"The Capturer module, which we haven't publicly released yet, uses the SuperShot module from that plugin, and we modified its operation rules " +
+                //"and added memory release handling to meet the needs of frame-by-frame recording.That Plugin available for free under \"CC BY-SA\" license.") +
+                //"\n" +
+                //"\n" +
+                //"https://github.com/acidbubbles/vam-passenger" +
+                //"\n" +
+                //Lang.Get("The follow-the-camera feature is learned from Passenger, Passenger complies with the MIT license.") +
+                //"\n" +
+                //"\n" +
+                Lang.Get("This is a free open source VAM plugin. \nThe Source Code is licensed under the GPL-3.0 license.") +
+                 "\n" +
+                 "\n" +
+                 Lang.Get("<b>Follow the address below to get the latest code or progress information.</b>\nhttps://github.com/sFisherE/mmd2timeline") +
+                "</size>" +
+                "\n";
             var pluginInfoText = Utils.SetupInfoText(this, pluginInfo, 286f - 35f, RightSide);
 
             _PluginInfo = pluginInfoText.dynamicText;
@@ -361,7 +367,7 @@ namespace mmd2timeline
                 _LoadTips.gameObject.SetActive(false);
                 ShowDebugUIs(true);
 
-                _PluginInfo.height = 286f - 35f + 65f;
+                _PluginInfo.height = 286f + 30f + 65f;
             }
             catch (Exception ex)
             {
@@ -391,7 +397,7 @@ namespace mmd2timeline
 
                 _LoadTips.gameObject.SetActive(false);
                 ShowDebugUIs(true);
-                _PluginInfo.height = 745f - 35f + 70f;
+                _PluginInfo.height = 745f + 30f + 70f;
             }
             catch (Exception ex)
             {

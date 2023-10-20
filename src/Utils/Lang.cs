@@ -291,6 +291,8 @@ namespace mmd2timeline
             //    = "\n\nhttps://space.bilibili.com/1016760606\n\n<b>关注以上页面获取最新版本</b>\n\n<size=24><b>重要！！！</b></size>\n<size=24>MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。</size>\n";
             this["IMPORTANT!!!"] = "注意";
             this["The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path."] = "MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。";
+            this["This is a free open source VAM plugin. \nThe Source Code is licensed under the GPL-3.0 license."] = "这是一款免费开源的 VAM 插件\n源代码采用 GPL-3.0 许可";
+            this["<b>Follow the address below to get the latest code or progress information.</b>\nhttps://github.com/sFisherE/mmd2timeline"] = "<b>关注以下地址获取最新代码或进展信息</b>\nhttps://github.com/sFisherE/mmd2timeline\nhttps://space.bilibili.com/1016760606";
             this["Show Debug Info"] = "显示调试信息";
             this["Motion Scale"] = "动作缩放";
             this["Sample Speed"] = "采样速度";
