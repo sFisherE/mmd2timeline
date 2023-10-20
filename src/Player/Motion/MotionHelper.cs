@@ -403,21 +403,21 @@ namespace mmd2timeline
                 this._PersonAtom.tempFreezePhysics = false;
                 this._ChoosePerson = null;
 
-                if (!config.LockPersonPosition && UICreated)
-                {
-                    this._PositionX.SetValToDefault();
-                    this._PositionY.SetValToDefault();
-                    this._PositionZ.SetValToDefault();
+                //if (!config.LockPersonPosition && UICreated)
+                //{
+                //    this._PositionX.SetValToDefault();
+                //    this._PositionY.SetValToDefault();
+                //    this._PositionZ.SetValToDefault();
 
-                    this._RotationX.SetValToDefault();
-                    this._RotationY.SetValToDefault();
-                    this._RotationZ.SetValToDefault();
-                }
-                else
-                {
+                //    this._RotationX.SetValToDefault();
+                //    this._RotationY.SetValToDefault();
+                //    this._RotationZ.SetValToDefault();
+                //}
+                //else
+                //{
                     // 更新位置
                     UpdatePositionAndRotation();
-                }
+                //}
 
                 SetPersonAllJoints();
 

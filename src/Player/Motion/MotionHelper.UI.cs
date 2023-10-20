@@ -211,7 +211,7 @@ namespace mmd2timeline
             _PositionX = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position X")}", 0f, -10f, 10f, v =>
             {
                 // 位置调整的处理
-                _MotionSetting.PositionX = v;
+                //_MotionSetting.PositionX = v;
                 UpdatePositionAndRotation();
             }, rightSide, "F4");
             _MotionSettingsUI.Elements.Add(_PositionX);
@@ -219,7 +219,7 @@ namespace mmd2timeline
             _PositionY = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Y")}", 0f, -10f, 10f, v =>
             {
                 // 位置调整的处理
-                _MotionSetting.PositionY = v;
+                //_MotionSetting.PositionY = v;
                 UpdatePositionAndRotation();
             }, rightSide, "F4");
             _MotionSettingsUI.Elements.Add(_PositionY);
@@ -227,7 +227,7 @@ namespace mmd2timeline
             _PositionZ = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Z")}", 0f, -10f, 10f, v =>
             {
                 // 位置调整的处理
-                _MotionSetting.PositionZ = v;
+                //_MotionSetting.PositionZ = v;
                 UpdatePositionAndRotation();
             }, rightSide, "F4");
             _MotionSettingsUI.Elements.Add(_PositionZ);
@@ -236,7 +236,7 @@ namespace mmd2timeline
             _RotationX = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation X")}", 0f, -180f, 180f, v =>
             {
                 // 角度调整的处理
-                _MotionSetting.RotationX = v;
+                //_MotionSetting.RotationX = v;
                 UpdatePositionAndRotation();
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_RotationX);
@@ -244,7 +244,7 @@ namespace mmd2timeline
             _RotationY = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Y")}", 0f, -180f, 180f, v =>
             {
                 // 角度调整的处理
-                _MotionSetting.RotationY = v;
+                //_MotionSetting.RotationY = v;
                 UpdatePositionAndRotation();
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_RotationY);
@@ -252,7 +252,7 @@ namespace mmd2timeline
             _RotationZ = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Z")}", 0f, -180f, 180f, v =>
             {
                 // 角度调整的处理
-                _MotionSetting.RotationZ = v;
+                //_MotionSetting.RotationZ = v;
                 UpdatePositionAndRotation();
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_RotationZ);
@@ -453,16 +453,16 @@ namespace mmd2timeline
                 _AllJointsMaxVelocityJSON.val = _MotionSetting.AllJointsMaxVelocity;
             }
 
-            if (!config.LockPersonPosition)
-            {
-                _PositionX.val = _MotionSetting.PositionX;
-                _PositionY.val = _MotionSetting.PositionY;
-                _PositionZ.val = _MotionSetting.PositionZ;
+            //if (!config.LockPersonPosition)
+            //{
+            //    _PositionX.val = _MotionSetting.PositionX;
+            //    _PositionY.val = _MotionSetting.PositionY;
+            //    _PositionZ.val = _MotionSetting.PositionZ;
 
-                _RotationX.val = _MotionSetting.RotationX;
-                _RotationY.val = _MotionSetting.RotationY;
-                _RotationZ.val = _MotionSetting.RotationZ;
-            }
+            //    _RotationX.val = _MotionSetting.RotationX;
+            //    _RotationY.val = _MotionSetting.RotationY;
+            //    _RotationZ.val = _MotionSetting.RotationZ;
+            //}
 
             // 未关闭下半身骨骼的情况下更新动作缩放
             if (!_CloseLowerBonesJSON.val)

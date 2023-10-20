@@ -211,7 +211,7 @@ namespace mmd2timeline
             #endregion
 
             // 锁定人物位置
-            _MMDUIs.Add(Utils.SetupToggle(this, Lang.Get("Lock Person Position"), config.LockPersonPosition, v => config.LockPersonPosition = v, RightSide));
+            //_MMDUIs.Add(Utils.SetupToggle(this, Lang.Get("Lock Person Position"), config.LockPersonPosition, v => config.LockPersonPosition = v, RightSide));
 
             //_MMDUIs.Add(CreateUISpacer(LeftSide));
 
