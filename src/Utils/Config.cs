@@ -931,28 +931,28 @@ namespace mmd2timeline
             }
         }
 
-        /// <summary>
-        /// 锁定人物位置
-        /// </summary>
-        public bool LockPersonPosition
-        {
-            get
-            {
-                if (this.HasKey("LockPersonPosition"))
-                {
-                    return this["LockPersonPosition"].AsBool;
-                }
-                else return false;
-            }
-            set
-            {
-                if (this.LockPersonPosition != value)
-                {
-                    this["LockPersonPosition"].AsBool = value;
-                    this.Save();
-                }
-            }
-        }
+        ///// <summary>
+        ///// 锁定人物位置
+        ///// </summary>
+        //public bool LockPersonPosition
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("LockPersonPosition"))
+        //        {
+        //            return this["LockPersonPosition"].AsBool;
+        //        }
+        //        else return false;
+        //    }
+        //    set
+        //    {
+        //        if (this.LockPersonPosition != value)
+        //        {
+        //            this["LockPersonPosition"].AsBool = value;
+        //            this.Save();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// 是否使用窗口摄像机

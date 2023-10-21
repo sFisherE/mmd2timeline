@@ -78,95 +78,98 @@ namespace mmd2timeline.Store
             set { this["StraightLegWorkAngle"].AsFloat = value; }
         }
 
-        /// <summary>
-        /// 位置X。-1 - 1
-        /// </summary>
-        public float PositionX
-        {
-            get
-            {
-                if (this.HasKey("PositionX"))
-                    return this["PositionX"].AsFloat;
-                else
-                    return 0f;
-            }
-            set { this["PositionX"].AsFloat = value; }
-        }
+        #region 人物位置设置（此数据为运行时数据，不保存）
 
-        /// <summary>
-        /// 位置Y。-1 - 1
-        /// </summary>
-        public float PositionY
-        {
-            get
-            {
-                if (this.HasKey("PositionY"))
-                    return this["PositionY"].AsFloat;
-                else
-                    return 0f;
-            }
-            set { this["PositionY"].AsFloat = value; }
-        }
+        ///// <summary>
+        ///// 位置X。-1 - 1
+        ///// </summary>
+        //public float PositionX
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("PositionX"))
+        //            return this["PositionX"].AsFloat;
+        //        else
+        //            return 0f;
+        //    }
+        //    set { this["PositionX"].AsFloat = value; }
+        //}
 
-        /// <summary>
-        /// 位置Z。-1 - 1
-        /// </summary>
-        public float PositionZ
-        {
-            get
-            {
-                if (this.HasKey("PositionZ"))
-                    return this["PositionZ"].AsFloat;
-                else
-                    return 0f;
-            }
-            set { this["PositionZ"].AsFloat = value; }
-        }
+        ///// <summary>
+        ///// 位置Y。-1 - 1
+        ///// </summary>
+        //public float PositionY
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("PositionY"))
+        //            return this["PositionY"].AsFloat;
+        //        else
+        //            return 0f;
+        //    }
+        //    set { this["PositionY"].AsFloat = value; }
+        //}
 
-        /// <summary>
-        /// 角度X。-1 - 1
-        /// </summary>
-        public float RotationX
-        {
-            get
-            {
-                if (this.HasKey("RotationX"))
-                    return this["RotationX"].AsFloat;
-                else
-                    return 0f;
-            }
-            set { this["RotationX"].AsFloat = value; }
-        }
+        ///// <summary>
+        ///// 位置Z。-1 - 1
+        ///// </summary>
+        //public float PositionZ
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("PositionZ"))
+        //            return this["PositionZ"].AsFloat;
+        //        else
+        //            return 0f;
+        //    }
+        //    set { this["PositionZ"].AsFloat = value; }
+        //}
 
-        /// <summary>
-        /// 角度Y。-1 - 1
-        /// </summary>
-        public float RotationY
-        {
-            get
-            {
-                if (this.HasKey("RotationY"))
-                    return this["RotationY"].AsFloat;
-                else
-                    return 0f;
-            }
-            set { this["RotationY"].AsFloat = value; }
-        }
+        ///// <summary>
+        ///// 角度X。-1 - 1
+        ///// </summary>
+        //public float RotationX
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("RotationX"))
+        //            return this["RotationX"].AsFloat;
+        //        else
+        //            return 0f;
+        //    }
+        //    set { this["RotationX"].AsFloat = value; }
+        //}
 
-        /// <summary>
-        /// 角度Z。-1 - 1
-        /// </summary>
-        public float RotationZ
-        {
-            get
-            {
-                if (this.HasKey("RotationZ"))
-                    return this["RotationZ"].AsFloat;
-                else
-                    return 0f;
-            }
-            set { this["RotationZ"].AsFloat = value; }
-        }
+        ///// <summary>
+        ///// 角度Y。-1 - 1
+        ///// </summary>
+        //public float RotationY
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("RotationY"))
+        //            return this["RotationY"].AsFloat;
+        //        else
+        //            return 0f;
+        //    }
+        //    set { this["RotationY"].AsFloat = value; }
+        //}
+
+        ///// <summary>
+        ///// 角度Z。-1 - 1
+        ///// </summary>
+        //public float RotationZ
+        //{
+        //    get
+        //    {
+        //        if (this.HasKey("RotationZ"))
+        //            return this["RotationZ"].AsFloat;
+        //        else
+        //            return 0f;
+        //    }
+        //    set { this["RotationZ"].AsFloat = value; }
+        //}
+        #endregion
 
         /// <summary>
         /// 动作缩放0.1-2

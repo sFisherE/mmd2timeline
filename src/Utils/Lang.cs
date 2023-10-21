@@ -291,6 +291,8 @@ namespace mmd2timeline
             //    = "\n\nhttps://space.bilibili.com/1016760606\n\n<b>关注以上页面获取最新版本</b>\n\n<size=24><b>重要！！！</b></size>\n<size=24>MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。</size>\n";
             this["IMPORTANT!!!"] = "注意";
             this["The MMD Folder Must In VAM Path.If Your MMD Folder In Other Path, Use The CMD Command 'mklink' Link it to VAM Path."] = "MMD 文件夹必须位于 VAM 路径下。如果您的 MMD 文件夹位于其他路径下，请使用 CMD 命令 \"mklink \"将其链接到 VAM 目录中。";
+            this["This is a free open source VAM plugin. \nThe Source Code is licensed under the GPL-3.0 license."] = "这是一款免费开源的 VAM 插件\n源代码采用 GPL-3.0 许可";
+            this["<b>Follow the address below to get the latest code or progress information.</b>\nhttps://github.com/sFisherE/mmd2timeline"] = "<b>关注以下地址获取最新代码或进展信息</b>\nhttps://github.com/sFisherE/mmd2timeline\nhttps://space.bilibili.com/1016760606";
             this["Show Debug Info"] = "显示调试信息";
             this["Motion Scale"] = "动作缩放";
             this["Sample Speed"] = "采样速度";
@@ -413,6 +415,30 @@ namespace mmd2timeline
             this["U - Toggle UI Hidden/Visible"] = "U键 - 切换UI显示/隐藏";
             this["M - Toggle WindowCamera View"] = "M键 - 切换窗口相机视图";
             this["Shortcut Keys"] = "快捷键";
+            this["Max Length"] = "播放时长";
+            this["Audio Delay"] = "音频延迟";
+            this["Motion Delay"] = "动作延迟";
+            this["FOV Enabled"] = "开启FOV";
+            this["Heel Height Fixing"] = "高跟身体高度修正";
+            this["Motion Correction Setting"] = "动作修正设置";
+            this["Enable Initial Motion Adjustment"] = "启用初始动作调整";
+            this["Enable Kneeing Corrections"] = "启用跪姿矫正";
+            this["Height Correction Mode"] = "高度修正模式";
+            this["Bone Rotation Adjust"] = "骨骼旋转调节";
+            this["Shoulder"] = "肩";
+            this["Arm"] = "臂";
+            this["Elbow"] = "肘";
+            this["Hand"] = "手";
+            this["Thigh"] = "胯";
+            this["Knee"] = "膝";
+            this["Foot"] = "足";
+            this["Toe"] = "趾";
+            this["Adjust Bone Rotation X"] = "调节骨骼旋转 X";
+            this["Adjust Bone Rotation Y"] = "调节骨骼旋转 Y";
+            this["Adjust Bone Rotation Z"] = "调节骨骼旋转 Z";
+            this["Clear Bone Rotation Adjust"] = "清除骨骼旋转调节";
+            this["Camera Control Mode"] = "镜头\n控制模式";
+            this["Original"] = "原始";
         }
     }
 }
