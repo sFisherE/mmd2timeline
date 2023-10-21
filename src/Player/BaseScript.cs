@@ -76,7 +76,7 @@ namespace mmd2timeline
 
             InitFullWidthUI();
         }
-
+        
         /// <summary>
         /// 等待n秒后执行方法
         /// </summary>
@@ -111,6 +111,7 @@ namespace mmd2timeline
         public virtual void OnDestroy()
         {
             Utils.OnDestroyUI(this);
+            Utility.CleanGameObjects();
         }
     }
 }

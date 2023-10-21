@@ -132,7 +132,7 @@ namespace mmd2timeline
         MmdCameraObject m_MmdCamera;
         public void ImportVmd(string path)
         {
-            GameObject root = new GameObject("mmd2timeline camera root");
+            GameObject root = new GameObject("mmd2timeline.camera root");
             root.transform.localPosition = Vector3.zero;
             root.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             root.transform.localEulerAngles = new Vector3(0, 180, 0);

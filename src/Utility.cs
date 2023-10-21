@@ -5,7 +5,19 @@ namespace mmd2timeline
 {
     class Utility
     {
-      public static  Quaternion quat = new Quaternion(0, 1, 0, 0);
+        public static string GameObjectHead = "mmd2timeline.";
+        public static void CleanGameObjects()
+        {
+            var gos = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (var item in gos)
+            {
+                if (item.name.StartsWith(Utility.GameObjectHead))
+                {
+                    GameObject.Destroy(item);
+                }
+            }
+        }
+        public static  Quaternion quat = new Quaternion(0, 1, 0, 0);
 
         public static void ResetHandControl(HandControl c)
         {

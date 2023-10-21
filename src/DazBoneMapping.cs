@@ -1,11 +1,127 @@
 ﻿using LibMMD.Unity3D;
 using UnityEngine;
 using System.Collections.Generic;
-
+using LibMMD.Model;
 namespace mmd2timeline
 {
     class DazBoneMapping
     {
+        static void MatchNode(Atom atom, Transform child,string childBoneName,string parentBoneName,Transform target)
+        {
+            Transform parentBone = SearchObjName(target, parentBoneName);
+            if (parentBoneName == "Genesis2Female")
+            {
+                parentBone = atom.mainController.transform;
+            }
+            Transform childBone = SearchObjName(target, childBoneName);
+            float dis2Parent = Vector3.Distance(parentBone.position, childBone.position)*10;
+
+            Transform parent = child.parent;
+            float diff = Vector3.Distance(child.position, parent.position)- dis2Parent;
+
+            var dir = (parent.position-child.position).normalized;
+            child.position += dir * diff;
+        }
+        static void MatchNode2(Atom atom, Transform child, Transform another, string childBoneName, string parentBoneName, Transform target)
+        {
+            Transform parentBone = SearchObjName(target, parentBoneName);
+            if(parentBoneName== "Genesis2Female")
+            {
+                parentBone = atom.mainController.transform;
+            }
+
+            Transform childBone = SearchObjName(target, childBoneName);
+            float dis2Parent = Vector3.Distance(parentBone.position, childBone.position) * 10;
+
+            Transform parent = another;
+            float diff = Vector3.Distance(child.position, parent.position) - dis2Parent;
+            var dir = (parent.position - child.position).normalized;
+            child.position += dir * diff;
+        }
+        static void FollowNode( Transform node, Transform other)
+        {
+            node.position = other.position;
+        }
+        public static void MatchTarget(Atom atom, MmdGameObject mmdGameObject, Transform target)
+        {
+            //Dictionary<string, float> lookup = new Dictionary<string, float>();
+            Dictionary<string, Transform> mmdBones = new Dictionary<string, Transform>();
+            for (int i = 0; i < mmdGameObject._bones.Length; i++)
+            {
+                var bone = mmdGameObject._bones[i];
+                mmdBones.Add(bone.name, bone.transform);
+            }
+            //hip Genesis2Female
+            //pelvis hip
+            //rThigh pelvis
+            //lThigh pelvis
+            //rShin rThigh
+            //lShin lThigh
+            //rFoot rShin
+            //lFoot lShin
+            //rToe rFoot
+            //lToe lFoot
+            MatchNode2(atom,mmdBones["腰"], mmdBones["全ての親"], "hip", "Genesis2Female",target);
+            MatchNode(atom, mmdBones["下半身"], "pelvis", "hip", target);
+            MatchNode(atom,mmdBones["左足"], "lThigh", "pelvis", target);
+            MatchNode(atom,mmdBones["左ひざ"], "lShin", "lThigh", target);
+            MatchNode(atom,mmdBones["左足首"], "lFoot", "lShin", target);
+            MatchNode(atom, mmdBones["左つま先"], "lToe", "lFoot", target);
+
+            MatchNode(atom,mmdBones["右足"], "rThigh", "pelvis", target);
+            MatchNode(atom,mmdBones["右ひざ"], "rShin", "rThigh", target);
+            MatchNode(atom,mmdBones["右足首"], "rFoot", "rShin", target);
+            MatchNode(atom, mmdBones["右つま先"], "rToe", "rFoot", target);
+
+            MatchNode(atom,mmdBones["左足D"], "lThigh", "pelvis", target);
+            MatchNode(atom,mmdBones["左ひざD"], "lShin", "lThigh", target);
+            MatchNode(atom,mmdBones["左足首D"], "lFoot", "lShin", target);
+            MatchNode(atom,mmdBones["左足先EX"], "lToe", "lFoot", target);
+            MatchNode(atom,mmdBones["右足D"], "rThigh", "pelvis", target);
+            MatchNode(atom,mmdBones["右ひざD"], "rShin", "rThigh", target);
+            MatchNode(atom,mmdBones["右足首D"], "rFoot", "rShin", target);
+            MatchNode(atom, mmdBones["右足先EX"], "rToe", "rFoot", target);
+
+            FollowNode(mmdBones["左足IK親"], mmdBones["右足"]);
+            FollowNode(mmdBones["左足ＩＫ"], mmdBones["右足"]);
+            FollowNode(mmdBones["左つま先ＩＫ"], mmdBones["右つま先"]);
+            FollowNode(mmdBones["右足IK親"], mmdBones["右足"]);
+            FollowNode(mmdBones["右足ＩＫ"], mmdBones["右足"]);
+            FollowNode(mmdBones["右つま先ＩＫ"], mmdBones["右つま先"]);
+
+            //abdomen hip
+            //abdomen2 abdomen
+            //chest abdomen2
+            //neck chest
+            //head neck
+            MatchNode(atom,mmdBones["上半身"], "abdomen", "hip", target);
+            MatchNode(atom,mmdBones["上半身2"], "abdomen2", "abdomen", target);
+            MatchNode(atom,mmdBones["上半身3"], "chest", "abdomen2", target);
+            MatchNode(atom,mmdBones["首"], "neck", "chest", target);
+            MatchNode(atom, mmdBones["頭"], "head", "neck", target);
+
+            //lCollar chest
+            //lShldr lCollar
+            //lForeArm lShldr
+            //lHand lForeArm
+            MatchNode(atom, mmdBones["左肩P"], "lCollar", "chest", target);
+            MatchNode2(atom, mmdBones["左腕"], mmdBones["左肩P"], "lShldr", "lCollar", target);
+            MatchNode2(atom, mmdBones["左ひじ"], mmdBones["左腕"], "lForeArm", "lShldr", target);
+            MatchNode2(atom, mmdBones["左手首"], mmdBones["左ひじ"], "lHand", "lForeArm", target);
+            MatchNode(atom, mmdBones["右肩P"], "rCollar", "chest", target);
+            MatchNode2(atom, mmdBones["右腕"], mmdBones["右肩P"], "rShldr", "rCollar", target);
+            MatchNode2(atom, mmdBones["右ひじ"], mmdBones["右腕"], "rForeArm", "rShldr", target);
+            MatchNode2(atom, mmdBones["右手首"], mmdBones["右ひじ"], "rHand", "rForeArm", target);
+
+            var bones = mmdGameObject._model.Bones;
+            foreach (var item in bones)
+            {
+                item.Position = mmdBones[item.Name].position;
+            }
+
+        }
+
+
         public static Dictionary<string, Transform> CreateFakeBones(Transform root, Transform refTf)
         {
             List<string> names = new List<string>()
@@ -32,6 +148,16 @@ namespace mmd2timeline
                 foreach (var item in names)
                 {
                     GameObject child = new GameObject(t + item);
+                    if (Config.s_Debug)
+                    {
+                        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                        go.transform.parent = child.transform;
+                        go.transform.localPosition = Vector3.zero;
+                        go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                        go.GetComponent<MeshRenderer>().material.color = Color.green;
+                        var col = go.GetComponent<Collider>();
+                        Component.DestroyImmediate(col);
+                    }
                     cache.Add(t + item, child.transform);
 
                     if (lookup.ContainsKey(item))

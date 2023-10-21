@@ -120,12 +120,16 @@ namespace LibMMD.Motion
             {
                 VmdVisibleIKKey.IK iK = state.IKEnable[i];
                 //根据数据设置ik的状态
-                var image = _poser.GetBoneImage(m_boneNameTable2[iK.IKBoneIndex]);
-                if (image != null && image.IKEnable != iK.Enable)
+                if (m_boneNameTable2.ContainsKey(iK.IKBoneIndex))
                 {
-                    image.IKEnable = iK.Enable;
-                    result = true;
+                    var image = _poser.GetBoneImage(m_boneNameTable2[iK.IKBoneIndex]);
+                    if (image != null && image.IKEnable != iK.Enable)
+                    {
+                        image.IKEnable = iK.Enable;
+                        result = true;
+                    }
                 }
+
             }
             return result;
         }

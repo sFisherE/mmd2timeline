@@ -92,6 +92,7 @@ namespace LibMMD.Unity3D
 
             Utils.ClearAllTransformChild(transform);
             _bones = CreateBones(gameObject);
+            MatchBone();
 
             if (_motion != null)
             {
@@ -244,6 +245,13 @@ namespace LibMMD.Unity3D
         {
             if (m_ChangeInitTransform != null)
                 m_ChangeInitTransform(this._model);
+        }
+
+        public Action<MmdModel> m_MatchBone;
+        public void MatchBone()
+        {
+            if (m_MatchBone != null)
+                m_MatchBone(this._model);
         }
 
         private void DoLoadModel(string path)

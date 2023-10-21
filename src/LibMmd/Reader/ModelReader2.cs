@@ -7,7 +7,6 @@ namespace LibMMD.Reader
 {
     public abstract class ModelReader2
     {
-        
         public MmdModel Read(string path)
         {
             byte[] bytes = null;
@@ -29,16 +28,10 @@ namespace LibMMD.Reader
         }
 
         public abstract MmdModel Read(BufferBinaryReader reader);
-        
+
         public static MmdModel LoadMmdModel(string path)
         {
-            //var fileExt = new FileInfo(path).Extension.ToLower();
-            //if (".pmd".Equals(fileExt))
-            //{
-            //    return new PmdReader().Read(path, config);
-            //}
-            //if (".pmx".Equals(fileExt))
-                return new PmxReader2().Read(path);
+            return new PmxReader2().Read(path);
         }
 
     }

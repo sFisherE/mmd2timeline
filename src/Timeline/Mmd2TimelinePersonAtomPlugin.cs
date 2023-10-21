@@ -23,6 +23,11 @@ namespace mmd2timeline
             Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
             LogUtil.Log("path:"+ Config.varPmxPath);
         }
+        void OnDestroy()
+        {
+            Utility.CleanGameObjects();
+        }
+
         public Text sampleTimeLabel;
         public Text importedVmdLabel;
         public string GetTimeText()
@@ -448,6 +453,14 @@ namespace mmd2timeline
         {
             //需要摆成A-pose
             containingAtom.tempFreezePhysics = true;
+
+            //foreach (var item in containingAtom.freeControllers)
+            //{
+            //    if(item!= containingAtom.mainController)
+            //    {
+            //        item.ResetControl();
+            //    }
+            //}
             containingAtom.ResetPhysics(true, true);
             //等15帧，等reset结束
             for (int i = 0; i < 20; i++)
@@ -559,29 +572,38 @@ namespace mmd2timeline
         void CoLoad()
         {
             Prepare();
-            var mmdObj = MmdGameObject.CreateGameObject("MmdGameObject");
-            mmdObj.transform.position = containingAtom.transform.position;
-            mmdObj.transform.rotation = containingAtom.transform.rotation;
+
+            var mmdObj = MmdGameObject.CreateGameObject(Utility.GameObjectHead + "MmdGameObject");
             mmdObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             m_MmdPersonGameObject = mmdObj.GetComponent<MmdGameObject>();
 
-            GameObject newRoot = new GameObject("MmdRoot");
-            newRoot.transform.position = containingAtom.mainController.transform.position;
-            newRoot.transform.rotation = containingAtom.mainController.transform.rotation;
+            GameObject newRoot = new GameObject(Utility.GameObjectHead + "MmdRoot");
+            //if (Config.s_Debug)
+            {
+                var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                go.transform.parent = newRoot.transform;
+                go.transform.localPosition = Vector3.zero;
+                go.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+                go.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                var col = go.GetComponent<Collider>();
+                Component.DestroyImmediate(col);
+            }
 
             //Debug.LogWarning("rotation:" + containingAtom.transform.rotation + " " + containingAtom.mainController.transform.rotation);
             //Debug.LogWarning("position:" + containingAtom.transform.position + " " + containingAtom.mainController.transform.position);
             mmdObj.transform.parent = newRoot.transform;
             rootHandler = newRoot.transform;
 
+            newRoot.transform.position = containingAtom.mainController.transform.position;
+            newRoot.transform.rotation = containingAtom.mainController.transform.rotation;
 
-            GameObject temp = new GameObject();
+
+            GameObject temp = new GameObject(Utility.GameObjectHead + "temp");
             temp.transform.position = containingAtom.transform.position;
-            //temp.transform.rotation = mmdObj.transform.rotation;// Quaternion.identity;
-            //temp.transform.Rotate(new Vector3(0, 180, 0),Space.Self);
-            temp.transform.localEulerAngles = new Vector3(0, 180, 0);
             //转180°
-            //temp.transform.rotation =  mmdObj.transform.rotation* Quaternion.Euler(0, 180, 0);
+            //temp.transform.localEulerAngles = new Vector3(0, 180, 0);
+            temp.transform.rotation = containingAtom.transform.rotation* Quaternion.Euler(0, 180, 0);
+            Debug.LogError(temp.transform.localEulerAngles);
 
             Transform parent2 = containingAtom.transform.Find("rescale2/PhysicsModel");
             if (parent2 == null)
@@ -590,22 +612,27 @@ namespace mmd2timeline
             }
 
             //创建一副假骨架，然后转成A-pose，然后取他的坐标点
-            GameObject root = new GameObject("Root");
+            GameObject root = new GameObject(Utility.GameObjectHead + "Root");
+
             Dictionary<string, Transform> check = DazBoneMapping.CreateFakeBones(root.transform,parent2);
             m_MmdPersonGameObject.m_ChangeInitTransform = model =>
             {
-                for (int i = 0; i < model.Bones.Length; i++)
-                {
-                    var bone = model.Bones[i];
-                    Vector3 pos = DazBoneMapping.GetPosition(parent2.gameObject, bone, bone.Name, check);
-                    //mmd里面的尺寸大了10倍
-                    bone.Position = 10 * (temp.transform.TransformPoint(pos) - temp.transform.position);
-                }
+                //for (int i = 0; i < model.Bones.Length; i++)
+                //{
+                //    var bone = model.Bones[i];
+                //    Vector3 pos = DazBoneMapping.GetPosition(parent2.gameObject, bone, bone.Name, check);
+                //    //mmd里面的尺寸大了10倍
+                //    bone.Position = 10 * (temp.transform.TransformPoint(pos) - temp.transform.position);
+                //}
             };
+            
 
-            //mmdGameObject.LoadModel("BepInEx/plugins/g2f.pmx");
+            m_MmdPersonGameObject.m_MatchBone = model =>
+            {
+                DazBoneMapping.MatchTarget(containingAtom, m_MmdPersonGameObject, parent2);
+            };
             m_MmdPersonGameObject.LoadModel();
-            GameObject.DestroyImmediate(root);
+            //GameObject.DestroyImmediate(root);
             //GameObject.DestroyImmediate(temp);
             //targetAtom.mainController.transform.position = atomInitPosition;
 
@@ -613,14 +640,30 @@ namespace mmd2timeline
             m_MmdPersonGameObject.transform.localEulerAngles = new Vector3(0, 180, 0);
             //var rootPos = m_TargetAtom.mainController.transform.position;
 
+            cachedBoneLookup = new Dictionary<string, Transform>();
+            foreach (var item in m_MmdPersonGameObject._model.Bones)
+            {
+                string name = item.Name;
+                string boneName = name;
+                if (DazBoneMapping.boneNames.ContainsKey(name))
+                    boneName = DazBoneMapping.boneNames[name];
+                if (!boneName.Contains("|"))
+                {
+                    var tf = DazBoneMapping.SearchObjName(parent2, boneName);
+                    if (cachedBoneLookup == null)
+                        cachedBoneLookup = new Dictionary<string, Transform>();
+                    cachedBoneLookup[name] = tf;
+                }
+            }
+
             m_MmdPersonGameObject.OnUpdate = mmd =>
             {
                 List<GameObject> fingerBones = new List<GameObject>();
                 if (!Config.s_OnlyFace)
                 {
-                    var bones2 = mmd._bones;
+                    //var bones2 = mmd._bones;
                     List<GameObject> thumbBones = new List<GameObject>();
-                    foreach (var item in bones2)
+                    foreach (var item in mmd._bones)
                     {
                         var rotation = item.transform.rotation;
                         if (DazBoneMapping.fingerBoneNames.Contains(item.name))
@@ -632,9 +675,9 @@ namespace mmd2timeline
                         if (DazBoneMapping.ignoreUpdateBoneNames.Contains(pmxBoneName))
                             continue;
 
-                        if (DazBoneMapping.cachedBoneLookup.ContainsKey(pmxBoneName))
+                        if (cachedBoneLookup.ContainsKey(pmxBoneName))
                         {
-                            Transform boneTf = DazBoneMapping.cachedBoneLookup[item.name];
+                            Transform boneTf = cachedBoneLookup[item.name];
                             if (boneTf != null)
                             {
                                 if (enableHeel.val)
@@ -649,33 +692,23 @@ namespace mmd2timeline
                                 Vector3 pos = item.transform.position;// + rootPosition;// + rootPos;
                                 if (controllerLookup.ContainsKey(boneTf))
                                 {
-                                    if (DazBoneMapping.armBones.Contains(pmxBoneName))
+                                    //if (DazBoneMapping.armBones.Contains(pmxBoneName))
+                                    //{
+                                    //    if (pmxBoneName.StartsWith("r") || pmxBoneName.StartsWith("右"))
+                                    //    {
+                                    //        controllerLookup[boneTf].transform.SetPositionAndRotation(pos, 
+                                    //            rotation * Quaternion.Euler(new Vector3(0, 0, 36)) * Utility.quat);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        controllerLookup[boneTf].transform.SetPositionAndRotation(pos, 
+                                    //            rotation * Quaternion.Euler(new Vector3(0, 0, -36)) * Utility.quat);
+                                    //    }
+                                    //}
+                                    //else
                                     {
-                                        if (pmxBoneName.StartsWith("r") || pmxBoneName.StartsWith("右"))
-                                        {
-                                            controllerLookup[boneTf].transform.SetPositionAndRotation(pos, 
-                                                rotation * Quaternion.Euler(new Vector3(0, 0, 36)) * Utility.quat);
-                                        }
-                                        else
-                                        {
-                                            controllerLookup[boneTf].transform.SetPositionAndRotation(pos, 
-                                                rotation * Quaternion.Euler(new Vector3(0, 0, -36)) * Utility.quat);
-                                        }
+                                        controllerLookup[boneTf].transform.SetPositionAndRotation(pos, rotation * Utility.quat);
                                     }
-                                    else
-                                    {
-                                       //if (boneTf.name == "lShin"|| boneTf.name == "rShin")
-                                       // {
-                                       //     //直腿模式
-                                       //     //Settings.s_StraightLeg
-                                       //     controllerLookup[boneTf].transform.SetPositionAndRotation(pos, rotation * Utility.quat);
-                                       // }
-                                       // else
-                                       // {
-                                            controllerLookup[boneTf].transform.SetPositionAndRotation(pos, rotation * Utility.quat);
-                                        //}
-                                    }
-                                    //controllerLookup[boneTf].gameObject.SendMessage("FixedUpdate");
 
                                     var c = controllerLookup[boneTf];
                                     if (c.followWhenOff != null)
@@ -727,7 +760,7 @@ namespace mmd2timeline
                     //录手指
                     foreach(var item in fingerBones)
                     {
-                        Transform boneTf = DazBoneMapping.cachedBoneLookup[item.name];
+                        Transform boneTf = cachedBoneLookup[item.name];
                         int frame = CurFrame;
 
                         //只生成手指的关键帧的数据
@@ -775,12 +808,13 @@ namespace mmd2timeline
             };
 
         }
+        Dictionary<string, Transform> cachedBoneLookup;
         void UpdateFinger(GameObject item)
         {
             string pmxBoneName = item.name;
             var rotation = item.transform.rotation;
 
-            Transform boneTf = DazBoneMapping.cachedBoneLookup[item.name];
+            Transform boneTf = cachedBoneLookup[item.name];
 
             //算出世界坐标系坐标
             var worldRotation = item.transform.rotation * Utility.quat;
@@ -936,9 +970,6 @@ namespace mmd2timeline
             {
                 if (string.IsNullOrEmpty(path)) return;
                 if (!path.ToLower().EndsWith($".{_saveExt}")) path += $".{_saveExt}";
-
-                //var output = Valve.Newtonsoft.Json.JsonConvert.SerializeObject(m_PersonAniJson);
-                //FileManagerSecure.WriteAllText(path, output);
 
                 SuperController.singleton.SaveJSON(m_PersonAniJson.GetJSONClass(), path);
             });

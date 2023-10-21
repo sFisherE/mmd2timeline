@@ -192,9 +192,9 @@ namespace mmd2timeline
             {
                 var cacheBoneKey = GetCacheBoneKey(bone.Key);
 
-                if (DazBoneMapping.cachedBoneLookup.ContainsKey(cacheBoneKey))
+                if (cachedBoneLookup.ContainsKey(cacheBoneKey))
                 {
-                    var transform = DazBoneMapping.cachedBoneLookup[cacheBoneKey];
+                    var transform = cachedBoneLookup[cacheBoneKey];
 
                     if (this.controllerLookup.ContainsKey(transform))
                     {

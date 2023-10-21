@@ -168,6 +168,7 @@ namespace mmd2timeline
 
             Init();
         }
+        Dictionary<string, Transform> cachedBoneLookup;
 
         /// <summary>
         /// 初始化
@@ -192,9 +193,9 @@ namespace mmd2timeline
                     var boneName = bone.name;
 
                     var cacheBoneKey = GetCacheBoneKey(boneName);
-                    if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && DazBoneMapping.cachedBoneLookup.ContainsKey(cacheBoneKey))
+                    if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && cachedBoneLookup.ContainsKey(cacheBoneKey))
                     {
-                        Transform boneTransform = DazBoneMapping.cachedBoneLookup[cacheBoneKey];
+                        Transform boneTransform = cachedBoneLookup[cacheBoneKey];
                         if (boneTransform != null)
                         {
                             if (this.controllerLookup.ContainsKey(boneTransform))
@@ -397,7 +398,14 @@ namespace mmd2timeline
                 }
 
                 this._PersonAtom.tempFreezePhysics = true;
-                this._PersonAtom.ResetPhysics(true, true);
+                //this._PersonAtom.ResetPhysics(true, true);
+                foreach (var item in _PersonAtom.freeControllers)
+                {
+                    if (item != _PersonAtom.mainController)
+                    {
+                        item.ResetControl();
+                    }
+                }
                 this.CoLoad();
 
                 this._PersonAtom.tempFreezePhysics = false;
@@ -416,7 +424,7 @@ namespace mmd2timeline
                 //else
                 //{
                 // 更新位置
-                UpdatePositionAndRotation();
+                //UpdatePositionAndRotation();
                 //}
 
                 SetPersonAllJoints();
@@ -723,38 +731,61 @@ namespace mmd2timeline
         private void CoLoad()
         {
             this.Prepare();
-            GameObject gameObject = MmdGameObject.CreateGameObject("MmdGameObject");
-            gameObject.transform.position = this._PersonAtom.transform.position;
-            gameObject.transform.rotation = this._PersonAtom.transform.rotation;
+            GameObject gameObject = MmdGameObject.CreateGameObject(Utility.GameObjectHead + "MmdGameObject");
             gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             this._MmdPersonGameObject = gameObject.GetComponent<MmdGameObject>();
-            GameObject gameObject2 = new GameObject("MmdRoot");
-            gameObject2.transform.position = this._PersonAtom.mainController.transform.position;
-            gameObject2.transform.rotation = this._PersonAtom.mainController.transform.rotation;
-            gameObject.transform.parent = gameObject2.transform;
-            this.rootHandler = gameObject2.transform;
-            GameObject temp = new GameObject();
+            GameObject newRoot = new GameObject(Utility.GameObjectHead + "MmdRoot");
+            gameObject.transform.parent = newRoot.transform;
+            this.rootHandler = newRoot.transform;
+
+            newRoot.transform.position = this._PersonAtom.mainController.transform.position;
+            newRoot.transform.rotation = this._PersonAtom.mainController.transform.rotation;
+
+            GameObject temp = new GameObject(Utility.GameObjectHead + "temp");
             temp.transform.position = this._PersonAtom.transform.position;
-            temp.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+            //temp.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+            temp.transform.rotation = this._PersonAtom.transform.rotation * Quaternion.Euler(0, 180, 0);
+
             Transform parent2 = this._PersonAtom.transform.Find("rescale2/PhysicsModel");
             if (parent2 == null)
             {
                 parent2 = this._PersonAtom.transform.Find("rescale2/MoveWhenInactive/PhysicsModel");
             }
-            GameObject gameObject3 = new GameObject("Root");
+            GameObject gameObject3 = new GameObject(Utility.GameObjectHead + "Root");
             Dictionary<string, Transform> check = DazBoneMapping.CreateFakeBones(gameObject3.transform, parent2);
             this._MmdPersonGameObject.m_ChangeInitTransform = delegate (MmdModel model)
             {
-                for (int i = 0; i < model.Bones.Length; i++)
-                {
-                    Bone bone = model.Bones[i];
-                    Vector3 position = DazBoneMapping.GetPosition(parent2.gameObject, bone, bone.Name, check, GetCacheBoneKey(bone.Name));
-                    bone.Position = 10f * (temp.transform.TransformPoint(position) - temp.transform.position);
-                }
+                //for (int i = 0; i < model.Bones.Length; i++)
+                //{
+                //    Bone bone = model.Bones[i];
+                //    Vector3 position = DazBoneMapping.GetPosition(parent2.gameObject, bone, bone.Name, check, GetCacheBoneKey(bone.Name));
+                    
+                //    bone.Position = 10f * (temp.transform.TransformPoint(position) - temp.transform.position);
+                //}
+            };
+            _MmdPersonGameObject.m_MatchBone = model =>
+            {
+                DazBoneMapping.MatchTarget(_PersonAtom, _MmdPersonGameObject, parent2);
             };
             this._MmdPersonGameObject.LoadModel(PMXPath);
             UnityEngine.Object.DestroyImmediate(gameObject3);
             this._MmdPersonGameObject.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+
+            cachedBoneLookup = new Dictionary<string, Transform>();
+            foreach (var item in _MmdPersonGameObject._model.Bones)
+            {
+                string name = item.Name;
+                string boneName = name;
+                if (DazBoneMapping.boneNames.ContainsKey(name))
+                    boneName = DazBoneMapping.boneNames[name];
+                if (!boneName.Contains("|"))
+                {
+                    var tf = DazBoneMapping.SearchObjName(parent2, boneName);
+                    if (cachedBoneLookup == null)
+                        cachedBoneLookup = new Dictionary<string, Transform>();
+                    cachedBoneLookup[name] = tf;
+                }
+            }
 
             this._MmdPersonGameObject.OnUpdate = UpdateMotion;
         }
@@ -837,7 +868,7 @@ namespace mmd2timeline
                     }
 
                     var cacheBoneKey = GetCacheBoneKey(bonename);
-                    Transform boneTransform = DazBoneMapping.cachedBoneLookup[cacheBoneKey];
+                    Transform boneTransform = cachedBoneLookup[cacheBoneKey];
                     if (boneTransform != null)
                     {
                         if (this.controllerLookup.ContainsKey(boneTransform))
@@ -933,18 +964,18 @@ namespace mmd2timeline
                                     continue;
                             }
 
-                            if (DazBoneMapping.armBones.Contains(bonename))
-                            {
-                                if (bonename.StartsWith("r") || bonename.StartsWith("右"))
-                                {
-                                    freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat);
-                                }
-                                else
-                                {
-                                    freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, -36f)) * Utility.quat);
-                                }
-                            }
-                            else
+                            //if (DazBoneMapping.armBones.Contains(bonename))
+                            //{
+                            //    if (bonename.StartsWith("r") || bonename.StartsWith("右"))
+                            //    {
+                            //        freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat);
+                            //    }
+                            //    else
+                            //    {
+                            //        freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, -36f)) * Utility.quat);
+                            //    }
+                            //}
+                            //else
                             {
                                 freeControllerV.transform.SetPositionAndRotation(position, rotation * Utility.quat);
                             }
@@ -984,7 +1015,8 @@ namespace mmd2timeline
         /// <returns></returns>
         private string GetCacheBoneKey(string boneName)
         {
-            return $"{this.PersonAtom.GetInstanceID()}-{boneName}";
+            //return $"{this.PersonAtom.GetInstanceID()}-{boneName}";
+            return boneName;
         }
 
         /// <summary>
@@ -996,13 +1028,13 @@ namespace mmd2timeline
             string pmxBoneName = item.name;
             var cacheBoneKey = GetCacheBoneKey(pmxBoneName);
 
-            if (!DazBoneMapping.cachedBoneLookup.ContainsKey(cacheBoneKey))
+            if (!cachedBoneLookup.ContainsKey(cacheBoneKey))
             {
                 return;
             }
 
             var rotation = item.transform.rotation;
-            Transform transform = DazBoneMapping.cachedBoneLookup[cacheBoneKey];
+            Transform transform = cachedBoneLookup[cacheBoneKey];
             Quaternion worldRotation = item.transform.rotation * Utility.quat;
             Quaternion parentRotation = item.transform.parent.rotation;
             var parentWorldRotation = parentRotation;
