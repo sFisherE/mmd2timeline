@@ -964,18 +964,18 @@ namespace mmd2timeline
                                     continue;
                             }
 
-                            //if (DazBoneMapping.armBones.Contains(bonename))
-                            //{
-                            //    if (bonename.StartsWith("r") || bonename.StartsWith("右"))
-                            //    {
-                            //        freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat);
-                            //    }
-                            //    else
-                            //    {
-                            //        freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, -36f)) * Utility.quat);
-                            //    }
-                            //}
-                            //else
+                            if (DazBoneMapping.armBones.Contains(bonename))
+                            {
+                                if (bonename.StartsWith("r") || bonename.StartsWith("右"))
+                                {
+                                    freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat);
+                                }
+                                else
+                                {
+                                    freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, -36f)) * Utility.quat);
+                                }
+                            }
+                            else
                             {
                                 freeControllerV.transform.SetPositionAndRotation(position, rotation * Utility.quat);
                             }

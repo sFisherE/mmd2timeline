@@ -692,20 +692,20 @@ namespace mmd2timeline
                                 Vector3 pos = item.transform.position;// + rootPosition;// + rootPos;
                                 if (controllerLookup.ContainsKey(boneTf))
                                 {
-                                    //if (DazBoneMapping.armBones.Contains(pmxBoneName))
-                                    //{
-                                    //    if (pmxBoneName.StartsWith("r") || pmxBoneName.StartsWith("右"))
-                                    //    {
-                                    //        controllerLookup[boneTf].transform.SetPositionAndRotation(pos, 
-                                    //            rotation * Quaternion.Euler(new Vector3(0, 0, 36)) * Utility.quat);
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        controllerLookup[boneTf].transform.SetPositionAndRotation(pos, 
-                                    //            rotation * Quaternion.Euler(new Vector3(0, 0, -36)) * Utility.quat);
-                                    //    }
-                                    //}
-                                    //else
+                                    if (DazBoneMapping.armBones.Contains(pmxBoneName))
+                                    {
+                                        if (pmxBoneName.StartsWith("r") || pmxBoneName.StartsWith("右"))
+                                        {
+                                            controllerLookup[boneTf].transform.SetPositionAndRotation(pos,
+                                                rotation * Quaternion.Euler(new Vector3(0, 0, 36)) * Utility.quat);
+                                        }
+                                        else
+                                        {
+                                            controllerLookup[boneTf].transform.SetPositionAndRotation(pos,
+                                                rotation * Quaternion.Euler(new Vector3(0, 0, -36)) * Utility.quat);
+                                        }
+                                    }
+                                    else
                                     {
                                         controllerLookup[boneTf].transform.SetPositionAndRotation(pos, rotation * Utility.quat);
                                     }
