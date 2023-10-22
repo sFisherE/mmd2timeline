@@ -155,6 +155,17 @@ namespace mmd2timeline
             return true;
         }
 
+        /// <summary>
+        /// 更新所有人物位置
+        /// </summary>
+        internal void UpdateTransform()
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.UpdateTransform();
+            }
+        }
+
         ///// <summary>
         ///// 所有人物进行准备
         ///// </summary>

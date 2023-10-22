@@ -116,31 +116,31 @@ namespace mmd2timeline
         /// </summary>
         List<JSONStorableStringChooser> _MotionChoosers = new List<JSONStorableStringChooser>();
 
-        /// <summary>
-        /// 位置X
-        /// </summary>
-        JSONStorableFloat _PositionX;
-        /// <summary>
-        /// 位置Y
-        /// </summary>
-        JSONStorableFloat _PositionY;
-        /// <summary>
-        /// 位置Z
-        /// </summary>
-        JSONStorableFloat _PositionZ;
+        ///// <summary>
+        ///// 位置X
+        ///// </summary>
+        //JSONStorableFloat _PositionX;
+        ///// <summary>
+        ///// 位置Y
+        ///// </summary>
+        //JSONStorableFloat _PositionY;
+        ///// <summary>
+        ///// 位置Z
+        ///// </summary>
+        //JSONStorableFloat _PositionZ;
 
-        /// <summary>
-        /// 方向X
-        /// </summary>
-        JSONStorableFloat _RotationX;
-        /// <summary>
-        /// 方向Y
-        /// </summary>
-        JSONStorableFloat _RotationY;
-        /// <summary>
-        /// 方向Z
-        /// </summary>
-        JSONStorableFloat _RotationZ;
+        ///// <summary>
+        ///// 方向X
+        ///// </summary>
+        //JSONStorableFloat _RotationX;
+        ///// <summary>
+        ///// 方向Y
+        ///// </summary>
+        //JSONStorableFloat _RotationY;
+        ///// <summary>
+        ///// 方向Z
+        ///// </summary>
+        //JSONStorableFloat _RotationZ;
 
         /// <summary>
         /// 获取统一格式的Label文字
@@ -207,55 +207,55 @@ namespace mmd2timeline
             _MotionSettingsUI.Elements.Add(_EnableFaceJSON);
             #region 位置设置UI
 
-            // 位置
-            _PositionX = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position X")}", 0f, -10f, 10f, v =>
-            {
-                // 位置调整的处理
-                //_MotionSetting.PositionX = v;
-                UpdatePositionAndRotation();
-            }, rightSide, "F4");
-            _MotionSettingsUI.Elements.Add(_PositionX);
+            //// 位置
+            //_PositionX = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position X")}", 0f, -10f, 10f, v =>
+            //{
+            //    // 位置调整的处理
+            //    //_MotionSetting.PositionX = v;
+            //    UpdatePositionAndRotation();
+            //}, rightSide, "F4");
+            //_MotionSettingsUI.Elements.Add(_PositionX);
 
-            _PositionY = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Y")}", 0f, -10f, 10f, v =>
-            {
-                // 位置调整的处理
-                //_MotionSetting.PositionY = v;
-                UpdatePositionAndRotation();
-            }, rightSide, "F4");
-            _MotionSettingsUI.Elements.Add(_PositionY);
+            //_PositionY = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Y")}", 0f, -10f, 10f, v =>
+            //{
+            //    // 位置调整的处理
+            //    //_MotionSetting.PositionY = v;
+            //    UpdatePositionAndRotation();
+            //}, rightSide, "F4");
+            //_MotionSettingsUI.Elements.Add(_PositionY);
 
-            _PositionZ = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Z")}", 0f, -10f, 10f, v =>
-            {
-                // 位置调整的处理
-                //_MotionSetting.PositionZ = v;
-                UpdatePositionAndRotation();
-            }, rightSide, "F4");
-            _MotionSettingsUI.Elements.Add(_PositionZ);
+            //_PositionZ = Utils.SetupSliderFloatWithRange(self, $"{GetLabelText("Position Z")}", 0f, -10f, 10f, v =>
+            //{
+            //    // 位置调整的处理
+            //    //_MotionSetting.PositionZ = v;
+            //    UpdatePositionAndRotation();
+            //}, rightSide, "F4");
+            //_MotionSettingsUI.Elements.Add(_PositionZ);
 
-            //角度
-            _RotationX = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation X")}", 0f, -180f, 180f, v =>
-            {
-                // 角度调整的处理
-                //_MotionSetting.RotationX = v;
-                UpdatePositionAndRotation();
-            }, rightSide);
-            _MotionSettingsUI.Elements.Add(_RotationX);
+            ////角度
+            //_RotationX = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation X")}", 0f, -180f, 180f, v =>
+            //{
+            //    // 角度调整的处理
+            //    //_MotionSetting.RotationX = v;
+            //    UpdatePositionAndRotation();
+            //}, rightSide);
+            //_MotionSettingsUI.Elements.Add(_RotationX);
 
-            _RotationY = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Y")}", 0f, -180f, 180f, v =>
-            {
-                // 角度调整的处理
-                //_MotionSetting.RotationY = v;
-                UpdatePositionAndRotation();
-            }, rightSide);
-            _MotionSettingsUI.Elements.Add(_RotationY);
+            //_RotationY = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Y")}", 0f, -180f, 180f, v =>
+            //{
+            //    // 角度调整的处理
+            //    //_MotionSetting.RotationY = v;
+            //    UpdatePositionAndRotation();
+            //}, rightSide);
+            //_MotionSettingsUI.Elements.Add(_RotationY);
 
-            _RotationZ = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Z")}", 0f, -180f, 180f, v =>
-            {
-                // 角度调整的处理
-                //_MotionSetting.RotationZ = v;
-                UpdatePositionAndRotation();
-            }, rightSide);
-            _MotionSettingsUI.Elements.Add(_RotationZ);
+            //_RotationZ = Utils.SetupSliderFloat(self, $"{GetLabelText("Rotation Z")}", 0f, -180f, 180f, v =>
+            //{
+            //    // 角度调整的处理
+            //    //_MotionSetting.RotationZ = v;
+            //    UpdatePositionAndRotation();
+            //}, rightSide);
+            //_MotionSettingsUI.Elements.Add(_RotationZ);
 
             #endregion
             _MotionScaleJSON = Utils.SetupSliderFloat(self, $"{GetLabelText("Motion Scale")}", 1f, 0.1f, 2f, v =>

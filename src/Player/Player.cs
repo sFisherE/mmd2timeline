@@ -523,6 +523,26 @@ namespace mmd2timeline
             StartCoroutine(this.Playlist.LoadFromDefalut());
         }
 
+        #region 处理人物位置同步
+        /// <summary>
+        /// 指示动作是否正在重置
+        /// </summary>
+        bool isMotionResetting = false;
+        float transformCheckTime = 0f;
+        const float TRANSFORM_MAX_CHECK_TIME = 1f;
+        public void FixedUpdate()
+        {
+            if (isMotionResetting) return;
+
+            transformCheckTime += Time.fixedDeltaTime;
+            if (transformCheckTime > TRANSFORM_MAX_CHECK_TIME)
+            {
+                transformCheckTime = 0;
+                _MotionHelperGroup.UpdateTransform();
+            }
+        }
+        #endregion
+
         public void Update()
         {
             if (IsLocked) return;
@@ -1178,13 +1198,14 @@ namespace mmd2timeline
         /// <returns></returns>
         IEnumerator ResetAllPersonMotion()
         {
+            isMotionResetting = true;
             foreach (var item in _MotionHelperGroup.Helpers)
             {
                 var pre = item.PersonAtom.mainController.transform.position;
 
                 item.PersonAtom.tempFreezePhysics = true;
                 ResetPose(item.PersonAtom);
-                for(int i = 0; i < 30; i++)
+                for (int i = 0; i < 30; i++)
                     yield return null;
                 item.PersonAtom.mainController.SetPositionNoForce(pre);
                 item.PersonAtom.tempFreezePhysics = false;
@@ -1208,8 +1229,9 @@ namespace mmd2timeline
 
                     SetPersonOn(item.PersonAtom);
                 }
-
             }
+            yield return null;
+            isMotionResetting = false;
         }
 
         /// <summary>

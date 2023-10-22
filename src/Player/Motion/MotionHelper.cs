@@ -304,24 +304,24 @@ namespace mmd2timeline
             }
         }
 
-        /// <summary>
-        /// 更新位置和角度
-        /// </summary>
-        private void UpdatePositionAndRotation()
-        {
-            Vector3 pos = Vector3.zero;
-            Quaternion rat = Quaternion.identity;
-            if (UICreated)
-            {
-                pos = new Vector3(_PositionX.val, _PositionY.val, _PositionZ.val);
-                rat = new Quaternion(_RotationX.val, _RotationY.val, _RotationZ.val, 1);
-            }
+        ///// <summary>
+        ///// 更新位置和角度
+        ///// </summary>
+        //private void UpdatePositionAndRotation()
+        //{
+        //    Vector3 pos = Vector3.zero;
+        //    Quaternion rat = Quaternion.identity;
+        //    if (UICreated)
+        //    {
+        //        pos = new Vector3(_PositionX.val, _PositionY.val, _PositionZ.val);
+        //        rat = new Quaternion(_RotationX.val, _RotationY.val, _RotationZ.val, 1);
+        //    }
 
-            Vector3 localPosition = _PersonAtom.mainController.transform.localPosition;
-            _PersonAtom.mainController.transform.localPosition = pos;
-            _PersonAtom.mainController.transform.localRotation = rat;
-            this.UpdateTransform();
-        }
+        //    Vector3 localPosition = _PersonAtom.mainController.transform.localPosition;
+        //    _PersonAtom.mainController.transform.localPosition = pos;
+        //    _PersonAtom.mainController.transform.localRotation = rat;
+        //    this.UpdateTransform();
+        //}
 
         /// <summary>
         /// 导入VMD
@@ -365,12 +365,21 @@ namespace mmd2timeline
                 LogUtil.LogError(ex, $"ImportVmd:{path}");
             }
         }
+
+        Vector3 pastPosition = Vector3.zero;
+        Quaternion pastRotation = Quaternion.identity;
+
         /// <summary>
         /// 更新骨骼的Transform
         /// </summary>
         public void UpdateTransform()
         {
             Transform transform = this._PersonAtom.mainController.transform;
+
+            if (pastPosition == transform.position && pastRotation == transform.rotation)
+                return;
+            pastPosition = transform.position;
+            pastRotation = transform.rotation;
             this.rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
         }
 
@@ -746,7 +755,7 @@ namespace mmd2timeline
             {
                 parent2 = this._PersonAtom.transform.Find("rescale2/MoveWhenInactive/PhysicsModel");
             }
-            
+
             _MmdPersonGameObject.m_MatchBone = model =>
             {
                 DazBoneMapping.MatchTarget(_PersonAtom, _MmdPersonGameObject, parent2);
@@ -832,7 +841,7 @@ namespace mmd2timeline
                 GameObject[] bones = mmd._bones.Where(b => validBoneNames.ContainsKey(b.name)).ToArray();
 
                 // 计算地板高度
-                var floorHeight = config.AutoCorrectFloorHeight + _PositionY.val;
+                var floorHeight = config.AutoCorrectFloorHeight;// + _PositionY.val;
 
                 // 修正高度
                 var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
