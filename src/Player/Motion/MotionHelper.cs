@@ -18,10 +18,6 @@ namespace mmd2timeline
         /// 配置数据
         /// </summary>
         protected static readonly Config config = Config.GetInstance();
-        /// <summary>
-        /// 模型路径
-        /// </summary>
-        private string PMXPath = null;
 
         /// <summary>
         /// 获取或设置人物原子
@@ -168,8 +164,9 @@ namespace mmd2timeline
 
             Init();
         }
-        Dictionary<string, Transform> cachedBoneLookup;
-
+        Dictionary<string, Transform> cachedBoneLookup = new Dictionary<string, Transform>();
+        // 手指关节游戏对象
+        List<GameObject> listFingerGameObject = new List<GameObject>();
         /// <summary>
         /// 初始化
         /// </summary>
@@ -191,11 +188,9 @@ namespace mmd2timeline
                 else
                 {
                     var boneName = bone.name;
-
-                    var cacheBoneKey = GetCacheBoneKey(boneName);
-                    if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && cachedBoneLookup.ContainsKey(cacheBoneKey))
+                    if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && cachedBoneLookup.ContainsKey(boneName))
                     {
-                        Transform boneTransform = cachedBoneLookup[cacheBoneKey];
+                        Transform boneTransform = cachedBoneLookup[boneName];
                         if (boneTransform != null)
                         {
                             if (this.controllerLookup.ContainsKey(boneTransform))
@@ -751,27 +746,15 @@ namespace mmd2timeline
             {
                 parent2 = this._PersonAtom.transform.Find("rescale2/MoveWhenInactive/PhysicsModel");
             }
-            GameObject gameObject3 = new GameObject(Utility.GameObjectHead + "Root");
-            Dictionary<string, Transform> check = DazBoneMapping.CreateFakeBones(gameObject3.transform, parent2);
-            this._MmdPersonGameObject.m_ChangeInitTransform = delegate (MmdModel model)
-            {
-                //for (int i = 0; i < model.Bones.Length; i++)
-                //{
-                //    Bone bone = model.Bones[i];
-                //    Vector3 position = DazBoneMapping.GetPosition(parent2.gameObject, bone, bone.Name, check, GetCacheBoneKey(bone.Name));
-                    
-                //    bone.Position = 10f * (temp.transform.TransformPoint(position) - temp.transform.position);
-                //}
-            };
+            
             _MmdPersonGameObject.m_MatchBone = model =>
             {
                 DazBoneMapping.MatchTarget(_PersonAtom, _MmdPersonGameObject, parent2);
             };
-            this._MmdPersonGameObject.LoadModel(PMXPath);
-            UnityEngine.Object.DestroyImmediate(gameObject3);
+            this._MmdPersonGameObject.LoadModel();
             this._MmdPersonGameObject.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
 
-            cachedBoneLookup = new Dictionary<string, Transform>();
+            cachedBoneLookup.Clear();
             foreach (var item in _MmdPersonGameObject._model.Bones)
             {
                 string name = item.Name;
@@ -784,6 +767,15 @@ namespace mmd2timeline
                     if (cachedBoneLookup == null)
                         cachedBoneLookup = new Dictionary<string, Transform>();
                     cachedBoneLookup[name] = tf;
+                }
+            }
+            listFingerGameObject.Clear();
+            foreach (var mmdbone in _MmdPersonGameObject._bones)
+            {
+                if (DazBoneMapping.fingerBoneNames.Contains(mmdbone.name))
+                {
+                    listFingerGameObject.Add(mmdbone);
+                    continue;
                 }
             }
 
@@ -836,9 +828,6 @@ namespace mmd2timeline
 
                 SetLookMode();
 
-                // 手指关节游戏对象
-                List<GameObject> listFingerGameObject = new List<GameObject>();
-
                 // 骨骼数组
                 GameObject[] bones = mmd._bones.Where(b => validBoneNames.ContainsKey(b.name)).ToArray();
 
@@ -854,11 +843,6 @@ namespace mmd2timeline
 
                 foreach (GameObject mmdbone in bones)
                 {
-                    if (DazBoneMapping.fingerBoneNames.Contains(mmdbone.name))
-                    {
-                        listFingerGameObject.Add(mmdbone);
-                        continue;
-                    }
                     string bonename = mmdbone.name;
 
                     // 如果选中关闭下半身，并且骨骼在下半身字典中，则不更新骨骼动作
@@ -867,8 +851,7 @@ namespace mmd2timeline
                         continue;
                     }
 
-                    var cacheBoneKey = GetCacheBoneKey(bonename);
-                    Transform boneTransform = cachedBoneLookup[cacheBoneKey];
+                    Transform boneTransform = cachedBoneLookup[bonename];
                     if (boneTransform != null)
                     {
                         if (this.controllerLookup.ContainsKey(boneTransform))
@@ -1007,18 +990,6 @@ namespace mmd2timeline
                 LogUtil.LogError(e, $"MotionHelper::UpdateMotion:{_MotionSetting.ToString()}");
             }
         }
-
-        /// <summary>
-        /// 获取缓存的骨骼key
-        /// </summary>
-        /// <param name="boneName"></param>
-        /// <returns></returns>
-        private string GetCacheBoneKey(string boneName)
-        {
-            //return $"{this.PersonAtom.GetInstanceID()}-{boneName}";
-            return boneName;
-        }
-
         /// <summary>
         /// 更新手指
         /// </summary>
@@ -1026,15 +997,13 @@ namespace mmd2timeline
         private void UpdateFinger(GameObject item)
         {
             string pmxBoneName = item.name;
-            var cacheBoneKey = GetCacheBoneKey(pmxBoneName);
-
-            if (!cachedBoneLookup.ContainsKey(cacheBoneKey))
+            if (!cachedBoneLookup.ContainsKey(pmxBoneName))
             {
                 return;
             }
 
             var rotation = item.transform.rotation;
-            Transform transform = cachedBoneLookup[cacheBoneKey];
+            Transform transform = cachedBoneLookup[pmxBoneName];
             Quaternion worldRotation = item.transform.rotation * Utility.quat;
             Quaternion parentRotation = item.transform.parent.rotation;
             var parentWorldRotation = parentRotation;

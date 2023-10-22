@@ -190,11 +190,10 @@ namespace mmd2timeline
         {
             foreach (var bone in lowerBones)
             {
-                var cacheBoneKey = GetCacheBoneKey(bone.Key);
-
-                if (cachedBoneLookup.ContainsKey(cacheBoneKey))
+                var boneName = bone.Key;
+                if (cachedBoneLookup.ContainsKey(boneName))
                 {
-                    var transform = cachedBoneLookup[cacheBoneKey];
+                    var transform = cachedBoneLookup[boneName];
 
                     if (this.controllerLookup.ContainsKey(transform))
                     {

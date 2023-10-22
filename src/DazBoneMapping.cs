@@ -223,10 +223,10 @@ namespace mmd2timeline
         "lShoulderControl",
     };
         public static List<string> AssetBindControlNames = new List<string>()
-    {
-        "lHandControl",//左手首
-        "rHandControl",//右手首
-    };
+        {
+            "lHandControl",//左手首
+            "rHandControl",//右手首
+        };
         public static Dictionary<string, string> boneNames = new Dictionary<string, string>() {
         //todo
                 { "全ての親","Genesis2Female"},
@@ -445,79 +445,7 @@ namespace mmd2timeline
             return null;
         }
 
-        public static Dictionary<string, Transform> cachedBoneLookup;
-
-        public static Vector3 TryGetPosition(GameObject target, string bone1, string bone2, float ratio)
-        {
-            var tf1 = SearchObjName(target.transform, bone1);
-            var tf2 = SearchObjName(target.transform, bone2);
-            return tf1.position + (tf2.position - tf1.position) * ratio - target.transform.position;
-        }
-
-        public static Vector3 GetPosition(GameObject target, LibMMD.Model.Bone bone, string name, Dictionary<string, Transform> check, string cacheKey = null)
-        {
-            if (cacheKey == null)
-            {
-                cacheKey = name;
-            }
-
-            string boneName = name;
-            if (boneNames.ContainsKey(name))
-                boneName = boneNames[name];
-
-            if (boneName.Contains("|"))
-            {
-                string[] splits = boneName.Split('|');
-                string bone1 = splits[0];
-                string bone2 = splits[1];
-                float ratio = float.Parse(splits[2]);
-
-                var tf1 = SearchObjName(target.transform, bone1);
-                if (check.ContainsKey(bone1))
-                    tf1 = check[bone1];
-
-                var tf2 = SearchObjName(target.transform, bone2);
-                if (check.ContainsKey(bone2))
-                    tf2 = check[bone2];
-
-                return tf1.position + (tf2.position - tf1.position) * ratio - target.transform.position;
-            }
-            else
-            {
-                var tf = SearchObjName(target.transform, boneName);
-                if (cachedBoneLookup == null)
-                    cachedBoneLookup = new Dictionary<string, Transform>();
-                //if (cachedBoneLookup.ContainsKey(cacheKey)) cachedBoneLookup.Remove(cacheKey);
-                //cachedBoneLookup.Add(cacheKey, tf);
-                cachedBoneLookup[cacheKey] = tf;
-
-                if (check.ContainsKey(boneName))
-                    tf = check[boneName];
-                if (tf != null)
-                {
-                    return tf.position - target.transform.position;
-                }
-            }
-
-            Debug.Log("no set " + name);
-            return bone.Position;
-        }
         static Quaternion quat = new Quaternion(0, 1, 0, 0);
-        public static void UpdateBones(GameObject target, MmdGameObject mmd)
-        {
-            var bones = mmd._bones;
-            var smr = target.GetComponentInChildren<SkinnedMeshRenderer>();
-            foreach (var item in bones)
-            {
-                var rotation = item.transform.rotation;
-                if (cachedBoneLookup.ContainsKey(item.name))
-                    cachedBoneLookup[item.name].SetPositionAndRotation(item.transform.position, rotation * quat);
-                else
-                {
-                    //Debug.Log(item.name);
-                }
-            }
-        }
     }
 }
 

@@ -611,22 +611,6 @@ namespace mmd2timeline
                 parent2 = containingAtom.transform.Find("rescale2/MoveWhenInactive/PhysicsModel");
             }
 
-            //创建一副假骨架，然后转成A-pose，然后取他的坐标点
-            GameObject root = new GameObject(Utility.GameObjectHead + "Root");
-
-            Dictionary<string, Transform> check = DazBoneMapping.CreateFakeBones(root.transform,parent2);
-            m_MmdPersonGameObject.m_ChangeInitTransform = model =>
-            {
-                //for (int i = 0; i < model.Bones.Length; i++)
-                //{
-                //    var bone = model.Bones[i];
-                //    Vector3 pos = DazBoneMapping.GetPosition(parent2.gameObject, bone, bone.Name, check);
-                //    //mmd里面的尺寸大了10倍
-                //    bone.Position = 10 * (temp.transform.TransformPoint(pos) - temp.transform.position);
-                //}
-            };
-            
-
             m_MmdPersonGameObject.m_MatchBone = model =>
             {
                 DazBoneMapping.MatchTarget(containingAtom, m_MmdPersonGameObject, parent2);
