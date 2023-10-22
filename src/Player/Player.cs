@@ -723,16 +723,16 @@ namespace mmd2timeline
                         AlignHeadToCamera();
                         return;
                     }
-                    else
-                    {
-                        if (config.UseWindowCamera)
-                        {
-                            // 启用镜头跟随
-                            AlignHeadToCamera();
+                    //else
+                    //{
+                    //    if (config.UseWindowCamera)
+                    //    {
+                    //        // 启用镜头跟随
+                    //        AlignHeadToCamera();
 
-                            return;
-                        }
-                    }
+                    //        return;
+                    //    }
+                    //}
                 }
 
                 _CameraHelper.IsActive = false;
