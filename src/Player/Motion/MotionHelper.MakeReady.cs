@@ -50,7 +50,7 @@ namespace mmd2timeline
             yield return new WaitWhile(() =>
             {
                 readyPositionY -= perStep;
-                this._PositionY.val -= perStep;
+                //this._PositionY.val -= perStep;
 
                 return readyPositionY >= perStep;
             });
@@ -74,7 +74,7 @@ namespace mmd2timeline
             {
                 yield return null;
                 readyPositionY = READY_HEIGHT;
-                this._PositionY.val += readyPositionY;
+                //this._PositionY.val += readyPositionY;
             }
         }
     }
