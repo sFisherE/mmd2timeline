@@ -777,8 +777,7 @@ namespace mmd2timeline
         /// <param name="atom"></param>
         private void ResetPose(Atom atom)
         {
-            atom.ResetRigidbodies();
-            atom.ResetPhysical();
+            atom.ResetPhysics(true, true);
 
             AtomUI componentInChildren = atom.GetComponentInChildren<AtomUI>();
             if (componentInChildren != null)
@@ -1181,8 +1180,17 @@ namespace mmd2timeline
         {
             foreach (var item in _MotionHelperGroup.Helpers)
             {
-                ResetPose(item.PersonAtom);
+                var pre = item.PersonAtom.mainController.transform.position;
 
+                item.PersonAtom.tempFreezePhysics = true;
+                ResetPose(item.PersonAtom);
+                for(int i = 0; i < 30; i++)
+                    yield return null;
+                item.PersonAtom.mainController.SetPositionNoForce(pre);
+                item.PersonAtom.tempFreezePhysics = false;
+                for (int i = 0; i < 30; i++)
+                    yield return null;
+                item.UpdateTransform();
                 yield return null;
 
                 item.ReloadMotions(3, init: true);
@@ -1190,14 +1198,17 @@ namespace mmd2timeline
                 // 允许初始动作修正时调用
                 if (config.EnableInitialMotionAdjustment)
                 {
-                    yield return new WaitForSeconds(1);
+                    for (int i = 0; i < 30; i++)
+                        yield return null;
 
                     SetPersonOff(item.PersonAtom);
 
-                    yield return new WaitForSeconds(1);
+                    for (int i = 0; i < 30; i++)
+                        yield return null;
 
                     SetPersonOn(item.PersonAtom);
                 }
+
             }
         }
 

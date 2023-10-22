@@ -368,7 +368,7 @@ namespace mmd2timeline
         /// <summary>
         /// 更新骨骼的Transform
         /// </summary>
-        private void UpdateTransform()
+        public void UpdateTransform()
         {
             Transform transform = this._PersonAtom.mainController.transform;
             this.rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
