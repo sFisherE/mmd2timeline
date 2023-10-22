@@ -283,7 +283,7 @@ namespace mmd2timeline
         internal void DisableNavigation(bool disable = true)
         {
             // 未启用镜头，跳过处理
-            if (!config.EnableCamera)
+            if (!config.EnableCamera || !HasMotion)
                 return;
 
             if (config.UseWindowCamera)
