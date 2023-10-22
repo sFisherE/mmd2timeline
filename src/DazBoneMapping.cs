@@ -6,6 +6,19 @@ namespace mmd2timeline
 {
     class DazBoneMapping
     {
+        /// <summary>
+        /// 查看是否是右侧骨骼
+        /// </summary>
+        static Dictionary<string, bool> IsRightSideBoneLookup = new Dictionary<string, bool>();
+        public static bool IsRightSideBone(string boneName)
+        {
+            if (IsRightSideBoneLookup.ContainsKey(boneName))
+                return IsRightSideBoneLookup[boneName];
+            var result = boneName.StartsWith("r") || boneName.StartsWith("右");
+            IsRightSideBoneLookup.Add(boneName, result);
+            return result;
+        }
+
         static void MatchNode(Atom atom, Transform child,string childBoneName,string parentBoneName,Transform target)
         {
             Transform parentBone = SearchObjName(target, parentBoneName);

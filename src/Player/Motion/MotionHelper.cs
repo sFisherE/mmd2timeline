@@ -958,7 +958,7 @@ namespace mmd2timeline
 
                             if (DazBoneMapping.armBones.Contains(bonename))
                             {
-                                if (bonename.StartsWith("r") || bonename.StartsWith("右"))
+                                if(DazBoneMapping.IsRightSideBone(bonename))
                                 {
                                     freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat);
                                 }
@@ -974,22 +974,21 @@ namespace mmd2timeline
                         }
 
                     }
+                }
+                foreach (GameObject item in listFingerGameObject)
+                {
+                    this.UpdateFinger(item);
+                }
 
-                    foreach (GameObject item in listFingerGameObject)
+                float time = GetRelativeTime();
+                if (this._EnableFaceJSON.val)
+                {
+                    var morphs = mmd.GetUpdatedMorph(time);
+                    foreach (var item in morphs)
                     {
-                        this.UpdateFinger(item);
-                    }
-
-                    float time = GetRelativeTime();
-                    if (this._EnableFaceJSON.val)
-                    {
-                        var morphs = mmd.GetUpdatedMorph(time);
-                        foreach (var item in morphs)
+                        if (this._FaceMorphs.ContainsKey(item.Key))
                         {
-                            if (this._FaceMorphs.ContainsKey(item.Key))
-                            {
-                                this._FaceMorphs[item.Key].morphValue = item.Value;
-                            }
+                            this._FaceMorphs[item.Key].morphValue = item.Value;
                         }
                     }
                 }
@@ -1013,10 +1012,10 @@ namespace mmd2timeline
 
             var rotation = item.transform.rotation;
             Transform transform = cachedBoneLookup[pmxBoneName];
-            Quaternion worldRotation = item.transform.rotation * Utility.quat;
+            Quaternion worldRotation;
+            Quaternion parentWorldRotation;
             Quaternion parentRotation = item.transform.parent.rotation;
-            var parentWorldRotation = parentRotation;
-            if (pmxBoneName.StartsWith("r") || pmxBoneName.StartsWith("右"))
+            if (DazBoneMapping.IsRightSideBone(pmxBoneName))
             {
                 worldRotation = rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat;
                 parentWorldRotation = parentRotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat;
