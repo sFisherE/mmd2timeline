@@ -1039,14 +1039,19 @@ namespace mmd2timeline
             {
                 var index = PersonAtoms.IndexOf(atom);
 
+                PersonMotion motion;
+
                 // 如果没有足够的动作数据，则为后边的人物设定新的动作数据对象
                 if (CurrentItem.Motions.Count <= index)
                 {
-                    CurrentItem.Motions.Add(new PersonMotion());
+                    motion = new PersonMotion();
+                    CurrentItem.Motions.Add(motion);
+                    motion.InitMotion(fileData);
                 }
-
-                var motion = CurrentItem.Motions[index];
-
+                else
+                {
+                    motion = CurrentItem.Motions[index];
+                }
                 // 设置人物动作
 
                 // 实例化MMD人物

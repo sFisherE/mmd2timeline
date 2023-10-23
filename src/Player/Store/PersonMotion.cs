@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace mmd2timeline.Store
 {
@@ -281,6 +282,33 @@ namespace mmd2timeline.Store
                 sFiles = sFiles.Where(f => !string.IsNullOrEmpty(f) && f != "None").Distinct();
 
                 this.Files = this.Files.Concat(sFiles).ToList();
+            }
+        }
+
+        /// <summary>
+        /// 初始化动作数据
+        /// </summary>
+        /// <param name="data"></param>
+        internal void InitMotion(MMDEntity.FilesData data)
+        {
+            this.Files.Clear();
+
+            // 设定默认动作文件
+            if (data.DefaultMotion != MMDEntity.noneString)
+            {
+                this.Files.Add(data.DefaultMotion);
+            }
+
+            // 设定默认表情
+            if (data.Expressions != null && data.Expressions.Count > 0)
+            {
+                // 默认最大只能选择3个表情文件
+                var maxExpressions = Math.Min(3, data.Expressions.Count);
+
+                for (var i = 0; i < maxExpressions; i++)
+                {
+                    this.Files?.Add(data.Expressions[i]);
+                }
             }
         }
 
