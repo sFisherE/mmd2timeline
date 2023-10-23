@@ -620,8 +620,8 @@ namespace mmd2timeline
                 _DebugInfo.SetVal(playInfo);
             }
 
-            // 如果冻结动画或不是活动和启用状态，停止播放后，直接返回
-            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || _PlaySpeedJSON.val <= 0f)
+            // 如果冻结动画或不是活动和启用状态、动作重置中、播放速度为0，进行播放进度冻结后，直接返回
+            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || _PlaySpeedJSON.val <= 0f)
             {
                 if (IsPlaying)
                 {
@@ -1204,6 +1204,8 @@ namespace mmd2timeline
         IEnumerator ResetAllPersonMotion()
         {
             isMotionResetting = true;
+            // 跳一帧
+            yield return null;
             foreach (var item in _MotionHelperGroup.Helpers)
             {
                 var pre = item.PersonAtom.mainController.transform.position;
@@ -1237,6 +1239,7 @@ namespace mmd2timeline
             }
             yield return null;
             isMotionResetting = false;
+            yield return null;
         }
 
         /// <summary>
