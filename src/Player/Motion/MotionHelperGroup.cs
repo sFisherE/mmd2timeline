@@ -219,44 +219,44 @@ namespace mmd2timeline
         //    yield break;
         //}
 
-        /// <summary>
-        /// 初始化人物列表的设置
-        /// </summary>
-        /// <param name="persons"></param>
-        /// <param name="motions"></param>
-        /// <param name="choices"></param>
-        /// <param name="displayChoices"></param>
-        internal void InitSettings(List<Atom> persons, List<PersonMotion> motions, List<string> choices, List<string> displayChoices)
-        {
-            for (var i = 0; i < persons.Count; i++)
-            {
-                var person = persons[i];
-                PersonMotion motion = null;
-                if (motions.Count > i)
-                {
-                    motion = motions[i];
-                }
+        ///// <summary>
+        ///// 初始化人物列表的设置
+        ///// </summary>
+        ///// <param name="persons"></param>
+        ///// <param name="motions"></param>
+        ///// <param name="choices"></param>
+        ///// <param name="displayChoices"></param>
+        //internal void InitSettings(List<Atom> persons, List<PersonMotion> motions, List<string> choices, List<string> displayChoices)
+        //{
+        //    for (var i = 0; i < persons.Count; i++)
+        //    {
+        //        var person = persons[i];
+        //        PersonMotion motion = null;
+        //        if (motions.Count > i)
+        //        {
+        //            motion = motions[i];
+        //        }
 
-                InitSettings(person, motion, choices, displayChoices);
-            }
-        }
+        //        InitSettings(person, motion, choices, displayChoices);
+        //    }
+        //}
 
-        /// <summary>
-        /// 初始化指定让人物的设置
-        /// </summary>
-        /// <param name="person"></param>
-        /// <param name="motion"></param>
-        /// <param name="choices"></param>
-        /// <param name="displayChoices"></param>
-        void InitSettings(Atom person, PersonMotion motion, List<string> choices, List<string> displayChoices)
-        {
-            if (_group.ContainsKey(person))
-            {
-                var motionHelper = _group[person];
+        ///// <summary>
+        ///// 初始化指定让人物的设置
+        ///// </summary>
+        ///// <param name="person"></param>
+        ///// <param name="motion"></param>
+        ///// <param name="choices"></param>
+        ///// <param name="displayChoices"></param>
+        //void InitSettings(Atom person, PersonMotion motion, List<string> choices, List<string> displayChoices)
+        //{
+        //    if (_group.ContainsKey(person))
+        //    {
+        //        var motionHelper = _group[person];
 
-                motionHelper.InitSettings(choices, displayChoices, motion);
-            }
-        }
+        //        motionHelper.InitSettings(choices, displayChoices, motion);
+        //    }
+        //}
 
         #region 单例
         private static MotionHelperGroup _instance;

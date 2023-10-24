@@ -620,8 +620,8 @@ namespace mmd2timeline
                 _DebugInfo.SetVal(playInfo);
             }
 
-            // 如果冻结动画或不是活动和启用状态，停止播放后，直接返回
-            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || _PlaySpeedJSON.val <= 0f)
+            // 如果冻结动画或不是活动和启用状态、动作重置中、播放速度为0，进行播放进度冻结后，直接返回
+            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || _PlaySpeedJSON.val <= 0f)
             {
                 if (IsPlaying)
                 {
@@ -1039,14 +1039,19 @@ namespace mmd2timeline
             {
                 var index = PersonAtoms.IndexOf(atom);
 
+                PersonMotion motion;
+
                 // 如果没有足够的动作数据，则为后边的人物设定新的动作数据对象
                 if (CurrentItem.Motions.Count <= index)
                 {
-                    CurrentItem.Motions.Add(new PersonMotion());
+                    motion = new PersonMotion();
+                    CurrentItem.Motions.Add(motion);
+                    motion.InitMotion(fileData);
                 }
-
-                var motion = CurrentItem.Motions[index];
-
+                else
+                {
+                    motion = CurrentItem.Motions[index];
+                }
                 // 设置人物动作
 
                 // 实例化MMD人物
@@ -1199,6 +1204,8 @@ namespace mmd2timeline
         IEnumerator ResetAllPersonMotion()
         {
             isMotionResetting = true;
+            // 跳一帧
+            yield return null;
             foreach (var item in _MotionHelperGroup.Helpers)
             {
                 var pre = item.PersonAtom.mainController.transform.position;
@@ -1232,6 +1239,7 @@ namespace mmd2timeline
             }
             yield return null;
             isMotionResetting = false;
+            yield return null;
         }
 
         /// <summary>

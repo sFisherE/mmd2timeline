@@ -15,7 +15,7 @@ namespace mmd2timeline.Store
     /// </summary>
     internal partial class MMDEntity : JSONClass
     {
-        const string noneString = "None";
+        internal const string noneString = "None";
 
         public MMDEntity()
         {
