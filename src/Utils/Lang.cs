@@ -439,6 +439,10 @@ namespace mmd2timeline
             this["Clear Bone Rotation Adjust"] = "清除骨骼旋转调节";
             this["Camera Control Mode"] = "镜头\n控制模式";
             this["Original"] = "原始";
+            this["Camera Progress"] = "镜头进度";
+            this["Motion Progress"] = "动作进度";
+            this["Camera Delay"] = "镜头延迟";
+            this["Motion Delay"] = "动作延迟";
         }
     }
 }

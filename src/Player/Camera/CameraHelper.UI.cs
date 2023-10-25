@@ -71,14 +71,14 @@ namespace mmd2timeline
             _SettingsUI.ToggleBool = toggleJSON;
 
             // 镜头动作播放进度
-            _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Progress"), 0f, 0f, 0f, v =>
+            _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Camera Progress"), 0f, 0f, 0f, v =>
             {
                 // 更新镜头进度
                 //_MmdCamera.SetPlayPos((double)v);
             }, rightSide);
             _SettingsUI.Elements.Add(_progressJSON);
 
-            _timeDelayJSON = Utils.SetupSliderFloatWithRange(self, Lang.Get("Delay"), 0f, 0f, 0f, rightSide);
+            _timeDelayJSON = Utils.SetupSliderFloatWithRange(self, Lang.Get("Camera Delay"), 0f, 0f, 0f, rightSide);
             _timeDelayJSON.setCallbackFunction = v =>
             {
                 // 更新镜头延迟

@@ -169,7 +169,7 @@ namespace mmd2timeline
             // 生成动作选择器
             for (var i = 0; i < MAX_MOTION_COUNT; i++)
             {
-                var motionChooser = self.SetupStringChooserNoLang($"{Lang.Get("Motion")} {(i + 1)}", self.noneStrings, rightSide: rightSide);
+                var motionChooser = self.SetupStringChooserNoLang($"{GetLabelText("Motion")} {(i + 1)}", self.noneStrings, rightSide: rightSide);
                 motionChooser.setCallbackFunction = UpdateMotionValue;
                 _MotionSettingsUI.OtherElements.Add(motionChooser);
                 _MotionChoosers.Add(motionChooser);
@@ -184,14 +184,14 @@ namespace mmd2timeline
             _MotionSettingsUI.ToggleBool = toggleJSON;
 
             // 动作播放进度
-            _ProgressJSON = Utils.SetupSliderFloat(self, Lang.Get("Progress"), 0f, 0f, 0f, v =>
+            _ProgressJSON = Utils.SetupSliderFloat(self, GetLabelText("Motion Progress"), 0f, 0f, 0f, v =>
             {
                 // TODO 更新动作
                 //_MmdPersonGameObject?.SetMotionPos(v, true, motionScale: motionScaleRate);
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_ProgressJSON);
 
-            _TimeDelayJSON = Utils.SetupSliderFloat(self, Lang.Get("Motion Delay"), 0f, 0f, 0f, v =>
+            _TimeDelayJSON = Utils.SetupSliderFloat(self, GetLabelText("Motion Delay"), 0f, 0f, 0f, v =>
             {
                 // 设置时间延迟
                 SetTimeDelay(v);
