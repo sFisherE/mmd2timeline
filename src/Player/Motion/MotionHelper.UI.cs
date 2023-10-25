@@ -360,6 +360,10 @@ namespace mmd2timeline
             }, rightSide);
             _MotionSettingsUI.OtherElements.Add(_CloseLowerBonesJSON);
 
+            // 强制关闭IK
+            var forceDisableIK = Utils.SetupToggle(self, GetLabelText("Force Disable IK"), false, ForceDisableIK,rightSide);
+            _MotionSettingsUI.OtherElements.Add(forceDisableIK);
+
             _MotionSettingsUI.RefreshView();
         }
 

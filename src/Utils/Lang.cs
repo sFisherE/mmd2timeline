@@ -443,6 +443,7 @@ namespace mmd2timeline
             this["Motion Progress"] = "动作进度";
             this["Camera Delay"] = "镜头延迟";
             this["Motion Delay"] = "动作延迟";
+            this["Force Disable IK"] = "强制关闭IK";
         }
     }
 }

@@ -792,6 +792,16 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 强制关闭IK
+        /// </summary>
+        /// <param name="val"></param>
+        void ForceDisableIK(bool val)
+        {
+            if (_MmdPersonGameObject == null) return;
+            _MmdPersonGameObject.ForceDisableIK = val;
+        }
+
+        /// <summary>
         /// 设置指定控制器的最大保持力
         /// </summary>
         /// <param name="controller"></param>
