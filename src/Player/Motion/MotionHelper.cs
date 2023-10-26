@@ -968,7 +968,7 @@ namespace mmd2timeline
 
                             if (DazBoneMapping.armBones.Contains(bonename))
                             {
-                                if(DazBoneMapping.IsRightSideBone(bonename))
+                                if (DazBoneMapping.IsRightSideBone(bonename))
                                 {
                                     freeControllerV.transform.SetPositionAndRotation(position, rotation * Quaternion.Euler(new Vector3(0f, 0f, 36f)) * Utility.quat);
                                 }
@@ -1049,7 +1049,7 @@ namespace mmd2timeline
         /// </summary>
         internal void UpdateEnableHighHeel()
         {
-            foreach (FreeControllerV3 freeControllerV in this._PersonAtom.freeControllers)
+            foreach (FreeControllerV3 freeControllerV in this._PersonAtom?.freeControllers)
             {
                 if (freeControllerV.name == "lToeControl" || freeControllerV.name == "rToeControl")
                 {
@@ -1097,19 +1097,22 @@ namespace mmd2timeline
                 return;
             }
 
-            foreach (FreeControllerV3 freeControllerV in this._PersonAtom.freeControllers)
+            foreach (FreeControllerV3 freeControllerV in this._PersonAtom?.freeControllers)
             {
                 if (freeControllerV.name == "lFootControl" || freeControllerV.name == "rFootControl")
                 {
                     var footHoldRotationMaxForce = freeControllerV.GetFloatJSONParam("holdRotationMaxForce");
                     var footJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
-                    footHoldRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
-                    footJointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
+                    if (footHoldRotationMaxForce != null)
+                        footHoldRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
+                    if (footJointDriveXTarget != null)
+                        footJointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
                 }
                 else if (freeControllerV.name == "lToeControl" || freeControllerV.name == "rToeControl")
                 {
                     var toeJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
-                    toeJointDriveXTarget.val = this._ToeJointDriveXTargetAdjust.val;
+                    if (toeJointDriveXTarget != null)
+                        toeJointDriveXTarget.val = this._ToeJointDriveXTargetAdjust.val;
                 }
             }
         }

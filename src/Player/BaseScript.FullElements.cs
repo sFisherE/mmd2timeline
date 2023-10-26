@@ -149,10 +149,20 @@ namespace mmd2timeline
         {
             if (jsf != null && jsf.slider != null)
             {
-                UIDynamicSlider componentInParent = sliderToJSONStorableFloat.Where(s => s.Value == jsf).Select(s => s.Key).FirstOrDefault();//jsf.slider.GetComponentInParent<UIDynamicSlider>();
+                UIDynamicSlider componentInParent = sliderToJSONStorableFloat.Where(s => s.Value == jsf).Select(s => s.Key).FirstOrDefault();
+                
+                if (componentInParent == null)
+                {
+                    componentInParent = jsf.slider.GetComponentInParent<UIDynamicSlider>();
+                }
+
                 if (componentInParent != null)
                 {
                     this.RemoveSlider(componentInParent);
+                }
+                else
+                {
+                    base.RemoveSlider(jsf);
                 }
             }
         }
