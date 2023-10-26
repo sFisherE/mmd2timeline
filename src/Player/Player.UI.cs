@@ -260,7 +260,7 @@ namespace mmd2timeline
 
             _PluginInfo = pluginInfoText.dynamicText;
             _PluginInfo.UItext.alignment = TextAnchor.MiddleCenter;
-            _DebugUIs.OtherElements.Add(_PluginInfo);
+            _DebugUIs.OuterElements.Add(_PluginInfo);
             #endregion
 
             var recoverButton = Utils.SetupButton(this, Lang.Get("Reset Motion Model\n(Fix motion problems with bone changes)"), () =>
@@ -373,7 +373,7 @@ namespace mmd2timeline
                 _LoadTips.gameObject.SetActive(false);
                 ShowDebugUIs(true);
 
-                _PluginInfo.height = 286f + 30f + 65f;
+                _PluginInfo.height = 286f + 30f + 65f + 115f;
             }
             catch (Exception ex)
             {
@@ -403,7 +403,7 @@ namespace mmd2timeline
 
                 _LoadTips.gameObject.SetActive(false);
                 ShowDebugUIs(true);
-                _PluginInfo.height = 745f + 30f + 70f;
+                _PluginInfo.height = 745f + 30f + 70f + 115f;
             }
             catch (Exception ex)
             {
@@ -456,7 +456,7 @@ namespace mmd2timeline
         void ShowDebugUIs(bool show)
         {
             ShowUIElement(_DebugUIs.ToggleBool, show);
-            ShowUIElements(_DebugUIs.OtherElements, show);
+            ShowUIElements(_DebugUIs.OuterElements, show);
             if (show)
             {
                 _DebugUIs.RefreshView();

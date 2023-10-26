@@ -119,11 +119,11 @@ namespace mmd2timeline
         /// <param name="personId"></param>
         private void CreateBoneRotationAdjustUI(BaseScript self, bool rightSide = false)
         {
-            _BoneRotationAdjust = self.SetupStaticEnumsChooser<AdjustBones>("Bone Rotation Adjust", AdjustBones.Names, AdjustBones.GetName(AdjustBones.Arm), rightSide, v => UpdateBoneAdjustValues(v));
+            _BoneRotationAdjust = SetupStaticEnumsChooser<AdjustBones>(self, "Bone Rotation Adjust", AdjustBones.Names, AdjustBones.GetName(AdjustBones.Arm), rightSide, v => UpdateBoneAdjustValues(v));
 
-            _BoneAdjustX = Utils.SetupSliderFloat(self, Lang.Get("Adjust Bone Rotation X"), 0f, -30f, 30f, v => SetBoneAdjustX(v), rightSide);
-            _BoneAdjustY = Utils.SetupSliderFloat(self, Lang.Get("Adjust Bone Rotation Y"), 0f, -30f, 30f, v => SetBoneAdjustY(v), rightSide);
-            _BoneAdjustZ = Utils.SetupSliderFloat(self, Lang.Get("Adjust Bone Rotation Z"), 0f, -30f, 30f, v => SetBoneAdjustZ(v), rightSide);
+            _BoneAdjustX = SetupSliderFloat(self, "Adjust Bone Rotation X", 0f, -30f, 30f, v => SetBoneAdjustX(v), rightSide);
+            _BoneAdjustY = SetupSliderFloat(self, "Adjust Bone Rotation Y", 0f, -30f, 30f, v => SetBoneAdjustY(v), rightSide);
+            _BoneAdjustZ = SetupSliderFloat(self, "Adjust Bone Rotation Z", 0f, -30f, 30f, v => SetBoneAdjustZ(v), rightSide);
 
             _MotionSettingsUI.Elements.Add(Utils.SetupButton(self, Lang.Get("Clear Bone Rotation Adjust"), () => ClearAllBoneRotationAdjust(), rightSide));
 

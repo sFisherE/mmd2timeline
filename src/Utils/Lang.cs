@@ -265,6 +265,12 @@ namespace mmd2timeline
             this["Rotation X"] = "方向 X";
             this["Rotation Y"] = "方向 Y";
             this["Rotation Z"] = "方向 Z";
+            this["Position Offset X"] = "位置偏移 X";
+            this["Position Offset Y"] = "位置偏移 Y";
+            this["Position Offset Z"] = "位置偏移 Z";
+            this["Rotation Offset X"] = "方向偏移 X";
+            this["Rotation Offset Y"] = "方向偏移 Y";
+            this["Rotation Offset Z"] = "方向偏移 Z";
             this["Target Atom"] = "目标原子";
             this["Target Receiver"] = "目标位置";
             this["Start Time"] = "开始时间";
@@ -439,6 +445,12 @@ namespace mmd2timeline
             this["Clear Bone Rotation Adjust"] = "清除骨骼旋转调节";
             this["Camera Control Mode"] = "镜头\n控制模式";
             this["Original"] = "原始";
+            this["Camera Progress"] = "镜头进度";
+            this["Motion Progress"] = "动作进度";
+            this["Camera Delay"] = "镜头延迟";
+            this["Motion Delay"] = "动作延迟";
+            this["Force Disable IK"] = "强制关闭IK";
+            this["Motion Settings"] = "动作设置";
         }
     }
 }
