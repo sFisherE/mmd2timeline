@@ -65,11 +65,11 @@ namespace mmd2timeline
         {
             CreateTitleUI("Shortcut Keys", LeftSide);
 
-            SetupToggle(config.EnableSpacePlay, "Enable Space to Toggle Play/Pause", dft.EnableSpacePlay, LeftSide);
-            SetupToggle(config.EnableRightArrow, "Enable Right Arrow to Forward 1s", dft.EnableRightArrow, LeftSide);
-            SetupToggle(config.EnableLeftArrow, "Enable Left Arrow to Back 1s", dft.EnableLeftArrow, LeftSide);
-            SetupToggle(config.EnableUpArrow, "Enable Up Arrow to Play Previous", dft.EnableUpArrow, LeftSide);
-            SetupToggle(config.EnableDownArrow, "Enable Down Arrow to Play Next", dft.EnableDownArrow, LeftSide);
+            SetupToggle(config.EnableSpacePlay, "Enable Space to Toggle Play/Pause", dft.EnableSpacePlay, v => config.EnableSpacePlay = v, LeftSide);
+            SetupToggle(config.EnableRightArrow, "Enable Right Arrow to Forward 1s", dft.EnableRightArrow, v => config.EnableRightArrow = v, LeftSide);
+            SetupToggle(config.EnableLeftArrow, "Enable Left Arrow to Back 1s", dft.EnableLeftArrow, v => config.EnableLeftArrow = v, LeftSide);
+            SetupToggle(config.EnableUpArrow, "Enable Up Arrow to Play Previous", dft.EnableUpArrow, v => config.EnableUpArrow = v, LeftSide);
+            SetupToggle(config.EnableDownArrow, "Enable Down Arrow to Play Next", dft.EnableDownArrow, v => config.EnableDownArrow = v, LeftSide);
 
             Utils.SetupInfoOneLine(this, Lang.Get("U - Toggle UI Hidden/Visible"), LeftSide);
             Utils.SetupInfoOneLine(this, Lang.Get("M - Toggle WindowCamera View"), LeftSide);
