@@ -1,4 +1,3 @@
-using MacGruber;
 using mmd2timeline.Store;
 using SimpleJSON;
 using System;
@@ -19,6 +18,11 @@ namespace mmd2timeline
             }
         }
 
+        /// <summary>
+        /// 指示是否播放到末尾
+        /// </summary>
+        /// <remarks>此属性用于单次播放模式，播放完毕后用于判定再次播放时是否重置进度条到开头</remarks>
+        bool isEnd = false;
 
         /// <summary>
         /// 是否是编辑模式
@@ -219,7 +223,15 @@ namespace mmd2timeline
         /// <param name="isEnd"></param>
         void OnProgressEnded(bool isEnd)
         {
-            this.Next();
+            if (Playlist.PlayMode == MMDPlayMode.Once)
+            {
+                this.isEnd = true;
+                this.StopPlaying();
+            }
+            else
+            {
+                this.Next();
+            }
         }
 
         /// <summary>
@@ -896,6 +908,19 @@ namespace mmd2timeline
             if (IsPlaying)
             {
                 return;
+            }
+
+            // 如果到了末尾
+            if (isEnd)
+            {
+                isEnd = false;
+
+                // 只播放一次并且到了末尾，再次播放时更新进度条到开头
+                if (Playlist.PlayMode == MMDPlayMode.Once)
+                {
+                    // 重置进度到开头
+                    _ProgressHelper.SetProgress(0f, true);
+                }
             }
 
             _ProgressHelper.Play();
