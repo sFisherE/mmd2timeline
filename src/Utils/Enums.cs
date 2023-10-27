@@ -197,11 +197,15 @@ namespace mmd2timeline
         /// 重复播放
         /// </summary>
         public const int Repeat = 2;
+        /// <summary>
+        /// 只播一次
+        /// </summary>
+        public const int Once = 3;
 
         /// <summary>
         /// 初始化枚举类
         /// </summary>
-        private static EnumClass enums = new EnumClass("Default", "Random", "Repeat");
+        private static EnumClass enums = new EnumClass("Default", "Random", "Repeat", "Once");
 
         /// <summary>
         /// 获取名称列表

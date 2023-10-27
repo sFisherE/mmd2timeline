@@ -401,6 +401,7 @@ namespace mmd2timeline
             this["Default"] = "默认";
             this["Random"] = "随机";
             this["Repeat"] = "重复";
+            this["Once"] = "单次";
             this["Music"] = "音频";
             this["Camera"] = "镜头";
             this["Motion"] = "动作";
