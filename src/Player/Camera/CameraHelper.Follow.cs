@@ -282,8 +282,8 @@ namespace mmd2timeline
         /// <param name="disable"></param>
         internal void DisableNavigation(bool disable = true)
         {
-            // 未启用镜头，跳过处理
-            if (!config.EnableCamera || !HasMotion)
+            // 未启用镜头时，如果要禁用镜头，跳过处理
+            if (disable && (!config.EnableCamera || !HasMotion))
                 return;
 
             if (config.UseWindowCamera)
@@ -297,7 +297,7 @@ namespace mmd2timeline
                     return;
 
                 // 如果是要禁用导航，则重置导航装置的位置和角度
-                if (disable)
+                if (!disable)
                 {
                     SuperController.singleton.ResetNavigationRigPositionRotation();
                 }
