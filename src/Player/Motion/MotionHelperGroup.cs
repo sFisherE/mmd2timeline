@@ -44,6 +44,8 @@ namespace mmd2timeline
                 {
                     motionHelper = new MotionHelper(person);
 
+                    motionHelper.ResetAtom();
+
                     _group.Add(person, motionHelper);
                 }
 
@@ -147,6 +149,24 @@ namespace mmd2timeline
             {
                 // 有任何一个没有准备好的返回false
                 if (!pair.Value.IsReady)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 获取所有原子是否都已经完成初始化
+        /// </summary>
+        /// <returns></returns>
+        internal bool AllHasAtomInited()
+        {
+            foreach (var pair in _group)
+            {
+                // 有任何一个没有准备好的返回false
+                if (!pair.Value.HasAtomInited)
                 {
                     return false;
                 }

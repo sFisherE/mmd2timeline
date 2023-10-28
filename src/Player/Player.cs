@@ -3,6 +3,7 @@ using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace mmd2timeline
@@ -159,7 +160,7 @@ namespace mmd2timeline
                 atom.collisionEnabled = false;
                 if (CurrentItem != null)
                 {
-                    InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData());
+                    StartCoroutine(InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData()));
                 }
             }
         }
@@ -633,7 +634,7 @@ namespace mmd2timeline
             }
 
             // 如果冻结动画或不是活动和启用状态、动作重置中、播放速度为0，进行播放进度冻结后，直接返回
-            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || _PlaySpeedJSON.val <= 0f)
+            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || !_MotionHelperGroup.AllHasAtomInited() || _PlaySpeedJSON.val <= 0f)
             {
                 if (IsPlaying)
                 {
@@ -703,6 +704,7 @@ namespace mmd2timeline
                     $"\n" +
                     $"A.Progress:{_AudioPlayHelper.GetAudioTime().ToString("0.000")}" +
                     $"\n" +
+                    $"lowestControlName:{_MotionHelperGroup.Helpers.FirstOrDefault()?.lowestControlName}" +
                     msg);
             }
         }
@@ -1008,23 +1010,23 @@ namespace mmd2timeline
             // 加载镜头动作
             LoadCameraSettings(entity.CameraSetting, fileData.MotionPaths, fileData.MotionNames);
 
-            try
+            //try
+            //{
+            foreach (var atom in PersonAtoms)
             {
-                foreach (var atom in PersonAtoms)
-                {
-                    InitPersonAtomMotionHelper(atom, fileData);
+                yield return InitPersonAtomMotionHelper(atom, fileData);
 
-                    // 允许初始动作修正时调用
-                    if (config.EnableInitialMotionAdjustment)
-                    {
-                        SetPersonOff(atom);
-                    }
+                // 允许初始动作修正时调用
+                if (config.EnableInitialMotionAdjustment)
+                {
+                    SetPersonOff(atom);
                 }
             }
-            catch (Exception e)
-            {
-                LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
+            //}
             // 加载音频设置
             LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
 
@@ -1058,8 +1060,13 @@ namespace mmd2timeline
         /// </summary>
         /// <param name="atom"></param>
         /// <param name="fileData"></param>
-        void InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
+        IEnumerator InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
         {
+            // 实例化MMD人物
+            var motionHelper = InitMotionHelper(atom);
+
+            yield return StartCoroutine(motionHelper.CoInitAtom());
+
             if (CurrentItem != null)
             {
                 var index = PersonAtoms.IndexOf(atom);
@@ -1077,11 +1084,8 @@ namespace mmd2timeline
                 {
                     motion = CurrentItem.Motions[index];
                 }
+
                 // 设置人物动作
-
-                // 实例化MMD人物
-                var motionHelper = InitMotionHelper(atom);
-
                 motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
             }
         }
@@ -1233,20 +1237,20 @@ namespace mmd2timeline
             yield return null;
             foreach (var item in _MotionHelperGroup.Helpers)
             {
-                var pre = item.PersonAtom.mainController.transform.position;
+                //var pre = item.PersonAtom.mainController.transform.position;
 
-                item.PersonAtom.tempFreezePhysics = true;
-                ResetPose(item.PersonAtom);
-                for (int i = 0; i < 30; i++)
-                    yield return null;
-                item.PersonAtom.mainController.SetPositionNoForce(pre);
-                item.PersonAtom.tempFreezePhysics = false;
-                for (int i = 0; i < 30; i++)
-                    yield return null;
-                item.UpdateTransform();
-                yield return null;
+                //item.PersonAtom.tempFreezePhysics = true;
+                //ResetPose(item.PersonAtom);
+                //for (int i = 0; i < 30; i++)
+                //    yield return null;
+                //item.PersonAtom.mainController.SetPositionNoForce(pre);
+                //item.PersonAtom.tempFreezePhysics = false;
+                //for (int i = 0; i < 30; i++)
+                //    yield return null;
+                //item.UpdateTransform();
+                //yield return null;
 
-                item.ReloadMotions(3, init: true);
+                yield return item.ReloadMotions(3, init: true);
 
                 // 允许初始动作修正时调用
                 if (config.EnableInitialMotionAdjustment)

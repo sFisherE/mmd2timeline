@@ -7,7 +7,7 @@ namespace mmd2timeline
 {
     internal partial class MotionHelper
     {
-        string lowestControlName = "";
+       internal string lowestControlName = "";
         /// <summary>
         /// 跪姿修正
         /// </summary>

@@ -378,7 +378,7 @@ namespace mmd2timeline
             if (!string.IsNullOrEmpty(v))
             {
                 // 选中动作文件的处理
-                ReloadMotions(1);
+                SuperController.singleton.StartCoroutine(ReloadMotions(1));
             }
         }
 
@@ -434,7 +434,7 @@ namespace mmd2timeline
                 chooser.valNoCallback = choice;
             }
 
-            ReloadMotions(2);
+            SuperController.singleton.StartCoroutine(ReloadMotions(2));
         }
 
         /// <summary>
