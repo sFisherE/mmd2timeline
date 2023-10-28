@@ -788,22 +788,17 @@ namespace mmd2timeline
         {
             _ProgressHelper.Stop(6);
             yield return null;
-            // 允许初始动作修正时调用
-            if (config.EnableInitialMotionAdjustment)
-            {
-                SetAllPersonOff();
-                yield return null;
-            }
+
+            SetAllPersonOff();
+            yield return null;
+
             _ProgressHelper.SetProgress(0.001f, true);
             //StopAndStartOver();
             yield return new WaitForSeconds(1);
 
-            // 允许初始动作修正时调用
-            if (config.EnableInitialMotionAdjustment)
-            {
-                SetAllPersonOn();
-                yield return null;
-            }
+            SetAllPersonOn();
+            yield return null;
+
             _ProgressHelper.Play();
 
             yield break;
@@ -1022,11 +1017,7 @@ namespace mmd2timeline
             {
                 yield return InitPersonAtomMotionHelper(atom, fileData);
 
-                // 允许初始动作修正时调用
-                if (config.EnableInitialMotionAdjustment)
-                {
-                    SetPersonOff(atom);
-                }
+                SetPersonOff(atom);
             }
             //}
             //catch (Exception e)
@@ -1038,16 +1029,13 @@ namespace mmd2timeline
             _ProgressHelper.Forward(0.001f);
             yield return new WaitForSeconds(1);
 
-            // 允许初始动作修正时调用
-            if (config.EnableInitialMotionAdjustment)
-            {
-                foreach (var atom in PersonAtoms)
-                {
-                    SetPersonOn(atom);
-                }
 
-                yield return null;//new WaitForSeconds(1);
+            foreach (var atom in PersonAtoms)
+            {
+                SetPersonOn(atom);
             }
+
+            yield return null;//new WaitForSeconds(1);
 
             _IsLoading = false;
 
@@ -1197,17 +1185,21 @@ namespace mmd2timeline
             // 碰撞开启
             person.collisionEnabled = true;
 
-            MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
-
-            if (helper == null)
+            // 允许初始动作修正时调用
+            if (config.EnableInitialMotionAdjustment)
             {
-                LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
-                return;
+                MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
+
+                if (helper == null)
+                {
+                    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
+                    return;
+                }
+
+                StartCoroutine(helper.Ready());
+
+                //_MotionHelperGroup.Ready(person);
             }
-
-            StartCoroutine(helper.Ready());
-
-            //_MotionHelperGroup.Ready(person);
         }
 
         /// <summary>
@@ -1216,25 +1208,28 @@ namespace mmd2timeline
         /// <param name="person"></param>
         private void SetPersonOff(Atom person)
         {
-            if (config.ResetPhysicalWhenLoadMotion)
-            {
-                // 重置物理
-                person.ResetRigidbodies();
-                person.ResetPhysical();
-            }
+            //if (config.ResetPhysicalWhenLoadMotion)
+            //{
+            //    // 重置物理
+            //    person.ResetRigidbodies();
+            //    person.ResetPhysical();
+            //}
 
             // 关闭碰撞
             person.collisionEnabled = false;
-
-            MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
-
-            if (helper == null)
+            // 允许初始动作修正时调用
+            if (config.EnableInitialMotionAdjustment)
             {
-                LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
-                return;
-            }
+                MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
 
-            StartCoroutine(helper.MakeReady());
+                if (helper == null)
+                {
+                    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
+                    return;
+                }
+
+                StartCoroutine(helper.MakeReady());
+            }
         }
 
         /// <summary>
@@ -1263,19 +1258,15 @@ namespace mmd2timeline
 
                 yield return item.ReloadMotions(3, init: true);
 
-                // 允许初始动作修正时调用
-                if (config.EnableInitialMotionAdjustment)
-                {
-                    for (int i = 0; i < 30; i++)
-                        yield return null;
+                for (int i = 0; i < 30; i++)
+                    yield return null;
 
-                    SetPersonOff(item.PersonAtom);
+                SetPersonOff(item.PersonAtom);
 
-                    for (int i = 0; i < 30; i++)
-                        yield return null;
+                for (int i = 0; i < 30; i++)
+                    yield return null;
 
-                    SetPersonOn(item.PersonAtom);
-                }
+                SetPersonOn(item.PersonAtom);
             }
             yield return null;
             isMotionResetting = false;

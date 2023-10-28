@@ -919,7 +919,7 @@ namespace mmd2timeline
                 {
                     return this["ResetPhysicalWhenLoadMotion"].AsBool;
                 }
-                else return false;
+                else return true;
             }
             set
             {

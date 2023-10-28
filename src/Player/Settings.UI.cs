@@ -156,6 +156,10 @@ namespace mmd2timeline
             });
 
             //SetupSliderFloat(config.GlobalMotionScale, "Global Motion Scale", dft.GlobalMotionScale, 0f, 2f, v => config.GlobalMotionScale = v, LeftSide, "F4");
+            // 是否启用初始动作修正
+            SetupToggle(config.EnableInitialMotionAdjustment, "Enable Initial Motion Adjustment", dft.EnableInitialMotionAdjustment, (v) => config.EnableInitialMotionAdjustment = v, LeftSide);
+            // 是否启用初始动作修正
+            SetupToggle(config.ResetPhysicalWhenLoadMotion, "Reset Model Before Motion Start", dft.ResetPhysicalWhenLoadMotion, (v) => config.ResetPhysicalWhenLoadMotion = v, LeftSide);
 
             Utils.SetupSpacer(this, 10f, LeftSide);
         }

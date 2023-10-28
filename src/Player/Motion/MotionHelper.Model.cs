@@ -75,7 +75,7 @@ namespace mmd2timeline
             }
         }
 
-        internal IEnumerator CoInitAtom()
+        internal IEnumerator CoInitAtom(bool resetOnly = false)
         {
             var prePosition = _PersonAtom.mainController.transform.position;
             var preRotation = _PersonAtom.mainController.transform.rotation.eulerAngles;
@@ -102,23 +102,30 @@ namespace mmd2timeline
             //}
             //for (int i = 0; i < 30; i++)
             //    yield return null;
+            if (resetOnly)
+            {
+                hasAtomInited = false;
+                yield break;
+            }
+            else
+            {
+                CoLoad();
 
-            CoLoad();
+                //var pos = containingAtom.mainController.transform.localPosition;
+                //containingAtom.mainController.transform.localPosition = new Vector3(pos.x, posY.val, pos.z);
+                //Transform tf = containingAtom.mainController.transform;
+                //rootHandler.transform.SetPositionAndRotation(tf.position, tf.rotation);
+                //_PersonAtom.tempFreezePhysics = false;
 
-            //var pos = containingAtom.mainController.transform.localPosition;
-            //containingAtom.mainController.transform.localPosition = new Vector3(pos.x, posY.val, pos.z);
-            //Transform tf = containingAtom.mainController.transform;
-            //rootHandler.transform.SetPositionAndRotation(tf.position, tf.rotation);
-            //_PersonAtom.tempFreezePhysics = false;
+                //for (int i = 0; i < 30; i++)
+                //    yield return null;
+                //UpdateTransform();
+                //yield return null;
+                _ChoosePerson = null;
 
-            //for (int i = 0; i < 30; i++)
-            //    yield return null;
-            //UpdateTransform();
-            //yield return null;
-            _ChoosePerson = null;
-
-            yield return null;
-            hasAtomInited = true;
+                yield return null;
+                hasAtomInited = true;
+            }
         }
 
         //void Prepare2()

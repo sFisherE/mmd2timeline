@@ -247,27 +247,37 @@ namespace mmd2timeline
         /// <summary>
         /// 重新加载动作数据
         /// </summary>
-        public IEnumerator ReloadMotions(int test, bool init = false)
+        public IEnumerator ReloadMotions(int test, bool init = false, bool resetOnly = false)
         {
-            if (init || config.ResetPhysicalWhenLoadMotion)
+            if (init || _MmdPersonGameObject == null || resetOnly)
             {
                 ResetAtom();
-                yield return CoInitAtom();
+                yield return CoInitAtom(resetOnly);
             }
             else
             {
-                _MmdPersonGameObject.ClearMotion();
+                _MmdPersonGameObject?.ClearMotion();
             }
 
-            _MotionSetting.Files.Clear();
+            if (resetOnly || _MotionSetting == null)
+                yield break;
 
-            foreach (var motionChooser in _MotionChoosers)
+            try
             {
-                if (motionChooser.val != noneString)
+                _MotionSetting.Files.Clear();
+
+                foreach (var motionChooser in _MotionChoosers)
                 {
-                    _MotionSetting.Files.Add(motionChooser.val);
-                    this.ImportVmd(motionChooser.val);
+                    if (motionChooser.val != noneString)
+                    {
+                        _MotionSetting.Files.Add(motionChooser.val);
+                        this.ImportVmd(motionChooser.val);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                LogUtil.LogError(ex, "ReloadMotions::");
             }
         }
 
@@ -382,13 +392,15 @@ namespace mmd2timeline
         /// </summary>
         public void UpdateTransform()
         {
-            Transform transform = this._PersonAtom.mainController.transform;
+            if (_PersonAtom == null || rootHandler == null)
+                return;
+            Transform transform = _PersonAtom.mainController.transform;
 
             if (pastPosition == transform.position && pastRotation == transform.rotation)
                 return;
             pastPosition = transform.position;
             pastRotation = transform.rotation;
-            this.rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
         }
 
         /// <summary>
@@ -747,6 +759,15 @@ namespace mmd2timeline
             gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             this._MmdPersonGameObject = gameObject.GetComponent<MmdGameObject>();
             GameObject newRoot = new GameObject(Utility.GameObjectHead + "MmdRoot");
+            //{
+            //    var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //    go.transform.parent = newRoot.transform;
+            //    go.transform.localPosition = Vector3.zero;
+            //    go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            //    go.GetComponent<MeshRenderer>().material.color = new Color(1, 0.92f, 0.016f, 0.1f);
+            //    var col = go.GetComponent<Collider>();
+            //    Component.DestroyImmediate(col);
+            //}
             gameObject.transform.parent = newRoot.transform;
             this.rootHandler = newRoot.transform;
 

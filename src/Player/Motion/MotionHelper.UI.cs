@@ -434,7 +434,17 @@ namespace mmd2timeline
                 chooser.valNoCallback = choice;
             }
 
-            SuperController.singleton.StartCoroutine(ReloadMotions(2));
+            if (targets != null)
+            {
+                SuperController.singleton.StartCoroutine(ReloadMotions(2));
+            }
+            else
+            {
+                if (config.ResetPhysicalWhenLoadMotion)
+                {
+                    SuperController.singleton.StartCoroutine(ReloadMotions(2, resetOnly: true));
+                }
+            }
         }
 
         /// <summary>
