@@ -82,7 +82,8 @@ namespace mmd2timeline
 
             //需要摆成A-pose
             _PersonAtom.tempFreezePhysics = true;
-            ResetPose();
+            yield return null;
+            _PersonAtom.ResetPhysics(true, true);
             for (int i = 0; i < 30; i++)
                 yield return null;
             _PersonAtom.mainController.SetPositionNoForce(prePosition);

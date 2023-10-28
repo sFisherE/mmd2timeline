@@ -21,6 +21,31 @@ namespace mmd2timeline
         float readyPositionY = 0.0f;
 
         /// <summary>
+        /// 人物的Y轴位置
+        /// </summary>
+        JSONStorableFloat _PositionY;
+
+        /// <summary>
+        /// 初始化准备高度
+        /// </summary>
+        void InitReadyPosition()
+        {
+            _PositionY = new JSONStorableFloat(GetParamName("PositionY"), 0f, 0f, 1f);
+            _PositionY.setCallbackFunction = v => SetPosY(v);
+        }
+
+        /// <summary>
+        /// 设置人物的Y轴位置
+        /// </summary>
+        /// <param name="y"></param>
+        void SetPosY(float y)
+        {
+            var pos = _PersonAtom.mainController.transform.localPosition;
+            _PersonAtom.mainController.transform.localPosition = new Vector3(pos.x, y, pos.z);
+            UpdateTransform();
+        }
+
+        /// <summary>
         /// 获得人物动作是否准备完毕
         /// </summary>
         internal bool IsReady
@@ -50,7 +75,7 @@ namespace mmd2timeline
             yield return new WaitWhile(() =>
             {
                 readyPositionY -= perStep;
-                //this._PositionY.val -= perStep;
+                this._PositionY.val -= perStep;
 
                 return readyPositionY >= perStep;
             });
@@ -74,7 +99,7 @@ namespace mmd2timeline
             {
                 yield return null;
                 readyPositionY = READY_HEIGHT;
-                //this._PositionY.val += readyPositionY;
+                this._PositionY.val += readyPositionY;
             }
         }
     }

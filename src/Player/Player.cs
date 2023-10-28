@@ -162,6 +162,10 @@ namespace mmd2timeline
                 {
                     StartCoroutine(InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData()));
                 }
+                else
+                {
+                    StartCoroutine(InitPersonAtomMotionHelper(atom));
+                }
             }
         }
         /// <summary>
@@ -1006,6 +1010,8 @@ namespace mmd2timeline
             }
 
             _ProgressHelper.InitSettings(entity.CurrentSetting);
+            // 加载音频设置
+            LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
 
             // 加载镜头动作
             LoadCameraSettings(entity.CameraSetting, fileData.MotionPaths, fileData.MotionNames);
@@ -1027,8 +1033,6 @@ namespace mmd2timeline
             //{
             //    LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
             //}
-            // 加载音频设置
-            LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
 
             yield return null;//new WaitForSeconds(1);
             _ProgressHelper.Forward(0.001f);
@@ -1056,6 +1060,22 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 初始化动作原子助手
+        /// </summary>
+        /// <param name="atom"></param>
+        /// <returns></returns>
+        IEnumerator InitPersonAtomMotionHelper(Atom atom)
+        {
+            // 实例化MMD人物
+            var motionHelper = InitMotionHelper(atom);
+
+            if (!motionHelper.HasAtomInited)
+            {
+                yield return motionHelper.CoInitAtom();
+            }
+        }
+
+        /// <summary>
         /// 初始化人物原子动作助手
         /// </summary>
         /// <param name="atom"></param>
@@ -1065,7 +1085,10 @@ namespace mmd2timeline
             // 实例化MMD人物
             var motionHelper = InitMotionHelper(atom);
 
-            yield return StartCoroutine(motionHelper.CoInitAtom());
+            if (!motionHelper.HasAtomInited)
+            {
+                yield return motionHelper.CoInitAtom();
+            }
 
             if (CurrentItem != null)
             {
@@ -1122,28 +1145,16 @@ namespace mmd2timeline
         /// <returns></returns>
         private MotionHelper InitMotionHelper(Atom atom)
         {
-            try
-            {
-                if (atom?.type == "Person")
-                {
-                    MotionHelper helper;
+            MotionHelper helper;
 
-                    if (!MotionHelperGroup.GetInstance().TryGetInitedMotionHelper(atom, out helper))
-                    {
-                        // 如果是新的对象，进行初始化
-                        helper.CreatePersonMotionUI(this, LeftSide);
-                        helper.OnMotionLoaded += OnMotionLoaded;
-                    }
-
-                    return helper;
-                }
-            }
-            catch (Exception ex)
+            if (!MotionHelperGroup.GetInstance().TryGetInitedMotionHelper(atom, out helper))
             {
-                LogUtil.LogError(ex, "Player::InitMotionHelper:");
+                // 如果是新的对象，进行初始化
+                helper.CreatePersonMotionUI(this, LeftSide);
+                helper.OnMotionLoaded += OnMotionLoaded;
             }
 
-            return null;
+            return helper;
         }
 
         /// <summary>
@@ -1186,15 +1197,15 @@ namespace mmd2timeline
             // 碰撞开启
             person.collisionEnabled = true;
 
-            //MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
+            MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
 
-            //if (helper == null)
-            //{
-            //    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
-            //    return;
-            //}
+            if (helper == null)
+            {
+                LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
+                return;
+            }
 
-            //StartCoroutine(helper.Ready());
+            StartCoroutine(helper.Ready());
 
             //_MotionHelperGroup.Ready(person);
         }
@@ -1215,15 +1226,15 @@ namespace mmd2timeline
             // 关闭碰撞
             person.collisionEnabled = false;
 
-            //MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
+            MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
 
-            //if (helper == null)
-            //{
-            //    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
-            //    return;
-            //}
+            if (helper == null)
+            {
+                LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
+                return;
+            }
 
-            //StartCoroutine(helper.MakeReady());
+            StartCoroutine(helper.MakeReady());
         }
 
         /// <summary>

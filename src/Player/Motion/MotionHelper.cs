@@ -163,6 +163,8 @@ namespace mmd2timeline
             }
             #endregion
 
+            InitReadyPosition();
+
             //Init();
         }
         Dictionary<string, Transform> cachedBoneLookup = new Dictionary<string, Transform>();
@@ -340,10 +342,10 @@ namespace mmd2timeline
 
                 _MmdPersonGameObject.LoadMotion(path);
 
-                if (hasAtomInited)
-                {
-                    _MmdPersonGameObject.SetMotionPos(0f, true, motionScale: motionScaleRate);
-                }
+                //if (hasAtomInited)
+                //{
+                //    _MmdPersonGameObject.SetMotionPos(0f, true, motionScale: motionScaleRate);
+                //}
 
                 #region 新的动作处理模式需要进行的关节筛选
                 //var bones = _MmdPersonGameObject._poser.BoneImages;
@@ -894,14 +896,14 @@ namespace mmd2timeline
                 // 骨骼数组
                 GameObject[] bones = mmd._bones.Where(b => validBoneNames.ContainsKey(b.name)).ToArray();
 
-                // 计算地板高度
-                var floorHeight = config.AutoCorrectFloorHeight;// + _PositionY.val;
+                //// 计算地板高度
+                //var floorHeight = config.AutoCorrectFloorHeight;// + _PositionY.val;
 
-                // 修正高度
-                var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
+                //// 修正高度
+                //var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
 
                 #region 修正骨骼位置，如果骨骼位置高度小于0，则对其进行修正
-                var reviseY = GetFixHeight(bones, floorHeight, horizon);
+                var reviseY = GetFixHeight(bones);
                 #endregion
 
                 foreach (GameObject mmdbone in bones)
@@ -932,35 +934,37 @@ namespace mmd2timeline
                             // 只有启用高跟时，才会启用修正功能
                             if (EnableHeel)
                             {
-                                // 跪姿优化
-                                if (kneeFixed && (freeControllerV.name.EndsWith("FootControl") || freeControllerV.name.EndsWith("ToeControl")))
-                                {
-                                    // 左膝只处理左侧的脚和脚趾，右膝只处理右侧的脚和脚趾
-                                    if ((lKneeFixed && freeControllerV.name.StartsWith("l"))
-                                        || (rKneeFixed && freeControllerV.name.StartsWith("r")))
-                                    {
-                                        if (freeControllerV.name.EndsWith("FootControl"))
-                                        {
-                                            freeControllerV.GetFloatJSONParam("jointDriveXTarget").val = -45;
-                                        }
+                                //// 跪姿优化
+                                //if (kneeFixed && (freeControllerV.name.EndsWith("FootControl") || freeControllerV.name.EndsWith("ToeControl")))
+                                //{
+                                //    // 左膝只处理左侧的脚和脚趾，右膝只处理右侧的脚和脚趾
+                                //    if ((lKneeFixed && freeControllerV.name.StartsWith("l"))
+                                //        || (rKneeFixed && freeControllerV.name.StartsWith("r")))
+                                //    {
+                                //        if (freeControllerV.name.EndsWith("FootControl"))
+                                //        {
+                                //            freeControllerV.GetFloatJSONParam("jointDriveXTarget").val = -45;
+                                //        }
 
-                                        //freeControllerV.transform.SetPositionAndRotation(position, rotation * Utility.quat);
-                                        freeControllerV.transform.rotation = rotation * Utility.quat;
-                                        //freeControllerV.currentPositionState = FreeControllerV3.PositionState.Off;
-                                        //freeControllerV.currentRotationState = FreeControllerV3.RotationState.Off;
+                                //        //freeControllerV.transform.SetPositionAndRotation(position, rotation * Utility.quat);
+                                //        freeControllerV.transform.rotation = rotation * Utility.quat;
+                                //        //freeControllerV.currentPositionState = FreeControllerV3.PositionState.Off;
+                                //        //freeControllerV.currentRotationState = FreeControllerV3.RotationState.Off;
 
-                                        continue;
-                                    }
-                                }
+                                //        continue;
+                                //    }
+                                //}
 
                                 // 如果是手部，则修正高度未地板高度+0.02，其他部位按照整体计算值进行修正
                                 if ((freeControllerV.name.EndsWith("HandControl") || freeControllerV.name.EndsWith("KneeControl"))
-                                    && position.y < floorHeight)
+                                    && position.y < 0)
                                 {
-                                    position.y = floorHeight + 0.02f;
+                                    position.y = 0.02f;
                                 }
                                 else
                                 {
+                                    //LogUtil.Log($"reviseY:{reviseY}");
+
                                     #region 修正位置的y参数
                                     if (reviseY != 0)
                                     {
