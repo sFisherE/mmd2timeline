@@ -176,6 +176,7 @@ namespace mmd2timeline
             InitAtom();
 
             // 轮询骨骼清单挑出有效的骨骼
+            validBoneNames.Clear();
             foreach (var bone in _MmdPersonGameObject._bones)
             {
                 if (DazBoneMapping.fingerBoneNames.Contains(bone.name))
@@ -768,10 +769,9 @@ namespace mmd2timeline
             {
                 string name = item.Name;
                 string boneName = name;
-                if (DazBoneMapping.boneNames.ContainsKey(name))
-                    boneName = DazBoneMapping.boneNames[name];
-                if (!boneName.Contains("|"))
+                if (DazBoneMapping.useBoneNames.ContainsKey(name))
                 {
+                    boneName = DazBoneMapping.useBoneNames[name];
                     var tf = DazBoneMapping.SearchObjName(parent2, boneName);
                     if (cachedBoneLookup == null)
                         cachedBoneLookup = new Dictionary<string, Transform>();
