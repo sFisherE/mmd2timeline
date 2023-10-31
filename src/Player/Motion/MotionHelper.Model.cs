@@ -78,7 +78,7 @@ namespace mmd2timeline
         internal IEnumerator CoInitAtom(bool resetOnly = false)
         {
             var prePosition = _PersonAtom.mainController.transform.position;
-            var preRotation = _PersonAtom.mainController.transform.rotation.eulerAngles;
+            var preRotation = _PersonAtom.mainController.transform.rotation;
 
             //需要摆成A-pose
             _PersonAtom.tempFreezePhysics = true;
@@ -86,8 +86,12 @@ namespace mmd2timeline
             _PersonAtom.ResetPhysics(true, true);
             for (int i = 0; i < 30; i++)
                 yield return null;
+#if (VAM_GT_1_20_77_0)
+            _PersonAtom.mainController.transform.SetPositionAndRotation(prePosition, preRotation);
+#else            
             _PersonAtom.mainController.SetPositionNoForce(prePosition);
-            _PersonAtom.mainController.SetRotationNoForce(preRotation);
+            _PersonAtom.mainController.SetRotationNoForce(preRotation.eulerAngles);
+#endif
             _PersonAtom.tempFreezePhysics = false;
             for (int i = 0; i < 30; i++)
                 yield return null;
