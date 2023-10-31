@@ -420,7 +420,7 @@ namespace mmd2timeline
         {
             if (m_MmdPersonGameObject != null)
             {
-                Destroy(m_MmdPersonGameObject);
+                Destroy(m_MmdPersonGameObject.gameObject);
                 m_MmdPersonGameObject = null;
             }
 
