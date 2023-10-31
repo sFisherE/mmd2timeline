@@ -240,6 +240,67 @@ namespace mmd2timeline
             "lHandControl",//左手首
             "rHandControl",//右手首
         };
+        public static Dictionary<string, string> useBoneNames = new Dictionary<string, string>()
+        {
+            { "腰","hip"},//hipControl
+				{ "下半身","pelvis"},//pelvisControl
+
+				{ "上半身","abdomen"},//abdomenControl
+				{ "上半身2","abdomen2"},//abdomen2Control
+				{ "上半身3","chest"},//chestControl
+
+				{ "首", "neck"},//neckControl
+				{ "頭","head"},//headControl
+
+				{ "左肩","lCollar"},//lShoulderControl
+				{ "右肩","rCollar"},//rShoulderControl
+				{ "左腕","lShldr"},//lArmControl
+				{ "右腕","rShldr"},//rArmControl
+				{ "左ひじ","lForeArm"},//lElbowControl
+				{ "右ひじ","rForeArm"},//rElbowControl
+				{ "左手首","lHand"},//lHandControl
+				{ "右手首","rHand"},//rHandControl
+
+				{ "左足","lThigh"},//lThighControl
+				{ "右足","rThigh"},//rThighControl
+				{ "左ひざ","lShin"},//lKneeControl
+				{ "右ひざ","rShin"},//rKneeControl
+				{ "左足首","lFoot"},//lFootControl
+				{ "右足首","rFoot"},//rFootControl
+				{ "左つま先","lToe"},//lToeControl
+				{ "右つま先","rToe"},//rToeControl
+                { "左親指０","lThumb1"},
+                { "左親指１","lThumb2"},
+                { "左親指２","lThumb3"},
+                { "左人指１","lIndex1"},
+                { "左人指２","lIndex2"},
+                { "左人指３","lIndex3"},
+                { "左中指１","lMid1"},
+                { "左中指２","lMid2"},
+                { "左中指３","lMid3"},
+                { "左薬指１","lRing1" },
+                { "左薬指２","lRing2" },
+                { "左薬指３","lRing3" },
+                { "左小指１","lPinky1"},
+                { "左小指２","lPinky2"},
+                { "左小指３","lPinky3"},
+
+                { "右親指０","rThumb1"},
+                { "右親指１","rThumb2"},
+                { "右親指２","rThumb3"},
+                { "右人指１","rIndex1"},
+                { "右人指２","rIndex2"},
+                { "右人指３","rIndex3"},
+                { "右中指１","rMid1"  },
+                { "右中指２","rMid2"  },
+                { "右中指３","rMid3"  },
+                { "右薬指１","rRing1" },
+                { "右薬指２","rRing2" },
+                { "右薬指３","rRing3" },
+                { "右小指１","rPinky1"},
+                { "右小指２","rPinky2"},
+                { "右小指３","rPinky3"},
+        };
         public static Dictionary<string, string> boneNames = new Dictionary<string, string>() {
         //todo
                 { "全ての親","Genesis2Female"},

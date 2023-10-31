@@ -797,10 +797,9 @@ namespace mmd2timeline
             {
                 string name = item.Name;
                 string boneName = name;
-                if (DazBoneMapping.boneNames.ContainsKey(name))
-                    boneName = DazBoneMapping.boneNames[name];
-                if (!boneName.Contains("|"))
+                if (DazBoneMapping.useBoneNames.ContainsKey(name))
                 {
+                    boneName = DazBoneMapping.useBoneNames[name];
                     var tf = DazBoneMapping.SearchObjName(parent2, boneName);
                     if (cachedBoneLookup == null)
                         cachedBoneLookup = new Dictionary<string, Transform>();

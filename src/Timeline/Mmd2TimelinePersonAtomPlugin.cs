@@ -572,7 +572,6 @@ namespace mmd2timeline
         void CoLoad()
         {
             Prepare();
-
             var mmdObj = MmdGameObject.CreateGameObject(Utility.GameObjectHead + "MmdGameObject");
             mmdObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             m_MmdPersonGameObject = mmdObj.GetComponent<MmdGameObject>();
@@ -629,10 +628,9 @@ namespace mmd2timeline
             {
                 string name = item.Name;
                 string boneName = name;
-                if (DazBoneMapping.boneNames.ContainsKey(name))
-                    boneName = DazBoneMapping.boneNames[name];
-                if (!boneName.Contains("|"))
+                if (DazBoneMapping.useBoneNames.ContainsKey(name))
                 {
+                    boneName = DazBoneMapping.useBoneNames[name];
                     var tf = DazBoneMapping.SearchObjName(parent2, boneName);
                     if (cachedBoneLookup == null)
                         cachedBoneLookup = new Dictionary<string, Transform>();
