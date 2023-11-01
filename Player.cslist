@@ -60,6 +60,7 @@ src\Player\Folder\MMDFolderHelper.cs
 src\Player\Motion\MotionHelper.AdjustBones.cs
 src\Player\Motion\MotionHelper.CloseLowerBones.cs
 src\Player\Motion\MotionHelper.cs
+src\Player\Motion\MotionHelper.Model.cs
 src\Player\Motion\MotionHelper.EyeControl.cs
 src\Player\Motion\MotionHelper.HeightFix.cs
 src\Player\Motion\MotionHelper.MakeReady.cs

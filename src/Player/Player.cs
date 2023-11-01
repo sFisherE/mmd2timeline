@@ -1,9 +1,9 @@
-using MacGruber;
 using mmd2timeline.Store;
 using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace mmd2timeline
@@ -19,6 +19,11 @@ namespace mmd2timeline
             }
         }
 
+        /// <summary>
+        /// 指示是否播放到末尾
+        /// </summary>
+        /// <remarks>此属性用于单次播放模式，播放完毕后用于判定再次播放时是否重置进度条到开头</remarks>
+        bool isEnd = false;
 
         /// <summary>
         /// 是否是编辑模式
@@ -155,7 +160,11 @@ namespace mmd2timeline
                 atom.collisionEnabled = false;
                 if (CurrentItem != null)
                 {
-                    InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData());
+                    StartCoroutine(InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData()));
+                }
+                else
+                {
+                    StartCoroutine(InitPersonAtomMotionHelper(atom));
                 }
             }
         }
@@ -201,8 +210,12 @@ namespace mmd2timeline
         {
             if (playing)
             {
-                // 隐藏主HUD
-                SuperController.singleton.HideMainHUD();
+                // 有镜头数据时，才会隐藏主UI
+                if (_CameraHelper.HasMotion)
+                {
+                    // 隐藏主HUD
+                    SuperController.singleton.HideMainHUD();
+                }
 
                 _AudioPlayHelper.SetProgress(progress, true);
             }
@@ -219,7 +232,15 @@ namespace mmd2timeline
         /// <param name="isEnd"></param>
         void OnProgressEnded(bool isEnd)
         {
-            this.Next();
+            if (Playlist.PlayMode == MMDPlayMode.Once)
+            {
+                this.isEnd = true;
+                this.StopPlaying();
+            }
+            else
+            {
+                this.Next();
+            }
         }
 
         /// <summary>
@@ -621,7 +642,7 @@ namespace mmd2timeline
             }
 
             // 如果冻结动画或不是活动和启用状态、动作重置中、播放速度为0，进行播放进度冻结后，直接返回
-            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || _PlaySpeedJSON.val <= 0f)
+            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || !_MotionHelperGroup.AllHasAtomInited() || _PlaySpeedJSON.val <= 0f)
             {
                 if (IsPlaying)
                 {
@@ -691,6 +712,7 @@ namespace mmd2timeline
                     $"\n" +
                     $"A.Progress:{_AudioPlayHelper.GetAudioTime().ToString("0.000")}" +
                     $"\n" +
+                    $"lowestControlName:{_MotionHelperGroup.Helpers.FirstOrDefault()?.lowestControlName}" +
                     msg);
             }
         }
@@ -770,22 +792,17 @@ namespace mmd2timeline
         {
             _ProgressHelper.Stop(6);
             yield return null;
-            // 允许初始动作修正时调用
-            if (config.EnableInitialMotionAdjustment)
-            {
-                SetAllPersonOff();
-                yield return null;
-            }
+
+            SetAllPersonOff();
+            yield return null;
+
             _ProgressHelper.SetProgress(0.001f, true);
             //StopAndStartOver();
             yield return new WaitForSeconds(1);
 
-            // 允许初始动作修正时调用
-            if (config.EnableInitialMotionAdjustment)
-            {
-                SetAllPersonOn();
-                yield return null;
-            }
+            SetAllPersonOn();
+            yield return null;
+
             _ProgressHelper.Play();
 
             yield break;
@@ -898,6 +915,19 @@ namespace mmd2timeline
                 return;
             }
 
+            // 如果到了末尾
+            if (isEnd)
+            {
+                isEnd = false;
+
+                // 只播放一次并且到了末尾，再次播放时更新进度条到开头
+                if (Playlist.PlayMode == MMDPlayMode.Once)
+                {
+                    // 重置进度到开头
+                    _ProgressHelper.SetProgress(0f, true);
+                }
+            }
+
             _ProgressHelper.Play();
         }
 
@@ -979,44 +1009,37 @@ namespace mmd2timeline
             }
 
             _ProgressHelper.InitSettings(entity.CurrentSetting);
+            // 加载音频设置
+            LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
 
             // 加载镜头动作
             LoadCameraSettings(entity.CameraSetting, fileData.MotionPaths, fileData.MotionNames);
 
-            try
+            //try
+            //{
+            foreach (var atom in PersonAtoms)
             {
-                foreach (var atom in PersonAtoms)
-                {
-                    InitPersonAtomMotionHelper(atom, fileData);
+                yield return InitPersonAtomMotionHelper(atom, fileData);
 
-                    // 允许初始动作修正时调用
-                    if (config.EnableInitialMotionAdjustment)
-                    {
-                        SetPersonOff(atom);
-                    }
-                }
+                SetPersonOff(atom);
             }
-            catch (Exception e)
-            {
-                LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
-            }
-            // 加载音频设置
-            LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
+            //}
+            //catch (Exception e)
+            //{
+            //    LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
+            //}
 
             yield return null;//new WaitForSeconds(1);
             _ProgressHelper.Forward(0.001f);
             yield return new WaitForSeconds(1);
 
-            // 允许初始动作修正时调用
-            if (config.EnableInitialMotionAdjustment)
-            {
-                foreach (var atom in PersonAtoms)
-                {
-                    SetPersonOn(atom);
-                }
 
-                yield return null;//new WaitForSeconds(1);
+            foreach (var atom in PersonAtoms)
+            {
+                SetPersonOn(atom);
             }
+
+            yield return null;//new WaitForSeconds(1);
 
             _IsLoading = false;
 
@@ -1029,12 +1052,36 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 初始化动作原子助手
+        /// </summary>
+        /// <param name="atom"></param>
+        /// <returns></returns>
+        IEnumerator InitPersonAtomMotionHelper(Atom atom)
+        {
+            // 实例化MMD人物
+            var motionHelper = InitMotionHelper(atom);
+
+            if (!motionHelper.HasAtomInited)
+            {
+                yield return motionHelper.CoInitAtom();
+            }
+        }
+
+        /// <summary>
         /// 初始化人物原子动作助手
         /// </summary>
         /// <param name="atom"></param>
         /// <param name="fileData"></param>
-        void InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
+        IEnumerator InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
         {
+            // 实例化MMD人物
+            var motionHelper = InitMotionHelper(atom);
+
+            if (!motionHelper.HasAtomInited)
+            {
+                yield return motionHelper.CoInitAtom();
+            }
+
             if (CurrentItem != null)
             {
                 var index = PersonAtoms.IndexOf(atom);
@@ -1052,11 +1099,8 @@ namespace mmd2timeline
                 {
                     motion = CurrentItem.Motions[index];
                 }
+
                 // 设置人物动作
-
-                // 实例化MMD人物
-                var motionHelper = InitMotionHelper(atom);
-
                 motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
             }
         }
@@ -1093,28 +1137,16 @@ namespace mmd2timeline
         /// <returns></returns>
         private MotionHelper InitMotionHelper(Atom atom)
         {
-            try
-            {
-                if (atom?.type == "Person")
-                {
-                    MotionHelper helper;
+            MotionHelper helper;
 
-                    if (!MotionHelperGroup.GetInstance().TryGetInitedMotionHelper(atom, out helper))
-                    {
-                        // 如果是新的对象，进行初始化
-                        helper.CreatePersonMotionUI(this, LeftSide);
-                        helper.OnMotionLoaded += OnMotionLoaded;
-                    }
-
-                    return helper;
-                }
-            }
-            catch (Exception ex)
+            if (!MotionHelperGroup.GetInstance().TryGetInitedMotionHelper(atom, out helper))
             {
-                LogUtil.LogError(ex, "Player::InitMotionHelper:");
+                // 如果是新的对象，进行初始化
+                helper.CreatePersonMotionUI(this, LeftSide);
+                helper.OnMotionLoaded += OnMotionLoaded;
             }
 
-            return null;
+            return helper;
         }
 
         /// <summary>
@@ -1157,17 +1189,21 @@ namespace mmd2timeline
             // 碰撞开启
             person.collisionEnabled = true;
 
-            //MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
+            // 允许初始动作修正时调用
+            if (config.EnableInitialMotionAdjustment)
+            {
+                MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
 
-            //if (helper == null)
-            //{
-            //    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
-            //    return;
-            //}
+                if (helper == null)
+                {
+                    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
+                    return;
+                }
 
-            //StartCoroutine(helper.Ready());
+                StartCoroutine(helper.Ready());
 
-            //_MotionHelperGroup.Ready(person);
+                //_MotionHelperGroup.Ready(person);
+            }
         }
 
         /// <summary>
@@ -1176,25 +1212,28 @@ namespace mmd2timeline
         /// <param name="person"></param>
         private void SetPersonOff(Atom person)
         {
-            if (config.ResetPhysicalWhenLoadMotion)
-            {
-                // 重置物理
-                person.ResetRigidbodies();
-                person.ResetPhysical();
-            }
+            //if (config.ResetPhysicalWhenLoadMotion)
+            //{
+            //    // 重置物理
+            //    person.ResetRigidbodies();
+            //    person.ResetPhysical();
+            //}
 
             // 关闭碰撞
             person.collisionEnabled = false;
+            // 允许初始动作修正时调用
+            if (config.EnableInitialMotionAdjustment)
+            {
+                MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
 
-            //MotionHelper helper = _MotionHelperGroup.GetMotionHelper(person);
+                if (helper == null)
+                {
+                    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
+                    return;
+                }
 
-            //if (helper == null)
-            //{
-            //    LogUtil.LogWarning($"The MotionHelper for {person.name} is Not Init.");
-            //    return;
-            //}
-
-            //StartCoroutine(helper.MakeReady());
+                StartCoroutine(helper.MakeReady());
+            }
         }
 
         /// <summary>
@@ -1208,34 +1247,30 @@ namespace mmd2timeline
             yield return null;
             foreach (var item in _MotionHelperGroup.Helpers)
             {
-                var pre = item.PersonAtom.mainController.transform.position;
+                //var pre = item.PersonAtom.mainController.transform.position;
 
-                item.PersonAtom.tempFreezePhysics = true;
-                ResetPose(item.PersonAtom);
+                //item.PersonAtom.tempFreezePhysics = true;
+                //ResetPose(item.PersonAtom);
+                //for (int i = 0; i < 30; i++)
+                //    yield return null;
+                //item.PersonAtom.mainController.SetPositionNoForce(pre);
+                //item.PersonAtom.tempFreezePhysics = false;
+                //for (int i = 0; i < 30; i++)
+                //    yield return null;
+                //item.UpdateTransform();
+                //yield return null;
+
+                yield return item.ReloadMotions(3, init: true);
+
                 for (int i = 0; i < 30; i++)
                     yield return null;
-                item.PersonAtom.mainController.SetPositionNoForce(pre);
-                item.PersonAtom.tempFreezePhysics = false;
+
+                SetPersonOff(item.PersonAtom);
+
                 for (int i = 0; i < 30; i++)
                     yield return null;
-                item.UpdateTransform();
-                yield return null;
 
-                item.ReloadMotions(3, init: true);
-
-                // 允许初始动作修正时调用
-                if (config.EnableInitialMotionAdjustment)
-                {
-                    for (int i = 0; i < 30; i++)
-                        yield return null;
-
-                    SetPersonOff(item.PersonAtom);
-
-                    for (int i = 0; i < 30; i++)
-                        yield return null;
-
-                    SetPersonOn(item.PersonAtom);
-                }
+                SetPersonOn(item.PersonAtom);
             }
             yield return null;
             isMotionResetting = false;

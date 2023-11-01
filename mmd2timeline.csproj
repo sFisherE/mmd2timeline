@@ -248,6 +248,7 @@
     <Compile Include="src\Player\Motion\MotionHelper.EyeControl.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.HeightFix.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.MakeReady.cs" />
+    <Compile Include="src\Player\Motion\MotionHelper.Model.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.Progress.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.UI.AdjustBones.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.UI.cs" />

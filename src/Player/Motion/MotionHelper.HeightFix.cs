@@ -7,7 +7,7 @@ namespace mmd2timeline
 {
     internal partial class MotionHelper
     {
-        string lowestControlName = "";
+        internal string lowestControlName = "";
         /// <summary>
         /// 跪姿修正
         /// </summary>
@@ -52,13 +52,13 @@ namespace mmd2timeline
         /// <param name="floorHeight"></param>
         /// <param name="horizon"></param>
         /// <returns></returns>
-        private float GetFixHeight(GameObject[] bones, float floorHeight, float horizon)
+        private float GetFixHeight(GameObject[] bones)
         {
             var reviseY = 0f;
 
-            var wholeBodyFix = config.AutoFixHeightMode == AutoCorrectHeightMode.WholeBody;
+            //var wholeBodyFix = config.AutoFixHeightMode == AutoCorrectHeightMode.WholeBody;
 
-            if (wholeBodyFix || EnableHeel)
+            if (EnableHeel)
             {
                 try
                 {
@@ -76,105 +76,22 @@ namespace mmd2timeline
                         return true;
                     }).OrderBy(b => b.transform.position.y).ToList();
 
-                    var fix = 0f;
                     var lowestBoneName = "";
-                    var lowestY = 0f;
-                    kneeFixed = false;
                     heelFixed = false;
-                    lKneeFixed = false;
-                    rKneeFixed = false;
 
-                    foreach (var lowestBone in lowestBones)
+                    var lowestBone = lowestBones.FirstOrDefault();
+
+                    // Y轴最小的骨骼名称
+                    lowestBoneName = lowestBone.name;
+
+                    if (validBoneNames.TryGetValue(lowestBoneName, out lowestControlName))
                     {
-                        // Y轴最小的骨骼名称
-                        lowestBoneName = lowestBone.name;
-                        lowestY = lowestBone.transform.position.y;
-
-                        if (validBoneNames.ContainsKey(lowestBoneName))
+                        // 当启用高跟并且最低的控制器是脚趾，进行高跟高度修正的计算
+                        if (lowestControlName.EndsWith("ToeControl")|| lowestControlName.EndsWith("FootControl"))
                         {
-                            lowestControlName = validBoneNames[lowestBoneName];
-
-                            // 当启用高跟并且最低的控制器是脚趾，进行高跟高度修正的计算
-                            if (EnableHeel && lowestControlName.EndsWith("ToeControl"))
-                            {
-                                if (!kneeFixed && !heelFixed)
-                                {
-                                    fix += _HeelHeightAdjustJSON.val;
-                                    heelFixed = true;
-                                }
-
-                                continue;
-                            }
-                            else if (config.EnableKneeingCorrections && lowestControlName.EndsWith("KneeControl"))// 膝盖修正
-                            {
-                                // 获得膝盖触地的修正值
-                                if (!kneeFixed)
-                                {
-                                    if (controlFixValues.ContainsKey(lowestControlName))
-                                    {
-                                        var fixValue = controlFixValues[lowestControlName];
-                                        fix += fixValue;
-                                    }
-                                    kneeFixed = true;
-
-                                    // 如果跪地修正时
-                                    if (heelFixed)
-                                    {
-                                        fix -= _HeelHeightAdjustJSON.val;
-                                        heelFixed = false;
-                                    }
-                                }
-
-                                // 判定是左膝还是右膝
-                                if (lowestControlName.StartsWith("l"))
-                                {
-                                    lKneeFixed = true;
-                                }
-                                else
-                                {
-                                    rKneeFixed = true;
-                                }
-
-                                // 进行下一个关节的检查
-                                continue;
-                            }
-                            else if ((wholeBodyFix || EnableHeel) && controlFixValues.ContainsKey(lowestControlName))
-                            {
-                                var fixValue = controlFixValues[lowestControlName];
-
-                                fix += fixValue;
-                                break;
-                            }
+                            return _HeelHeightAdjustJSON.val;
                         }
                     }
-
-                    //if (config.ShowDebugInfo)
-                    //{
-                    //    showDebug = true;
-                    //    player.ShowStatusMessage($"Bone:{lowestBoneName}" +
-                    //        $"\n" +
-                    //        $"Control:{validBoneNames[lowestBoneName]}" +
-                    //        $"\n" +
-                    //        $"_MinY:{lowestY}" +
-                    //        $"\n" +
-                    //        $"kneeFixed:{kneeFixed}" +
-                    //        $"\n" +
-                    //        $"heelFixed:{heelFixed}");
-                    //}
-                    //else if (showDebug)
-                    //{
-                    //    showDebug = false;
-                    //    player.HideStatusMessage();
-                    //}
-
-                    reviseY = 0f;
-
-                    if (lowestY < horizon)
-                    {
-                        reviseY = floorHeight - lowestY;
-                    }
-
-                    reviseY += fix;
                 }
                 catch (Exception e)
                 {

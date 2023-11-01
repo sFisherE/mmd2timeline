@@ -3,6 +3,7 @@ using LibMMD.Unity3D;
 using MeshVR.Hands;
 using mmd2timeline.Store;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -162,52 +163,53 @@ namespace mmd2timeline
             }
             #endregion
 
-            Init();
+            InitReadyPosition();
+
+            //Init();
         }
         Dictionary<string, Transform> cachedBoneLookup = new Dictionary<string, Transform>();
         // 手指关节游戏对象
         List<GameObject> listFingerGameObject = new List<GameObject>();
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        private void Init()
-        {
-            // 初始化原子及模型
-            InitAtom();
+        ///// <summary>
+        ///// 初始化
+        ///// </summary>
+        //private void Init()
+        //{
+        //    // 初始化原子及模型
+        //    InitAtom2();
 
-            // 轮询骨骼清单挑出有效的骨骼
-            validBoneNames.Clear();
-            foreach (var bone in _MmdPersonGameObject._bones)
-            {
-                if (DazBoneMapping.fingerBoneNames.Contains(bone.name))
-                {
-                    if (!validBoneNames.ContainsKey(bone.name))
-                    {
-                        validBoneNames.Add(bone.name, "");
-                    }
-                }
-                else
-                {
-                    var boneName = bone.name;
-                    if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && cachedBoneLookup.ContainsKey(boneName))
-                    {
-                        Transform boneTransform = cachedBoneLookup[boneName];
-                        if (boneTransform != null)
-                        {
-                            if (this.controllerLookup.ContainsKey(boneTransform))
-                            {
-                                var controller = this.controllerLookup[boneTransform];
+        //    //// 轮询骨骼清单挑出有效的骨骼
+        //    //foreach (var bone in _MmdPersonGameObject._bones)
+        //    //{
+        //    //    if (DazBoneMapping.fingerBoneNames.Contains(bone.name))
+        //    //    {
+        //    //        if (!validBoneNames.ContainsKey(bone.name))
+        //    //        {
+        //    //            validBoneNames.Add(bone.name, "");
+        //    //        }
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        var boneName = bone.name;
+        //    //        if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && cachedBoneLookup.ContainsKey(boneName))
+        //    //        {
+        //    //            Transform boneTransform = cachedBoneLookup[boneName];
+        //    //            if (boneTransform != null)
+        //    //            {
+        //    //                if (this.controllerLookup.ContainsKey(boneTransform))
+        //    //                {
+        //    //                    var controller = this.controllerLookup[boneTransform];
 
-                                if (!validBoneNames.ContainsKey(bone.name))
-                                {
-                                    validBoneNames.Add(bone.name, controller.name);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //    //                    if (!validBoneNames.ContainsKey(bone.name))
+        //    //                    {
+        //    //                        validBoneNames.Add(bone.name, controller.name);
+        //    //                    }
+        //    //                }
+        //    //            }
+        //    //        }
+        //    //    }
+        //    //}
+        //}
 
         /// <summary>
         /// 初始化动作设置
@@ -245,26 +247,37 @@ namespace mmd2timeline
         /// <summary>
         /// 重新加载动作数据
         /// </summary>
-        public void ReloadMotions(int test, bool init = false)
+        public IEnumerator ReloadMotions(int test, bool init = false, bool resetOnly = false)
         {
-            if (init || config.ResetPhysicalWhenLoadMotion)
+            if (init || _MmdPersonGameObject == null || resetOnly)
             {
-                this.InitAtom();
+                ResetAtom();
+                yield return CoInitAtom(resetOnly);
             }
             else
             {
-                _MmdPersonGameObject.ClearMotion();
+                _MmdPersonGameObject?.ClearMotion();
             }
 
-            _MotionSetting.Files.Clear();
+            if (resetOnly || _MotionSetting == null)
+                yield break;
 
-            foreach (var motionChooser in _MotionChoosers)
+            try
             {
-                if (motionChooser.val != noneString)
+                _MotionSetting.Files.Clear();
+
+                foreach (var motionChooser in _MotionChoosers)
                 {
-                    _MotionSetting.Files.Add(motionChooser.val);
-                    this.ImportVmd(motionChooser.val);
+                    if (motionChooser.val != noneString)
+                    {
+                        _MotionSetting.Files.Add(motionChooser.val);
+                        this.ImportVmd(motionChooser.val);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                LogUtil.LogError(ex, "ReloadMotions::");
             }
         }
 
@@ -299,7 +312,7 @@ namespace mmd2timeline
         /// </summary>
         private void ReUpdateMotion()
         {
-            if (this._MmdPersonGameObject != null)
+            if (this._MmdPersonGameObject != null && hasAtomInited)
             {
                 this._MmdPersonGameObject.SetMotionPos(this._MmdPersonGameObject._playTime, true, motionScale: motionScaleRate);
             }
@@ -338,7 +351,11 @@ namespace mmd2timeline
                 }
 
                 _MmdPersonGameObject.LoadMotion(path);
-                _MmdPersonGameObject.SetMotionPos(0f, true, motionScale: motionScaleRate);
+
+                //if (hasAtomInited)
+                //{
+                //    _MmdPersonGameObject.SetMotionPos(0f, true, motionScale: motionScaleRate);
+                //}
 
                 #region 新的动作处理模式需要进行的关节筛选
                 //var bones = _MmdPersonGameObject._poser.BoneImages;
@@ -375,13 +392,15 @@ namespace mmd2timeline
         /// </summary>
         public void UpdateTransform()
         {
-            Transform transform = this._PersonAtom.mainController.transform;
+            if (_PersonAtom == null || rootHandler == null)
+                return;
+            Transform transform = _PersonAtom.mainController.transform;
 
             if (pastPosition == transform.position && pastRotation == transform.rotation)
                 return;
             pastPosition = transform.position;
             pastRotation = transform.rotation;
-            this.rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
         }
 
         /// <summary>
@@ -740,6 +759,15 @@ namespace mmd2timeline
             gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             this._MmdPersonGameObject = gameObject.GetComponent<MmdGameObject>();
             GameObject newRoot = new GameObject(Utility.GameObjectHead + "MmdRoot");
+            //{
+            //    var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //    go.transform.parent = newRoot.transform;
+            //    go.transform.localPosition = Vector3.zero;
+            //    go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            //    go.GetComponent<MeshRenderer>().material.color = new Color(1, 0.92f, 0.016f, 0.1f);
+            //    var col = go.GetComponent<Collider>();
+            //    Component.DestroyImmediate(col);
+            //}
             gameObject.transform.parent = newRoot.transform;
             this.rootHandler = newRoot.transform;
 
@@ -778,15 +806,53 @@ namespace mmd2timeline
                     cachedBoneLookup[name] = tf;
                 }
             }
+            //listFingerGameObject.Clear();
+            //foreach (var mmdbone in _MmdPersonGameObject._bones)
+            //{
+            //    if (DazBoneMapping.fingerBoneNames.Contains(mmdbone.name))
+            //    {
+            //        listFingerGameObject.Add(mmdbone);
+            //        continue;
+            //    }
+            //}
+
+            #region 挑出有效骨骼
             listFingerGameObject.Clear();
-            foreach (var mmdbone in _MmdPersonGameObject._bones)
+            validBoneNames.Clear();
+            // 轮询骨骼清单挑出有效的骨骼
+            foreach (var bone in _MmdPersonGameObject._bones)
             {
-                if (DazBoneMapping.fingerBoneNames.Contains(mmdbone.name))
+                if (DazBoneMapping.fingerBoneNames.Contains(bone.name))
                 {
-                    listFingerGameObject.Add(mmdbone);
-                    continue;
+                    listFingerGameObject.Add(bone);
+
+                    if (!validBoneNames.ContainsKey(bone.name))
+                    {
+                        validBoneNames.Add(bone.name, "");
+                    }
+                }
+                else
+                {
+                    var boneName = bone.name;
+                    if (!DazBoneMapping.ignoreUpdateBoneNames.Contains(boneName) && cachedBoneLookup.ContainsKey(boneName))
+                    {
+                        Transform boneTransform = cachedBoneLookup[boneName];
+                        if (boneTransform != null)
+                        {
+                            if (this.controllerLookup.ContainsKey(boneTransform))
+                            {
+                                var controller = this.controllerLookup[boneTransform];
+
+                                if (!validBoneNames.ContainsKey(bone.name))
+                                {
+                                    validBoneNames.Add(bone.name, controller.name);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            #endregion
 
             this._MmdPersonGameObject.OnUpdate = UpdateMotion;
         }
@@ -850,14 +916,14 @@ namespace mmd2timeline
                 // 骨骼数组
                 GameObject[] bones = mmd._bones.Where(b => validBoneNames.ContainsKey(b.name)).ToArray();
 
-                // 计算地板高度
-                var floorHeight = config.AutoCorrectFloorHeight;// + _PositionY.val;
+                //// 计算地板高度
+                //var floorHeight = config.AutoCorrectFloorHeight;// + _PositionY.val;
 
-                // 修正高度
-                var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
+                //// 修正高度
+                //var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
 
                 #region 修正骨骼位置，如果骨骼位置高度小于0，则对其进行修正
-                var reviseY = GetFixHeight(bones, floorHeight, horizon);
+                var reviseY = GetFixHeight(bones);
                 #endregion
 
                 foreach (GameObject mmdbone in bones)
@@ -885,85 +951,47 @@ namespace mmd2timeline
                                 continue;
                             }
 
-                            // 只有高度修正模式不为None时，才会启用修正功能
-                            if (config.AutoFixHeightMode != AutoCorrectHeightMode.None || config.EnableKneeingCorrections || EnableHeel)
+                            // 只有启用高跟时，才会启用修正功能
+                            if (EnableHeel)
                             {
-                                // 跪姿优化
-                                if (kneeFixed && (freeControllerV.name.EndsWith("FootControl") || freeControllerV.name.EndsWith("ToeControl")))
+                                //// 跪姿优化
+                                //if (kneeFixed && (freeControllerV.name.EndsWith("FootControl") || freeControllerV.name.EndsWith("ToeControl")))
+                                //{
+                                //    // 左膝只处理左侧的脚和脚趾，右膝只处理右侧的脚和脚趾
+                                //    if ((lKneeFixed && freeControllerV.name.StartsWith("l"))
+                                //        || (rKneeFixed && freeControllerV.name.StartsWith("r")))
+                                //    {
+                                //        if (freeControllerV.name.EndsWith("FootControl"))
+                                //        {
+                                //            freeControllerV.GetFloatJSONParam("jointDriveXTarget").val = -45;
+                                //        }
+
+                                //        //freeControllerV.transform.SetPositionAndRotation(position, rotation * Utility.quat);
+                                //        freeControllerV.transform.rotation = rotation * Utility.quat;
+                                //        //freeControllerV.currentPositionState = FreeControllerV3.PositionState.Off;
+                                //        //freeControllerV.currentRotationState = FreeControllerV3.RotationState.Off;
+
+                                //        continue;
+                                //    }
+                                //}
+
+                                // 如果是手部，则修正高度未地板高度+0.02，其他部位按照整体计算值进行修正
+                                if ((freeControllerV.name.EndsWith("HandControl") || freeControllerV.name.EndsWith("KneeControl"))
+                                    && position.y < 0)
                                 {
-                                    // 左膝只处理左侧的脚和脚趾，右膝只处理右侧的脚和脚趾
-                                    if ((lKneeFixed && freeControllerV.name.StartsWith("l"))
-                                        || (rKneeFixed && freeControllerV.name.StartsWith("r")))
-                                    {
-                                        if (freeControllerV.name.EndsWith("FootControl"))
-                                        {
-                                            freeControllerV.GetFloatJSONParam("jointDriveXTarget").val = -45;
-                                        }
-
-                                        //freeControllerV.transform.SetPositionAndRotation(position, rotation * Utility.quat);
-                                        freeControllerV.transform.rotation = rotation * Utility.quat;
-                                        freeControllerV.currentPositionState = FreeControllerV3.PositionState.Off;
-                                        freeControllerV.currentRotationState = FreeControllerV3.RotationState.Off;
-
-                                        continue;
-                                    }
+                                    position.y = 0.02f;
                                 }
-
-                                if (config.AutoFixHeightMode == AutoCorrectHeightMode.WholeBody || EnableHeel)
+                                else
                                 {
-                                    // 如果是手部，则修正高度未地板高度+0.02，其他部位按照整体计算值进行修正
-                                    if ((freeControllerV.name.EndsWith("HandControl") || freeControllerV.name.EndsWith("KneeControl"))
-                                        && position.y < floorHeight)
-                                    {
-                                        position.y = floorHeight + 0.02f;
-                                    }
-                                    else
-                                    {
-                                        #region 修正位置的y参数
-                                        if (reviseY != 0)
-                                        {
-                                            position.y += reviseY;
-                                        }
-                                        #endregion
-                                    }
-                                }
-                                else if (config.AutoFixHeightMode == AutoCorrectHeightMode.PartOnly)
-                                {
-                                    if (position.y < horizon)
-                                    {
-                                        position.y = floorHeight;
-                                    }
-                                }
+                                    //LogUtil.Log($"reviseY:{reviseY}");
 
-                                // 处理脚部控制
-                                if (config.EnableFootFree)
-                                {
-                                    #region 处理某些脚部被陷入地板的情况
-                                    if (freeControllerV.transform.position.y < 0)
+                                    #region 修正位置的y参数
+                                    if (reviseY != 0)
                                     {
-                                        if (freeControllerV.name.EndsWith("FootControl") || freeControllerV.name.EndsWith("ToeControl"))
-                                        {
-                                            outTimes++;
-
-                                            if (outTimes > 120)
-                                            {
-                                                outTimes = 0;
-                                            }
-                                        }
+                                        position.y += reviseY;
                                     }
                                     #endregion
                                 }
-
-                                if (!EnableHeel)
-                                {
-                                    // 如果脚趾关闭了，跳过位置和角度更新
-                                    if (FreeToe(freeControllerV, position, right: false) || FreeToe(freeControllerV, position, right: true))
-                                        continue;
-                                }
-
-                                // 如果脚部关闭了，跳过位置和角度更新
-                                if (FreeFoot(freeControllerV, position, right: false) || FreeFoot(freeControllerV, position, right: true))
-                                    continue;
                             }
 
                             if (DazBoneMapping.armBones.Contains(bonename))

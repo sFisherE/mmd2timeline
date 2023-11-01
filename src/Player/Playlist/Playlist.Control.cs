@@ -251,7 +251,7 @@ namespace mmd2timeline
 
             var nextItem = _CurrentItem;
 
-            if (this.PlayMode == MMDPlayMode.Random || this.PlayMode == MMDPlayMode.Default)
+            if (this.PlayMode != MMDPlayMode.Repeat)
             {
                 int index = GetNextIndex(prev);
                 nextItem = PlayList[index];

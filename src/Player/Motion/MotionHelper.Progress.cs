@@ -114,6 +114,9 @@ namespace mmd2timeline
         /// <param name="value"></param>
         internal void SetProgress(float value)
         {
+            if (!hasAtomInited)
+                return;
+
             var progress = this.GetDelayedProgress(value);
 
             //// 如果进度在0和最大值之外，说明现在不需要进行播放，停止播放

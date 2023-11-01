@@ -263,7 +263,7 @@ namespace mmd2timeline
             _DebugUIs.OuterElements.Add(_PluginInfo);
             #endregion
 
-            var recoverButton = Utils.SetupButton(this, Lang.Get("Reset Motion Model\n(Fix motion problems with bone changes)"), () =>
+            var recoverButton = Utils.SetupButton(this, Lang.Get("Reset Motion Model\n(Fix motion issues with bone changes)"), () =>
             {
                 StartCoroutine(ResetAllPersonMotion());
             }, RightSide);

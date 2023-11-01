@@ -401,13 +401,14 @@ namespace mmd2timeline
             this["Default"] = "默认";
             this["Random"] = "随机";
             this["Repeat"] = "重复";
+            this["Once"] = "单次";
             this["Music"] = "音频";
             this["Camera"] = "镜头";
             this["Motion"] = "动作";
             this["Expression"] = "表情";
             this["VMD"] = "VMD";
             this["Other"] = "其他";
-            this["Reset Motion Model\n(Fix motion problems with bone changes)"] = "重置动作模型\n（修复因骨骼变动引起的动作异常）";
+            this["Reset Motion Model\n(Fix motion issues with bone changes)"] = "重置动作模型\n（修复因骨骼变动引起的动作异常）";
             this["Import Completed"] = "导入完成";
             this["MMDs Imported."] = "MMD导入完成";
             this["Press OK button to Start the Show."] = "按下OK按钮开始表演";
@@ -451,6 +452,7 @@ namespace mmd2timeline
             this["Motion Delay"] = "动作延迟";
             this["Force Disable IK"] = "强制关闭IK";
             this["Motion Settings"] = "动作设置";
+            this["Reset Model Before Motion Start"] = "动作开始前重置动作模型";
         }
     }
 }
