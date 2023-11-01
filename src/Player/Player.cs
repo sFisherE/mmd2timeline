@@ -210,8 +210,12 @@ namespace mmd2timeline
         {
             if (playing)
             {
-                // 隐藏主HUD
-                SuperController.singleton.HideMainHUD();
+                // 有镜头数据时，才会隐藏主UI
+                if (_CameraHelper.HasMotion)
+                {
+                    // 隐藏主HUD
+                    SuperController.singleton.HideMainHUD();
+                }
 
                 _AudioPlayHelper.SetProgress(progress, true);
             }
