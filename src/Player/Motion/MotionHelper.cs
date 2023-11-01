@@ -412,7 +412,7 @@ namespace mmd2timeline
             {
                 if (this._MmdPersonGameObject != null)
                 {
-                    UnityEngine.Object.Destroy(this._MmdPersonGameObject);
+                    UnityEngine.Object.Destroy(this._MmdPersonGameObject.gameObject);
                     this._MmdPersonGameObject = null;
                 }
                 if (this._ChoosePerson != null)

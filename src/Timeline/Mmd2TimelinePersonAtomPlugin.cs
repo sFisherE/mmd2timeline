@@ -420,7 +420,7 @@ namespace mmd2timeline
         {
             if (m_MmdPersonGameObject != null)
             {
-                Destroy(m_MmdPersonGameObject);
+                Destroy(m_MmdPersonGameObject.gameObject);
                 m_MmdPersonGameObject = null;
             }
 
@@ -577,7 +577,7 @@ namespace mmd2timeline
             m_MmdPersonGameObject = mmdObj.GetComponent<MmdGameObject>();
 
             GameObject newRoot = new GameObject(Utility.GameObjectHead + "MmdRoot");
-            //if (Config.s_Debug)
+            if (Config.s_Debug)
             {
                 var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 go.transform.parent = newRoot.transform;

@@ -51,6 +51,22 @@ namespace mmd2timeline
             var dir = (parent.position - child.position).normalized;
             child.position += dir * diff;
         }
+        static void MatchNode3(Atom atom, Transform child, string childBoneName, string parentBoneName,float ratio, Transform target)
+        {
+            Transform parentBone = SearchObjName(target, parentBoneName);
+            if (parentBoneName == "Genesis2Female")
+            {
+                parentBone = atom.mainController.transform;
+            }
+
+            Transform childBone = SearchObjName(target, childBoneName);
+            float dis2Parent = Vector3.Distance(parentBone.position, childBone.position) * 10*ratio;
+
+            Transform parent = child.parent;
+            float diff = Vector3.Distance(child.position, parent.position) - dis2Parent;
+            var dir = (parent.position - child.position).normalized;
+            child.position += dir * diff;
+        }
         static void FollowNode( Transform node, Transform other)
         {
             node.position = other.position;
@@ -76,6 +92,7 @@ namespace mmd2timeline
             //lToe lFoot
             MatchNode2(atom,mmdBones["腰"], mmdBones["全ての親"], "hip", "Genesis2Female",target);
             MatchNode(atom, mmdBones["下半身"], "pelvis", "hip", target);
+
             MatchNode(atom,mmdBones["左足"], "lThigh", "pelvis", target);
             MatchNode(atom,mmdBones["左ひざ"], "lShin", "lThigh", target);
             MatchNode(atom,mmdBones["左足首"], "lFoot", "lShin", target);
@@ -90,14 +107,16 @@ namespace mmd2timeline
             MatchNode(atom,mmdBones["左ひざD"], "lShin", "lThigh", target);
             MatchNode(atom,mmdBones["左足首D"], "lFoot", "lShin", target);
             MatchNode(atom,mmdBones["左足先EX"], "lToe", "lFoot", target);
+
             MatchNode(atom,mmdBones["右足D"], "rThigh", "pelvis", target);
             MatchNode(atom,mmdBones["右ひざD"], "rShin", "rThigh", target);
             MatchNode(atom,mmdBones["右足首D"], "rFoot", "rShin", target);
             MatchNode(atom, mmdBones["右足先EX"], "rToe", "rFoot", target);
 
-            FollowNode(mmdBones["左足IK親"], mmdBones["右足"]);
-            FollowNode(mmdBones["左足ＩＫ"], mmdBones["右足"]);
-            FollowNode(mmdBones["左つま先ＩＫ"], mmdBones["右つま先"]);
+            FollowNode(mmdBones["左足IK親"], mmdBones["左足"]);
+            FollowNode(mmdBones["左足ＩＫ"], mmdBones["左足"]);
+            FollowNode(mmdBones["左つま先ＩＫ"], mmdBones["左つま先"]);
+
             FollowNode(mmdBones["右足IK親"], mmdBones["右足"]);
             FollowNode(mmdBones["右足ＩＫ"], mmdBones["右足"]);
             FollowNode(mmdBones["右つま先ＩＫ"], mmdBones["右つま先"]);
@@ -118,12 +137,23 @@ namespace mmd2timeline
             //lForeArm lShldr
             //lHand lForeArm
             MatchNode(atom, mmdBones["左肩P"], "lCollar", "chest", target);
-            MatchNode2(atom, mmdBones["左腕"], mmdBones["左肩P"], "lShldr", "lCollar", target);
+            FollowNode(mmdBones["左肩"], mmdBones["左肩P"]);
+            MatchNode(atom, mmdBones["左肩C"], "lShldr", "lCollar", target);
+            FollowNode(mmdBones["左腕"], mmdBones["左肩C"]);
+            MatchNode3(atom, mmdBones["左腕捩"], "lForeArm", "lShldr", 0.5f, target);
             MatchNode2(atom, mmdBones["左ひじ"], mmdBones["左腕"], "lForeArm", "lShldr", target);
+            MatchNode3(atom, mmdBones["左手捩"], "lHand", "lForeArm", 0.5f, target);
             MatchNode2(atom, mmdBones["左手首"], mmdBones["左ひじ"], "lHand", "lForeArm", target);
+
             MatchNode(atom, mmdBones["右肩P"], "rCollar", "chest", target);
-            MatchNode2(atom, mmdBones["右腕"], mmdBones["右肩P"], "rShldr", "rCollar", target);
+            FollowNode(mmdBones["右肩"], mmdBones["右肩P"]);
+            MatchNode(atom, mmdBones["右肩C"], "rShldr", "rCollar", target);
+            FollowNode(mmdBones["右腕"], mmdBones["右肩C"]);
+            //右腕捩
+            MatchNode3(atom, mmdBones["右腕捩"], "rForeArm", "rShldr",0.5f, target);
             MatchNode2(atom, mmdBones["右ひじ"], mmdBones["右腕"], "rForeArm", "rShldr", target);
+            //右手捩
+            MatchNode3(atom, mmdBones["右手捩"], "rHand", "rForeArm", 0.5f, target);
             MatchNode2(atom, mmdBones["右手首"], mmdBones["右ひじ"], "rHand", "rForeArm", target);
 
             var bones = mmdGameObject._model.Bones;
