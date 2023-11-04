@@ -72,9 +72,18 @@ namespace LibMMD.Motion
                 else
                     points[i] = CalculBezierPointByTwo(t, p1, p2);
             }
+
             if (isLinear&& leftFrame == rightFrame - 1)
             {
                 return CameraKeyFrameToCameraPose(leftKey);
+            }
+            //如果只差一帧的话，强制用线性插值。
+            if(leftFrame == rightFrame - 1)
+            {
+                for (var i = 0; i < 6; i++)
+                {
+                    points[i] = t;
+                }
             }
 
             var x = leftKey.Position.x + points[0] * (rightKey.Position.x - leftKey.Position.x);
