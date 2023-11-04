@@ -140,9 +140,9 @@ namespace mmd2timeline
             FollowNode(mmdBones["左肩"], mmdBones["左肩P"]);
             MatchNode(atom, mmdBones["左肩C"], "lShldr", "lCollar", target);
             FollowNode(mmdBones["左腕"], mmdBones["左肩C"]);
-            MatchNode3(atom, mmdBones["左腕捩"], "lForeArm", "lShldr", 0.5f, target);
+            //MatchNode3(atom, mmdBones["左腕捩"], "lForeArm", "lShldr", 0.5f, target);
             MatchNode2(atom, mmdBones["左ひじ"], mmdBones["左腕"], "lForeArm", "lShldr", target);
-            MatchNode3(atom, mmdBones["左手捩"], "lHand", "lForeArm", 0.5f, target);
+            //MatchNode3(atom, mmdBones["左手捩"], "lHand", "lForeArm", 0.5f, target);
             MatchNode2(atom, mmdBones["左手首"], mmdBones["左ひじ"], "lHand", "lForeArm", target);
 
             MatchNode(atom, mmdBones["右肩P"], "rCollar", "chest", target);
@@ -150,10 +150,10 @@ namespace mmd2timeline
             MatchNode(atom, mmdBones["右肩C"], "rShldr", "rCollar", target);
             FollowNode(mmdBones["右腕"], mmdBones["右肩C"]);
             //右腕捩
-            MatchNode3(atom, mmdBones["右腕捩"], "rForeArm", "rShldr",0.5f, target);
+            //MatchNode3(atom, mmdBones["右腕捩"], "rForeArm", "rShldr",0.5f, target);
             MatchNode2(atom, mmdBones["右ひじ"], mmdBones["右腕"], "rForeArm", "rShldr", target);
             //右手捩
-            MatchNode3(atom, mmdBones["右手捩"], "rHand", "rForeArm", 0.5f, target);
+            //MatchNode3(atom, mmdBones["右手捩"], "rHand", "rForeArm", 0.5f, target);
             MatchNode2(atom, mmdBones["右手首"], mmdBones["右ひじ"], "rHand", "rForeArm", target);
 
             var bones = mmdGameObject._model.Bones;
@@ -385,21 +385,21 @@ namespace mmd2timeline
                 { "左ひざ","lShin"},
                 { "左足首","lFoot"},
                 { "左つま先","lToe"},
-                { "lBigToe","lBigToe"},
-                { "lSmallToe1","lSmallToe1"},
-                { "lSmallToe2","lSmallToe2"},
-                { "lSmallToe3","lSmallToe3"},
-                { "lSmallToe4","lSmallToe4"},
+                //{ "lBigToe","lBigToe"},
+                //{ "lSmallToe1","lSmallToe1"},
+                //{ "lSmallToe2","lSmallToe2"},
+                //{ "lSmallToe3","lSmallToe3"},
+                //{ "lSmallToe4","lSmallToe4"},
 
                 { "右足","rThigh"},
                 { "右ひざ","rShin"},
                 { "右足首","rFoot"},
                 { "右つま先","rToe"},
-                { "rBigToe","rBigToe"},
-                { "rSmallToe1","rSmallToe1"},
-                { "rSmallToe2","rSmallToe2"},
-                { "rSmallToe3","rSmallToe3"},
-                { "rSmallToe4","rSmallToe4"},
+                //{ "rBigToe","rBigToe"},
+                //{ "rSmallToe1","rSmallToe1"},
+                //{ "rSmallToe2","rSmallToe2"},
+                //{ "rSmallToe3","rSmallToe3"},
+                //{ "rSmallToe4","rSmallToe4"},
 
                 { "左足IK親","lFoot"},
                 { "左足ＩＫ","lFoot"},
