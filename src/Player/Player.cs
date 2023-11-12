@@ -465,11 +465,11 @@ namespace mmd2timeline
         {
             if (item != null)
             {
-                // 克隆一下
-                item = item.Clone();
-
                 // 更新动作设定数据
                 _MotionHelperGroup.UpdateValuesToSettings();
+
+                // 克隆一下
+                item = item.Clone();
 
                 Playlist.AddPlayItem(item);
 
