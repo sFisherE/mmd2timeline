@@ -325,9 +325,9 @@ namespace mmd2timeline
             _MMDFolderHelper.OnMMDSelected += OnMMDSelected;
             _MMDFolderHelper.OnMMDImported += OnMMDImported;
 
-            // 增加原子添加移除的事件处理
-            SuperController.singleton.onAtomAddedHandlers = CheckAtomAdded;
-            SuperController.singleton.onAtomRemovedHandlers = CheckAtomRemoved;
+            //// 增加原子添加移除的事件处理
+            //SuperController.singleton.onAtomAddedHandlers += CheckAtomAdded;
+            //SuperController.singleton.onAtomRemovedHandlers += CheckAtomRemoved;
 
             // 创建UI
             CreateUI();
@@ -1331,6 +1331,9 @@ namespace mmd2timeline
         {
             LogUtil.Debug("---------------OnEnable!!!!!");
 
+            SuperController.singleton.onAtomAddedHandlers += CheckAtomAdded;
+            SuperController.singleton.onAtomRemovedHandlers += CheckAtomRemoved;
+
             base.OnEnable();
 
             _AudioPlayHelper?.OnEnable();
@@ -1347,6 +1350,9 @@ namespace mmd2timeline
         {
             LogUtil.Debug("---------------OnDisable!!!!!");
 
+            SuperController.singleton.onAtomAddedHandlers -= CheckAtomAdded;
+            SuperController.singleton.onAtomRemovedHandlers -= CheckAtomRemoved;
+
             base.OnDisable();
 
             _ProgressHelper?.OnDisable();
@@ -1362,6 +1368,9 @@ namespace mmd2timeline
         public override void OnDestroy()
         {
             LogUtil.Debug("---------------OnDestroy!!!!!");
+
+            SuperController.singleton.onAtomAddedHandlers -= CheckAtomAdded;
+            SuperController.singleton.onAtomRemovedHandlers -= CheckAtomRemoved;
 
             DestroyHUDUI();
 
