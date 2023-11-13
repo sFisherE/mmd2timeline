@@ -107,6 +107,12 @@ namespace mmd2timeline
         /// </summary>
         void MakeFocusAtomList()
         {
+            if (_FocusUI == null)
+            {
+                LogUtil.LogWarning($"Camera Focus UI is not Created.");
+                return;
+            }
+
             List<string> targetChoices = new List<string>() { noneString };
             foreach (string atomUID in SuperController.singleton.GetAtomUIDs())
             {
@@ -173,13 +179,26 @@ namespace mmd2timeline
 
                 var target = _FocusAtom.freeControllers.FirstOrDefault(c => c.name == tagetId);//.GetStorableByID(FocusReceiverJSON.val).transform.position;
 
-                if (config.UseWindowCamera)
+                // 如果是VR模式，则主动计算镜头方向（因为FocusOnController方法在VR模式有向右偏移35度）
+                if (config.IsInVR)
                 {
-                    _CameraTransform.LookAt(target.transform);
+                    var motionControllerHead = SuperController.singleton.centerCameraTarget.transform;
+
+                    var toDirection = Vector3.ProjectOnPlane(target.transform.position - motionControllerHead.position, up);
+                    var fromDirection = Vector3.ProjectOnPlane(motionControllerHead.forward, up);
+                    var quaternion = Quaternion.FromToRotation(fromDirection, toDirection);
+                    NavigationRig.rotation = quaternion * NavigationRig.rotation;
                 }
                 else
                 {
-                    SuperController.singleton.FocusOnController(target);
+                    if (config.UseWindowCamera)
+                    {
+                        _CameraTransform.LookAt(target.transform);
+                    }
+                    else
+                    {
+                        SuperController.singleton.FocusOnController(target);
+                    }
                 }
 
                 return true;

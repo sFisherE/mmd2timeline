@@ -151,6 +151,18 @@ namespace mmd2timeline
         bool hasAtomAdded = false;
 
         /// <summary>
+        /// 原子添加后的事件
+        /// </summary>
+        /// <param name="atom"></param>
+        void OnAtomAdded(Atom atom)
+        {
+            CheckAtomAdded(atom);
+
+            // 刷新聚焦原子列表
+            RefreshFocusAtomList();
+        }
+
+        /// <summary>
         /// 原子被添加的接收方法
         /// </summary>
         /// <param name="atom"></param>
@@ -193,10 +205,38 @@ namespace mmd2timeline
         /// 原子被移除的接收方法
         /// </summary>
         /// <param name="atom"></param>
-        void CheckAtomRemoved(Atom atom)
+        void OnAtomRemoved(Atom atom)
         {
             // 移除人物
             RemoveMotionHelper(atom);
+
+            // 刷新聚焦原子列表
+            RefreshFocusAtomList();
+        }
+
+        /// <summary>
+        /// 刷新聚焦原子列表
+        /// </summary>
+        void RefreshFocusAtomList()
+        {
+            // 刷新镜头聚焦原子列表
+            _CameraHelper.RefreshFocusAtomList();
+
+            Atom targetPersonAtom;
+
+            if (containingAtom.type == "Person")
+            {
+                targetPersonAtom = containingAtom;
+            }
+            else
+            {
+                targetPersonAtom = SuperController.singleton.GetAtoms().FirstOrDefault(a => a.type == "Person");
+            }
+
+            if (targetPersonAtom != null)
+            {
+                _CameraHelper.SetFocusTarget(targetPersonAtom.uid, "neckControl");
+            }
         }
 
         /// <summary>
@@ -602,9 +642,9 @@ namespace mmd2timeline
                 {
                     waitFrames = 0;
 
-                    hasAtomAdded = false;
-
                     RefreshPersonAtoms();
+
+                    hasAtomAdded = false;
                 }
                 else
                 {
@@ -1254,6 +1294,8 @@ namespace mmd2timeline
             {
                 LogUtil.LogError(ex, "CheckAtomAdded::");
             }
+
+            RefreshFocusAtomList();
         }
 
         /// <summary>
@@ -1407,8 +1449,8 @@ namespace mmd2timeline
         {
             LogUtil.Debug("---------------OnEnable!!!!!");
 
-            SuperController.singleton.onAtomAddedHandlers += CheckAtomAdded;
-            SuperController.singleton.onAtomRemovedHandlers += CheckAtomRemoved;
+            SuperController.singleton.onAtomAddedHandlers += OnAtomAdded;
+            SuperController.singleton.onAtomRemovedHandlers += OnAtomRemoved;
 
             base.OnEnable();
 
@@ -1426,8 +1468,8 @@ namespace mmd2timeline
         {
             LogUtil.Debug("---------------OnDisable!!!!!");
 
-            SuperController.singleton.onAtomAddedHandlers -= CheckAtomAdded;
-            SuperController.singleton.onAtomRemovedHandlers -= CheckAtomRemoved;
+            SuperController.singleton.onAtomAddedHandlers -= OnAtomAdded;
+            SuperController.singleton.onAtomRemovedHandlers -= OnAtomRemoved;
 
             base.OnDisable();
 
@@ -1445,8 +1487,8 @@ namespace mmd2timeline
         {
             LogUtil.Debug("---------------OnDestroy!!!!!");
 
-            SuperController.singleton.onAtomAddedHandlers -= CheckAtomAdded;
-            SuperController.singleton.onAtomRemovedHandlers -= CheckAtomRemoved;
+            SuperController.singleton.onAtomAddedHandlers -= OnAtomAdded;
+            SuperController.singleton.onAtomRemovedHandlers -= OnAtomRemoved;
 
             // 未初始化，不执行后边的代码
             if (!isInited)
