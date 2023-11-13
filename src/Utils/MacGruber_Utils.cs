@@ -112,7 +112,7 @@ namespace MacGruber
             {
                 slider.valueFormat = valueFormat;
             }
-            script.RegisterFloat(storable);
+            //script.RegisterFloat(storable);
             return storable;
         }
 
@@ -166,7 +166,7 @@ namespace MacGruber
             {
                 slider.valueFormat = valueFormat;
             }
-            script.RegisterFloat(storable);
+            //script.RegisterFloat(storable);
             return storable;
         }
 
@@ -178,7 +178,7 @@ namespace MacGruber
             UIDynamicSlider slider = script.CreateSlider(storable, rightSide);
             slider.slider.wholeNumbers = true;
             slider.valueFormat = "F0";
-            script.RegisterFloat(storable);
+            //script.RegisterFloat(storable);
             return storable;
         }
 
@@ -189,7 +189,7 @@ namespace MacGruber
             JSONStorableColor storable = new JSONStorableColor(label, hsvColor);
             storable.storeType = JSONStorableParam.StoreType.Full;
             script.CreateColorPicker(storable, rightSide);
-            script.RegisterColor(storable);
+            //script.RegisterColor(storable);
             return storable;
         }
 
@@ -199,7 +199,7 @@ namespace MacGruber
             string defaultEntry = entries.Count > 0 ? entries[0] : "";
             JSONStorableStringChooser storable = new JSONStorableStringChooser(label, entries, defaultEntry, label);
             self.CreateScrollablePopup(storable, rightSide);
-            self.RegisterStringChooser(storable);
+            //self.RegisterStringChooser(storable);
             return storable;
         }
 
@@ -209,7 +209,7 @@ namespace MacGruber
             string defaultEntry = (defaultIndex >= 0 && defaultIndex < entries.Count) ? entries[defaultIndex] : "";
             JSONStorableStringChooser storable = new JSONStorableStringChooser(label, entries, defaultEntry, label);
             self.CreateScrollablePopup(storable, rightSide);
-            self.RegisterStringChooser(storable);
+            //self.RegisterStringChooser(storable);
             return storable;
         }
 
@@ -225,7 +225,7 @@ namespace MacGruber
                 callback(v);
             };
             self.CreateScrollablePopup(storable, rightSide);
-            self.RegisterStringChooser(storable);
+            //self.RegisterStringChooser(storable);
             return storable;
         }
 
@@ -244,7 +244,7 @@ namespace MacGruber
             textfield.height = 35;
             if (!string.IsNullOrEmpty(defaultValue))
                 storable.SetFilePath(defaultValue);
-            storable.RegisterFileBrowseButton(button.button);
+            //storable.RegisterFileBrowseButton(button.button);
             return storable;
         }
 
@@ -263,7 +263,7 @@ namespace MacGruber
             textfield.height = 35;
             if (!string.IsNullOrEmpty(defaultValue))
                 storable.SetFilePath(defaultValue);
-            storable.RegisterFileBrowseButton(button.button);
+            //storable.RegisterFileBrowseButton(button.button);
             return storable;
         }
 

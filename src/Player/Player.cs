@@ -144,14 +144,35 @@ namespace mmd2timeline
         }
 
         #region 各种事件处理函数
+
+        /// <summary>
+        /// 有Atom被添加
+        /// </summary>
+        bool hasAtomAdded = false;
+
         /// <summary>
         /// 原子被添加的接收方法
         /// </summary>
         /// <param name="atom"></param>
         void CheckAtomAdded(Atom atom)
         {
+            LogUtil.Debug($"---------------CheckAtomAdded:{atom.uid}");
+
             if (atom.type == "Person")
             {
+                // 正在加载中，不进行处理
+                if (SuperController.singleton.isLoading)
+                {
+                    hasAtomAdded = true;
+                    return;
+                }
+
+                // 如果pmx路径为空则为其赋值
+                if (string.IsNullOrEmpty(Config.varPmxPath))
+                {
+                    Config.varPmxPath = PluginPath + "/g2f.pmx";
+                }
+
                 var index = PersonAtoms.IndexOf(atom);
                 if (index < 0)
                 {
@@ -332,18 +353,7 @@ namespace mmd2timeline
             // 创建UI
             CreateUI();
 
-            try
-            {
-                // 轮询和检查原子
-                foreach (var atom in SuperController.singleton.GetAtoms())
-                {
-                    CheckAtomAdded(atom);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogUtil.LogError(ex, "CheckAtomAdded::");
-            }
+            //RefreshPersonAtoms();
         }
 
         #region Save/Load
@@ -527,10 +537,17 @@ namespace mmd2timeline
 
         #region 播放相关的方法
 
+        /// <summary>
+        /// 是否已经完成初始化
+        /// </summary>
+        bool isInited = false;
+
         public void Start()
         {
+            LogUtil.Debug("---------------Start!!!!!");
+
             // 初始化模型目录
-            Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
+            //Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
 
             base.InitScript();
 
@@ -542,6 +559,10 @@ namespace mmd2timeline
 
             // 从默认播放列表加载内容
             StartCoroutine(this.Playlist.LoadFromDefalut());
+
+            // 设定有原子添加，等待处理
+            hasAtomAdded = true;
+            isInited = true;
         }
 
         #region 处理人物位置同步
@@ -564,9 +585,34 @@ namespace mmd2timeline
         }
         #endregion
 
+        int waitFrames = 0;
+        const int MAX_WAIT_FRAMES = 60;
+
         public void Update()
         {
-            if (IsLocked) return;
+            // 如果场景正在加载中，则不执行后边的代码
+            if (SuperController.singleton.isLoading) return;
+
+            if (IsLocked || !isInited) return;
+
+            #region 如果有人物原子被添加，则进行让人物刷新的处理（只有新加载场景时才会出现这种情况）
+            if (hasAtomAdded)
+            {
+                if (waitFrames > MAX_WAIT_FRAMES)
+                {
+                    waitFrames = 0;
+
+                    hasAtomAdded = false;
+
+                    RefreshPersonAtoms();
+                }
+                else
+                {
+                    waitFrames++;
+                }
+                return;
+            }
+            #endregion
 
             #region 快捷键控制
             // 如果按了SPACE键则切换播放状态
@@ -1155,28 +1201,56 @@ namespace mmd2timeline
         /// <param name="atom"></param>
         private void RemoveMotionHelper(Atom atom)
         {
+            if (atom?.type == "Person")
+            {
+                var index = PersonAtoms.IndexOf(atom);
+
+                if (index > -1)
+                {
+                    PersonAtoms.RemoveAt(index);
+
+                    // 移除对应的动作数据
+                    CurrentItem?.Motions.RemoveAt(index);
+                }
+                try
+                {
+                    _MotionHelperGroup.RemoveMotionHelper(atom);
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    LogUtil.LogError(ex, $"Player::RemoveMotionHelper");
+#endif
+                }
+            }
+        }
+
+        /// <summary>
+        /// 刷新人物原子
+        /// </summary>
+        void RefreshPersonAtoms()
+        {
+            if (PersonAtoms.Count > 0)
+            {
+                foreach (var item in PersonAtoms)
+                {
+                    _MotionHelperGroup.RemoveMotionHelper(item);
+                }
+
+                PersonAtoms.Clear();
+            }
+
             try
             {
-                if (atom?.type == "Person")
+                // 轮询和检查原子
+                foreach (var atom in SuperController.singleton.GetAtoms())
                 {
-                    var index = PersonAtoms.IndexOf(atom);
-
-                    if (index > -1)
-                    {
-                        PersonAtoms.RemoveAt(index);
-
-                        // 移除对应的动作数据
-                        CurrentItem?.Motions.RemoveAt(index);
-                    }
-
-                    _MotionHelperGroup.RemoveMotionHelper(atom);
+                    CheckAtomAdded(atom);
                 }
             }
             catch (Exception ex)
             {
-#if DEBUG
-                LogUtil.LogError(ex, $"Player::RemoveMotionHelper");
-#endif
+                LogUtil.LogError(ex, "CheckAtomAdded::");
             }
         }
 
@@ -1371,6 +1445,10 @@ namespace mmd2timeline
 
             SuperController.singleton.onAtomAddedHandlers -= CheckAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers -= CheckAtomRemoved;
+
+            // 未初始化，不执行后边的代码
+            if (!isInited)
+                return;
 
             DestroyHUDUI();
 
