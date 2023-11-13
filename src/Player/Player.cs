@@ -1190,6 +1190,8 @@ namespace mmd2timeline
                 // 如果是新的对象，进行初始化
                 helper.CreatePersonMotionUI(this, LeftSide);
                 helper.OnMotionLoaded += OnMotionLoaded;
+
+                RefreshUIByCurrentUIMode();
             }
 
             return helper;

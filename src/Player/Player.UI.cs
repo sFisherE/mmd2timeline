@@ -312,6 +312,27 @@ namespace mmd2timeline
         }
 
         #region UI显示控制
+
+        /// <summary>
+        /// 当前UI模式
+        /// </summary>
+        int currentUIMode = PlayerUIMode.Init;
+
+        /// <summary>
+        /// 刷新UI模式
+        /// </summary>
+        void RefreshUIByCurrentUIMode()
+        {
+            if (currentUIMode == PlayerUIMode.Edit)
+            {
+                ShowEditUI();
+            }
+            else
+            {
+                ShowInitLoadUI();
+            }
+        }
+
         /// <summary>
         /// 显示初始UI
         /// </summary>
@@ -343,6 +364,8 @@ namespace mmd2timeline
                     _LoadTips.gameObject.SetActive(true);
 
                     _PluginInfo.height = 1000f;
+
+                    currentUIMode = PlayerUIMode.Init;
                 }
             }
             catch (Exception ex)
@@ -374,6 +397,8 @@ namespace mmd2timeline
                 ShowDebugUIs(true);
 
                 _PluginInfo.height = 286f + 30f + 65f + 115f;
+
+                currentUIMode = PlayerUIMode.Play;
             }
             catch (Exception ex)
             {
@@ -404,6 +429,8 @@ namespace mmd2timeline
                 _LoadTips.gameObject.SetActive(false);
                 ShowDebugUIs(true);
                 _PluginInfo.height = 745f + 30f + 70f + 115f;
+
+                currentUIMode = PlayerUIMode.Edit;
             }
             catch (Exception ex)
             {

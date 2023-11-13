@@ -240,6 +240,61 @@ namespace mmd2timeline
     }
 
     /// <summary>
+    /// 播放器UI模式
+    /// </summary>
+    internal class PlayerUIMode
+    {
+        /// <summary>
+        /// 初始
+        /// </summary>
+        public const int Init = 0;
+        /// <summary>
+        /// 播放
+        /// </summary>
+        public const int Play = 1;
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        public const int Edit = 2;
+
+        /// <summary>
+        /// 初始化枚举类
+        /// </summary>
+        private static EnumClass enums = new EnumClass("Init", "Play", "Edit");
+
+        /// <summary>
+        /// 获取名称列表
+        /// </summary>
+        public static List<string> Names
+        {
+            get
+            {
+                return enums.Names;
+            }
+        }
+
+        /// <summary>
+        /// 根据名称获取值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static int GetValue(string name)
+        {
+            return enums.GetValue(name);
+        }
+
+        /// <summary>
+        /// 根据值获取名称
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetName(int value)
+        {
+            return enums.GetName(value);
+        }
+    }
+
+    /// <summary>
     /// MMD文件类型
     /// </summary>
     internal class MMDFileType
