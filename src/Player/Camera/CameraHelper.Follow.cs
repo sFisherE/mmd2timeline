@@ -180,7 +180,7 @@ namespace mmd2timeline
                             _CameraTransform.position = navigationRigPosition;
                         }
 
-                        if (!FocusOn(rotation.GetUp()) && _rotationLock)
+                        if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
                         {
                             var navigationRigRotation = GetRotation(navigationRigPosition, rotation, _CameraTransform);
                             _CameraTransform.rotation = navigationRigRotation;
@@ -201,7 +201,7 @@ namespace mmd2timeline
                         NavigationRig.position = navigationRigPosition;
                     }
 
-                    if (!FocusOn(rotation.GetUp()) && _rotationLock)
+                    if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
                     {
                         var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
                         NavigationRig.rotation = navigationRigRotation;

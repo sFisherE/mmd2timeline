@@ -158,7 +158,7 @@ namespace mmd2timeline
         /// <summary>
         /// 聚焦
         /// </summary>
-        bool FocusOn(Vector3 up, string tagetId = null)
+        bool FocusOn(Vector3 position, Vector3 up, string tagetId = null)
         {
             if (!_FocusOnAtom)
             {
@@ -182,12 +182,9 @@ namespace mmd2timeline
                 // 如果是VR模式，则主动计算镜头方向（因为FocusOnController方法在VR模式有向右偏移35度）
                 if (config.IsInVR)
                 {
-                    var motionControllerHead = SuperController.singleton.centerCameraTarget.transform;
-
-                    var toDirection = Vector3.ProjectOnPlane(target.transform.position - motionControllerHead.position, up);
-                    var fromDirection = Vector3.ProjectOnPlane(motionControllerHead.forward, up);
-                    var quaternion = Quaternion.FromToRotation(fromDirection, toDirection);
-                    NavigationRig.rotation = quaternion * NavigationRig.rotation;
+                    var focusRotation = GetFocusOnRotation(position, up, target);
+                    var rotation = GetRotation(position, focusRotation, NavigationRig);
+                    NavigationRig.rotation = rotation;
                 }
                 else
                 {
@@ -205,6 +202,46 @@ namespace mmd2timeline
             }
 
             return false;
+        }
+
+        Vector3 targetPastPosition = Vector3.zero;
+        /// <summary>
+        /// 获取聚焦角度
+        /// </summary>
+        /// <returns></returns>
+        Quaternion GetFocusOnRotation(Vector3 position, Vector3 up, FreeControllerV3 target)
+        {
+            if (_FocusAtom != null)
+            {
+                var targetAtomPosition = target.transform.position;
+
+                var currentAtomPosition = position;
+                Vector3 targetPosition = Vector3.zero;
+
+                Vector3 targetDiff = targetAtomPosition - targetPastPosition;
+                if (Mathf.Abs(targetDiff.x) >= 0f)
+                {
+                    targetPosition.x = targetPastPosition.x + targetDiff.x;
+                }
+                if (Mathf.Abs(targetDiff.y) >= 0f)
+                {
+                    targetPosition.y = targetPastPosition.y + targetDiff.y;
+                }
+                if (Mathf.Abs(targetDiff.z) >= 0f)
+                {
+                    targetPosition.z = targetPastPosition.z + targetDiff.z;
+                }
+
+                targetPastPosition = targetPosition;
+
+                var aim = (targetPosition) - (currentAtomPosition);
+
+                return Quaternion.LookRotation(aim, up);
+            }
+            else
+            {
+                return Quaternion.identity;
+            }
         }
     }
 }
