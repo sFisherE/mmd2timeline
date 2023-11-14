@@ -181,7 +181,7 @@ namespace mmd2timeline.Store
             {
                 if (this.HasKey("MotionScale"))
                     return this["MotionScale"].AsFloat;
-                else return 1f;
+                else return 0.85f;
             }
             set { this["MotionScale"].AsFloat = value; }
         }
