@@ -107,6 +107,12 @@ namespace mmd2timeline
         /// </summary>
         void MakeFocusAtomList()
         {
+            if (_FocusUI == null)
+            {
+                LogUtil.LogWarning($"Camera Focus UI is not Created.");
+                return;
+            }
+
             List<string> targetChoices = new List<string>() { noneString };
             foreach (string atomUID in SuperController.singleton.GetAtomUIDs())
             {
@@ -152,7 +158,7 @@ namespace mmd2timeline
         /// <summary>
         /// 聚焦
         /// </summary>
-        bool FocusOn(Vector3 up, string tagetId = null)
+        bool FocusOn(Vector3 position, Vector3 up, string tagetId = null)
         {
             if (!_FocusOnAtom)
             {
@@ -173,19 +179,69 @@ namespace mmd2timeline
 
                 var target = _FocusAtom.freeControllers.FirstOrDefault(c => c.name == tagetId);//.GetStorableByID(FocusReceiverJSON.val).transform.position;
 
-                if (config.UseWindowCamera)
+                // 如果是VR模式，则主动计算镜头方向（因为FocusOnController方法在VR模式有向右偏移35度）
+                if (config.IsInVR)
                 {
-                    _CameraTransform.LookAt(target.transform);
+                    var focusRotation = GetFocusOnRotation(position, up, target);
+                    var rotation = GetRotation(position, focusRotation, NavigationRig);
+                    NavigationRig.rotation = rotation;
                 }
                 else
                 {
-                    SuperController.singleton.FocusOnController(target);
+                    if (config.UseWindowCamera)
+                    {
+                        _CameraTransform.LookAt(target.transform);
+                    }
+                    else
+                    {
+                        SuperController.singleton.FocusOnController(target);
+                    }
                 }
 
                 return true;
             }
 
             return false;
+        }
+
+        Vector3 targetPastPosition = Vector3.zero;
+        /// <summary>
+        /// 获取聚焦角度
+        /// </summary>
+        /// <returns></returns>
+        Quaternion GetFocusOnRotation(Vector3 position, Vector3 up, FreeControllerV3 target)
+        {
+            if (_FocusAtom != null)
+            {
+                var targetAtomPosition = target.transform.position;
+
+                var currentAtomPosition = position;
+                Vector3 targetPosition = Vector3.zero;
+
+                Vector3 targetDiff = targetAtomPosition - targetPastPosition;
+                if (Mathf.Abs(targetDiff.x) >= 0f)
+                {
+                    targetPosition.x = targetPastPosition.x + targetDiff.x;
+                }
+                if (Mathf.Abs(targetDiff.y) >= 0f)
+                {
+                    targetPosition.y = targetPastPosition.y + targetDiff.y;
+                }
+                if (Mathf.Abs(targetDiff.z) >= 0f)
+                {
+                    targetPosition.z = targetPastPosition.z + targetDiff.z;
+                }
+
+                targetPastPosition = targetPosition;
+
+                var aim = (targetPosition) - (currentAtomPosition);
+
+                return Quaternion.LookRotation(aim, up);
+            }
+            else
+            {
+                return Quaternion.identity;
+            }
         }
     }
 }

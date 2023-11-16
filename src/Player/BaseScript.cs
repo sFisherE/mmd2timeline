@@ -13,7 +13,7 @@ namespace mmd2timeline
     {
         public const string PLUGIN_NAME = "MMD2TimelinePlayer";
 
-        public const string VERSION = "1.0f1a";
+        public const string VERSION = "1.0f1f";
 
         /// <summary>
         /// 获取插件的版本号
@@ -76,7 +76,7 @@ namespace mmd2timeline
 
             InitFullWidthUI();
         }
-        
+
         /// <summary>
         /// 等待n秒后执行方法
         /// </summary>

@@ -87,7 +87,7 @@ namespace mmd2timeline
             string defaultEntry = entries.Count > 0 ? entries[0] : "";
             JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, Lang.Get(label));
             this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
-            this.RegisterStringChooser(storable);
+            //this.RegisterStringChooser(storable);
             return storable;
         }
 
@@ -109,7 +109,7 @@ namespace mmd2timeline
             string defaultEntry = entries.Count > 0 ? entries[0] : "";
             JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, label);
             this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
-            this.RegisterStringChooser(storable);
+            //this.RegisterStringChooser(storable);
             return storable;
         }
 
@@ -120,7 +120,7 @@ namespace mmd2timeline
             storable.storeType = JSONStorableParam.StoreType.Full;
             var toggle = CreateToggle(storable, rightSide);
             toggle.label = label;
-            RegisterBool(storable);
+            //RegisterBool(storable);
             return storable;
         }
 
@@ -152,7 +152,7 @@ namespace mmd2timeline
             {
                 slider.valueFormat = valueFormat;
             }
-            RegisterFloat(storable);
+            //RegisterFloat(storable);
             return storable;
         }
 
@@ -218,7 +218,7 @@ namespace mmd2timeline
             {
                 slider.valueFormat = valueFormat;
             }
-            RegisterFloat(storable);
+            //RegisterFloat(storable);
             return storable;
         }
 
@@ -249,7 +249,7 @@ namespace mmd2timeline
                 callback(Lang.From(name));
             };
             this.CreateScrollablePopup(storable, rightSide);
-            this.RegisterStringChooser(storable);
+            //this.RegisterStringChooser(storable);
             return storable;
         }
 
@@ -263,7 +263,7 @@ namespace mmd2timeline
                 callback(Lang.From(name));
             };
             this.CreateScrollablePopup(storable, rightSide);
-            this.RegisterStringChooser(storable);
+            //this.RegisterStringChooser(storable);
             return storable;
         }
 

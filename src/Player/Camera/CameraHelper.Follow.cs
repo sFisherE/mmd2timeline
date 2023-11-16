@@ -180,7 +180,7 @@ namespace mmd2timeline
                             _CameraTransform.position = navigationRigPosition;
                         }
 
-                        if (!FocusOn(rotation.GetUp()) && _rotationLock)
+                        if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
                         {
                             var navigationRigRotation = GetRotation(navigationRigPosition, rotation, _CameraTransform);
                             _CameraTransform.rotation = navigationRigRotation;
@@ -188,7 +188,7 @@ namespace mmd2timeline
                     }
                     if (config.CameraFOVEnabled)
                     {
-                        _CameraControl.cameraFOV = fov;
+                        _CameraControl.cameraFOV = fov * (1 + _CameraSetting.CameraScale / 1f);
                     }
                     _CameraControl.cameraToControl.orthographic = orthographic;
                 }
@@ -201,7 +201,7 @@ namespace mmd2timeline
                         NavigationRig.position = navigationRigPosition;
                     }
 
-                    if (!FocusOn(rotation.GetUp()) && _rotationLock)
+                    if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
                     {
                         var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
                         NavigationRig.rotation = navigationRigRotation;
@@ -209,7 +209,7 @@ namespace mmd2timeline
 
                     if (config.CameraFOVEnabled)
                     {
-                        SuperController.singleton.monitorCameraFOV = fov;
+                        SuperController.singleton.monitorCameraFOV = fov * (1 + _CameraSetting.CameraScale / 1f);
                     }
                     SuperController.singleton.MonitorCenterCamera.orthographic = orthographic;
                 }

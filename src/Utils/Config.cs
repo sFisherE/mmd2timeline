@@ -961,7 +961,12 @@ namespace mmd2timeline
         {
             get
             {
-                return UseOriginalCamera || (/*!this.IsInVR &&*/ this.SyncWindowCamera);
+                if (this.IsInVR)
+                {
+                    return false;
+                }
+
+                return UseOriginalCamera || (this.SyncWindowCamera);
             }
         }
 

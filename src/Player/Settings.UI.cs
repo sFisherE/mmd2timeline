@@ -277,11 +277,6 @@ namespace mmd2timeline
             // 创建镜头聚焦UI
             cameraHelper.CreateFocusUI(this, RightSide);
 
-            if (containingAtom.type == "Person")
-            {
-                cameraHelper.SetFocusTarget(containingAtom.uid, "neckControl");
-            }
-
             Utils.SetupSpacer(this, 10f, RightSide);
         }
 
