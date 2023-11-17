@@ -1147,6 +1147,8 @@ namespace mmd2timeline
 
             _PersonAtomHelper.Restore();
             _PersonAtomHelper = null;
+            // 重置动作
+            ResetPose();
 
             RestoreEyeBehavior();
 
