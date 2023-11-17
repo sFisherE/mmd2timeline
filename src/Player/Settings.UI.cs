@@ -113,6 +113,14 @@ namespace mmd2timeline
                 AudioPlayHelper.GetInstance().SetVolume(config.Volume);
             }, LeftSide, "F4");
 
+            SetupSliderFloat(config.GlobalMotionScale, "Generic Motion Scale", dft.GlobalMotionScale, 0.1f, 2f, v =>
+            {
+                config.GlobalMotionScale = v;
+
+                // 更新动作
+                MotionHelperGroup.GetInstance().ReUpdateMotion();
+            }, LeftSide, "F4");
+
             //SetupToggle(config.ResetPhysicalWhenLoadMotion, "Reset Person Physical When Motion Reset", dft.ResetPhysicalWhenLoadMotion, v => config.ResetPhysicalWhenLoadMotion = v, LeftSide);
 
             //SetupToggle(config.LockPersonPosition, "Lock Person Position", dft.LockPersonPosition, v => config.LockPersonPosition = v, LeftSide);

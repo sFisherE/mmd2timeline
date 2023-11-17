@@ -91,9 +91,15 @@ namespace mmd2timeline
         {
             get
             {
-                if (this._MotionScaleJSON != null)
+                if (_MotionScaleJSON != null)
                 {
-                    return this._MotionScaleJSON.val;
+                    // 如果动作缩放值为默认值
+                    if (_MotionScaleJSON.val == _MotionScaleJSON.defaultVal)
+                    {
+                        return config.GlobalMotionScale;
+                    }
+
+                    return _MotionScaleJSON.val;
                 }
                 return 1f;
             }
@@ -318,7 +324,7 @@ namespace mmd2timeline
         /// <summary>
         /// 更新动作
         /// </summary>
-        private void ReUpdateMotion()
+        internal void ReUpdateMotion()
         {
             if (this._MmdPersonGameObject != null && hasAtomInited)
             {
