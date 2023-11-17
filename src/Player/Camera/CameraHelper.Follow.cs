@@ -188,7 +188,7 @@ namespace mmd2timeline
                     }
                     if (config.CameraFOVEnabled)
                     {
-                        _CameraControl.cameraFOV = fov * (1 + _CameraSetting.CameraScale / 1f);
+                        _CameraControl.cameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
                     }
                     _CameraControl.cameraToControl.orthographic = orthographic;
                 }
@@ -209,7 +209,7 @@ namespace mmd2timeline
 
                     if (config.CameraFOVEnabled)
                     {
-                        SuperController.singleton.monitorCameraFOV = fov * (1 + _CameraSetting.CameraScale / 1f);
+                        SuperController.singleton.monitorCameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
                     }
                     SuperController.singleton.MonitorCenterCamera.orthographic = orthographic;
                 }

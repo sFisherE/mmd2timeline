@@ -141,11 +141,11 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_RotationOffsetZJSON);
 
             // 镜头缩放
-            _CameraScaleJSON = Utils.SetupSliderFloat(self, Lang.Get("Camera Scale"), 0, -1f, 1f, v =>
+            _CameraScaleJSON = Utils.SetupSliderFloat(self, Lang.Get("Camera Scale"), 0, -0.5f, 0.5f, v =>
             {
                 // 更新镜头缩放
                 _CameraSetting.CameraScale = v;
-            }, rightSide);
+            }, rightSide, "F4");
             _SettingsUI.Elements.Add(_CameraScaleJSON);
 
             InitSettingValues();

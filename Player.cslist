@@ -68,6 +68,7 @@ src\Player\Motion\MotionHelper.Progress.cs
 src\Player\Motion\MotionHelper.UI.AdjustBones.cs
 src\Player\Motion\MotionHelper.UI.cs
 src\Player\Motion\MotionHelperGroup.cs
+src\Player\Motion\PersonAtomHelper.cs
 src\Player\Store\AudioSetting.cs
 src\Player\Store\CameraSetting.cs
 src\Player\Store\MMDEntity.cs
