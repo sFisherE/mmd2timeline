@@ -21,6 +21,11 @@ namespace mmd2timeline
         protected static readonly Config config = Config.GetInstance();
 
         /// <summary>
+        /// 人物原子助手
+        /// </summary>
+        private PersonAtomHelper _PersonAtomHelper;
+
+        /// <summary>
         /// 获取或设置人物原子
         /// </summary>
         public Atom PersonAtom
@@ -134,6 +139,9 @@ namespace mmd2timeline
         public MotionHelper(Atom personAtom)
         {
             _PersonAtom = personAtom;
+
+            // 建立人物原子数据快照
+            _PersonAtomHelper = PersonAtomHelper.Snap(personAtom);
 
             InitEyeBehavior();
 
@@ -401,65 +409,6 @@ namespace mmd2timeline
             pastPosition = transform.position;
             pastRotation = transform.rotation;
             rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
-        }
-
-        /// <summary>
-        /// 初始化原子
-        /// </summary>
-        public void InitAtom()
-        {
-            try
-            {
-                if (this._MmdPersonGameObject != null)
-                {
-                    UnityEngine.Object.Destroy(this._MmdPersonGameObject.gameObject);
-                    this._MmdPersonGameObject = null;
-                }
-                if (this._ChoosePerson != null)
-                {
-                    SuperController.singleton.StopCoroutine(this._ChoosePerson);
-                    this._ChoosePerson = null;
-                }
-
-                this._PersonAtom.tempFreezePhysics = true;
-                //this._PersonAtom.ResetPhysics(true, true);
-                foreach (var item in _PersonAtom.freeControllers)
-                {
-                    if (item != _PersonAtom.mainController)
-                    {
-                        item.ResetControl();
-                    }
-                }
-                this.CoLoad();
-
-                this._PersonAtom.tempFreezePhysics = false;
-                this._ChoosePerson = null;
-
-                //if (!config.LockPersonPosition && UICreated)
-                //{
-                //    this._PositionX.SetValToDefault();
-                //    this._PositionY.SetValToDefault();
-                //    this._PositionZ.SetValToDefault();
-
-                //    this._RotationX.SetValToDefault();
-                //    this._RotationY.SetValToDefault();
-                //    this._RotationZ.SetValToDefault();
-                //}
-                //else
-                //{
-                // 更新位置
-                //UpdatePositionAndRotation();
-                //}
-
-                SetPersonAllJoints();
-
-                var AutoExpressions = this._PersonAtom.GetStorableByID("AutoExpressions");
-                AutoExpressions.SetBoolParamValue("enabled", false);
-            }
-            catch (Exception ex)
-            {
-                LogUtil.LogError(ex);
-            }
         }
 
         /// <summary>
@@ -1170,6 +1119,9 @@ namespace mmd2timeline
         public void OnDestroy()
         {
             Reset();
+
+            _PersonAtomHelper.Restore();
+            _PersonAtomHelper = null;
 
             RestoreEyeBehavior();
 
