@@ -105,6 +105,27 @@ namespace mmd2timeline
         /// </summary>
         JSONStorableFloat _HoldRotationMaxForceAdjust;
 
+        ///// <summary>
+        ///// 保持位置阻尼
+        ///// </summary>
+        //JSONStorableFloat _HoldPositionDamper;
+        ///// <summary>
+        ///// 保持角度阻尼
+        ///// </summary>
+        //JSONStorableFloat _HoldRotationDamper;
+        ///// <summary>
+        ///// 连接位置阻尼
+        ///// </summary>
+        //JSONStorableFloat _LinkPositionDamper;
+        ///// <summary>
+        ///// 连接角度阻尼
+        ///// </summary>
+        //JSONStorableFloat _LinkRotationDamper;
+        ///// <summary>
+        ///// 最大速度
+        ///// </summary>
+        //JSONStorableFloat _MaxVelocity;
+
         /// <summary>
         /// 高跟高度修正
         /// </summary>

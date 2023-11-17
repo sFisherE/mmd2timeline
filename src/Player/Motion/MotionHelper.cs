@@ -1050,15 +1050,34 @@ namespace mmd2timeline
                 {
                     var footHoldRotationMaxForce = freeControllerV.GetFloatJSONParam("holdRotationMaxForce");
                     var footJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
+
+                    var holdPositionDamper = freeControllerV.GetFloatJSONParam("holdPositionDamper");
+                    var holdRotationDamper = freeControllerV.GetFloatJSONParam("holdRotationDamper");
+                    var linkPositionDamper = freeControllerV.GetFloatJSONParam("linkPositionDamper");
+                    var linkRotationDamper = freeControllerV.GetFloatJSONParam("linkRotationDamper");
+                    var maxVelocity = freeControllerV.GetFloatJSONParam("maxVelocity");
+
                     if (EnableHeel)
                     {
                         footHoldRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
                         footJointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
+
+                        holdPositionDamper.val = 15f;
+                        holdRotationDamper.val = 1.2f;
+                        linkPositionDamper.val = 40f;
+                        linkRotationDamper.val = 40f;
+                        maxVelocity.val = 0.48f;
                     }
                     else
                     {
                         footHoldRotationMaxForce.val = footHoldRotationMaxForce.defaultVal;
                         footJointDriveXTarget.val = footJointDriveXTarget.defaultVal;
+
+                        holdPositionDamper.SetValToDefault();
+                        holdRotationDamper.SetValToDefault();
+                        linkPositionDamper.SetValToDefault();
+                        linkRotationDamper.SetValToDefault();
+                        maxVelocity.SetValToDefault();
                     }
                 }
             }
