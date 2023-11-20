@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace mmd2timeline
 {
@@ -127,9 +128,9 @@ namespace mmd2timeline
             //}
             //LogUtil.Log($"{progress}");
 
-            //// 限制最大帧数，刷新太快可能造成镜头抖动
-            //if (Mathf.Abs(lastProgress - progress) < 1f / 60f)
-            //    return;
+            // 限制最大帧数，刷新太快可能造成镜头抖动
+            if (Mathf.Abs(lastProgress - progress) < 1f / 60f)
+                return;
 
             lastProgress = progress;
 
@@ -154,7 +155,7 @@ namespace mmd2timeline
             //_MmdCamera.SetPlayPos((double)value/*, config.CameraOnlyKeyFrame*/);
             try
             {
-                _MmdPersonGameObject?.SetMotionPos(value, true, motionScale: motionScaleRate);
+                _MmdPersonGameObject?.SetMotionPos(progress, true, motionScale: motionScaleRate);
             }
             catch (Exception e)
             {

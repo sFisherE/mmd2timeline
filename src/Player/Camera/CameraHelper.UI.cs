@@ -74,7 +74,7 @@ namespace mmd2timeline
             _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Camera Progress"), 0f, 0f, 0f, v =>
             {
                 // 更新镜头进度
-                //_MmdCamera.SetPlayPos((double)v);
+                _MmdCamera.SetPlayPos((double)v);
             }, rightSide);
             _SettingsUI.Elements.Add(_progressJSON);
 

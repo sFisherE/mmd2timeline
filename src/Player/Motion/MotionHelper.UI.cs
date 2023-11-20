@@ -209,8 +209,8 @@ namespace mmd2timeline
             // 动作播放进度
             _ProgressJSON = SetupSliderFloat(self, "Motion Progress", 0f, 0f, 0f, v =>
             {
-                // TODO 更新动作
-                //_MmdPersonGameObject?.SetMotionPos(v, true, motionScale: motionScaleRate);
+                // 更新动作
+                _MmdPersonGameObject?.SetMotionPos(v, true, motionScale: motionScaleRate);
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_ProgressJSON);
 
