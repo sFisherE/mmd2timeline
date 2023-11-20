@@ -297,7 +297,7 @@ namespace mmd2timeline
                     return;
 
                 // 如果是要禁用导航，则重置导航装置的位置和角度
-                if (!disable)
+                if (disable)
                 {
                     SuperController.singleton.ResetNavigationRigPositionRotation();
                 }
