@@ -1115,6 +1115,8 @@ namespace mmd2timeline
             //    LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
             //}
 
+            // 播放前设置一下人物关节参数
+            _MotionHelperGroup.SetPersonAllJoints();
             yield return null;//new WaitForSeconds(1);
             _ProgressHelper.Forward(0.001f);
             yield return new WaitForSeconds(1);

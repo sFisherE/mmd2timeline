@@ -197,6 +197,17 @@ namespace mmd2timeline
             }
         }
 
+        /// <summary>
+        /// 设置人物的所有关节
+        /// </summary>
+        internal void SetPersonAllJoints()
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.SetPersonAllJoints();
+            }
+        }
+
         ///// <summary>
         ///// 所有人物进行准备
         ///// </summary>
