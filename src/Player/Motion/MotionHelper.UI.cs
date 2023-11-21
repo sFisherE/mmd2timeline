@@ -105,6 +105,27 @@ namespace mmd2timeline
         /// </summary>
         JSONStorableFloat _HoldRotationMaxForceAdjust;
 
+        ///// <summary>
+        ///// 保持位置阻尼
+        ///// </summary>
+        //JSONStorableFloat _HoldPositionDamper;
+        ///// <summary>
+        ///// 保持角度阻尼
+        ///// </summary>
+        //JSONStorableFloat _HoldRotationDamper;
+        ///// <summary>
+        ///// 连接位置阻尼
+        ///// </summary>
+        //JSONStorableFloat _LinkPositionDamper;
+        ///// <summary>
+        ///// 连接角度阻尼
+        ///// </summary>
+        //JSONStorableFloat _LinkRotationDamper;
+        ///// <summary>
+        ///// 最大速度
+        ///// </summary>
+        //JSONStorableFloat _MaxVelocity;
+
         /// <summary>
         /// 高跟高度修正
         /// </summary>
@@ -188,8 +209,8 @@ namespace mmd2timeline
             // 动作播放进度
             _ProgressJSON = SetupSliderFloat(self, "Motion Progress", 0f, 0f, 0f, v =>
             {
-                // TODO 更新动作
-                //_MmdPersonGameObject?.SetMotionPos(v, true, motionScale: motionScaleRate);
+                // 更新动作
+                _MmdPersonGameObject?.SetMotionPos(v, true, motionScale: motionScaleRate);
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_ProgressJSON);
 
@@ -260,12 +281,12 @@ namespace mmd2timeline
             //_MotionSettingsUI.Elements.Add(_RotationZ);
 
             #endregion
-            _MotionScaleJSON = SetupSliderFloat(self, "Motion Scale", 0.85f, 0.1f, 2f, v =>
+            _MotionScaleJSON = SetupSliderFloat(self, "Motion Scale", 1f, 0.1f, 2f, v =>
             {
                 // 动作缩放的处理
                 _MotionSetting.MotionScale = v;
                 ReUpdateMotion();
-            }, rightSide);
+            }, rightSide, "F4");
             _MotionSettingsUI.Elements.Add(_MotionScaleJSON);
 
             #region 全部关节设置

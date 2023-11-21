@@ -369,26 +369,26 @@ namespace mmd2timeline
             }
         }
 
-        ///// <summary>
-        ///// 全局动作缩放
-        ///// </summary>
-        //public float GlobalMotionScale
-        //{
-        //    get
-        //    {
-        //        if (this.HasKey("GlobalMotionScale"))
-        //            return this["GlobalMotionScale"].AsFloat;
-        //        else return 1f;
-        //    }
-        //    set
-        //    {
-        //        if (this.GlobalMotionScale != value)
-        //        {
-        //            this["GlobalMotionScale"].AsFloat = value;
-        //            this.Save();
-        //        }
-        //    }
-        //}
+        /// <summary>
+        /// 全局动作缩放
+        /// </summary>
+        public float GlobalMotionScale
+        {
+            get
+            {
+                if (this.HasKey("GlobalMotionScale"))
+                    return this["GlobalMotionScale"].AsFloat;
+                else return 1f;
+            }
+            set
+            {
+                if (this.GlobalMotionScale != value)
+                {
+                    this["GlobalMotionScale"].AsFloat = value;
+                    this.Save();
+                }
+            }
+        }
 
         /// <summary>
         /// 全局弹簧百分比

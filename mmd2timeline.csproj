@@ -253,6 +253,7 @@
     <Compile Include="src\Player\Motion\MotionHelper.UI.AdjustBones.cs" />
     <Compile Include="src\Player\Motion\MotionHelper.UI.cs" />
     <Compile Include="src\Player\Motion\MotionHelperGroup.cs" />
+    <Compile Include="src\Player\Motion\PersonAtomHelper.cs" />
     <Compile Include="src\Player\Player.cs" />
     <Compile Include="src\Player\Player.HUD.cs" />
     <Compile Include="src\Player\Player.PlayConfirm.cs" />

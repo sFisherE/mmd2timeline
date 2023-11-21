@@ -150,7 +150,7 @@ namespace mmd2timeline.Store
                 if (this.HasKey("CameraScale"))
                     return this["CameraScale"].AsFloat;
                 else
-                    return 1f;
+                    return 0f;
             }
             set
             {

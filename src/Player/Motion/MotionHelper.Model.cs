@@ -130,6 +130,8 @@ namespace mmd2timeline
                 yield return null;
                 hasAtomInited = true;
             }
+
+            _PersonAtomHelper.StopExpressions();
         }
 
         //void Prepare2()

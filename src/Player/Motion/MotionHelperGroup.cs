@@ -128,6 +128,17 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 重新更新动作
+        /// </summary>
+        internal void ReUpdateMotion()
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.ReUpdateMotion();
+            }
+        }
+
+        /// <summary>
         /// 更新设定值到设置
         /// </summary>
         internal void UpdateValuesToSettings()

@@ -21,6 +21,11 @@ namespace mmd2timeline
         protected static readonly Config config = Config.GetInstance();
 
         /// <summary>
+        /// 人物原子助手
+        /// </summary>
+        private PersonAtomHelper _PersonAtomHelper;
+
+        /// <summary>
         /// 获取或设置人物原子
         /// </summary>
         public Atom PersonAtom
@@ -86,9 +91,15 @@ namespace mmd2timeline
         {
             get
             {
-                if (this._MotionScaleJSON != null)
+                if (_MotionScaleJSON != null)
                 {
-                    return this._MotionScaleJSON.val;
+                    // 如果动作缩放值为默认值
+                    if (_MotionScaleJSON.val == _MotionScaleJSON.defaultVal)
+                    {
+                        return config.GlobalMotionScale;
+                    }
+
+                    return _MotionScaleJSON.val;
                 }
                 return 1f;
             }
@@ -134,6 +145,9 @@ namespace mmd2timeline
         public MotionHelper(Atom personAtom)
         {
             _PersonAtom = personAtom;
+
+            // 建立人物原子数据快照
+            _PersonAtomHelper = PersonAtomHelper.Snap(personAtom);
 
             InitEyeBehavior();
 
@@ -310,7 +324,7 @@ namespace mmd2timeline
         /// <summary>
         /// 更新动作
         /// </summary>
-        private void ReUpdateMotion()
+        internal void ReUpdateMotion()
         {
             if (this._MmdPersonGameObject != null && hasAtomInited)
             {
@@ -401,65 +415,6 @@ namespace mmd2timeline
             pastPosition = transform.position;
             pastRotation = transform.rotation;
             rootHandler.transform.SetPositionAndRotation(transform.position, transform.rotation);
-        }
-
-        /// <summary>
-        /// 初始化原子
-        /// </summary>
-        public void InitAtom()
-        {
-            try
-            {
-                if (this._MmdPersonGameObject != null)
-                {
-                    UnityEngine.Object.Destroy(this._MmdPersonGameObject.gameObject);
-                    this._MmdPersonGameObject = null;
-                }
-                if (this._ChoosePerson != null)
-                {
-                    SuperController.singleton.StopCoroutine(this._ChoosePerson);
-                    this._ChoosePerson = null;
-                }
-
-                this._PersonAtom.tempFreezePhysics = true;
-                //this._PersonAtom.ResetPhysics(true, true);
-                foreach (var item in _PersonAtom.freeControllers)
-                {
-                    if (item != _PersonAtom.mainController)
-                    {
-                        item.ResetControl();
-                    }
-                }
-                this.CoLoad();
-
-                this._PersonAtom.tempFreezePhysics = false;
-                this._ChoosePerson = null;
-
-                //if (!config.LockPersonPosition && UICreated)
-                //{
-                //    this._PositionX.SetValToDefault();
-                //    this._PositionY.SetValToDefault();
-                //    this._PositionZ.SetValToDefault();
-
-                //    this._RotationX.SetValToDefault();
-                //    this._RotationY.SetValToDefault();
-                //    this._RotationZ.SetValToDefault();
-                //}
-                //else
-                //{
-                // 更新位置
-                //UpdatePositionAndRotation();
-                //}
-
-                SetPersonAllJoints();
-
-                var AutoExpressions = this._PersonAtom.GetStorableByID("AutoExpressions");
-                AutoExpressions.SetBoolParamValue("enabled", false);
-            }
-            catch (Exception ex)
-            {
-                LogUtil.LogError(ex);
-            }
         }
 
         /// <summary>
@@ -1101,15 +1056,34 @@ namespace mmd2timeline
                 {
                     var footHoldRotationMaxForce = freeControllerV.GetFloatJSONParam("holdRotationMaxForce");
                     var footJointDriveXTarget = freeControllerV.GetFloatJSONParam("jointDriveXTarget");
+
+                    var holdPositionDamper = freeControllerV.GetFloatJSONParam("holdPositionDamper");
+                    var holdRotationDamper = freeControllerV.GetFloatJSONParam("holdRotationDamper");
+                    var linkPositionDamper = freeControllerV.GetFloatJSONParam("linkPositionDamper");
+                    var linkRotationDamper = freeControllerV.GetFloatJSONParam("linkRotationDamper");
+                    var maxVelocity = freeControllerV.GetFloatJSONParam("maxVelocity");
+
                     if (EnableHeel)
                     {
                         footHoldRotationMaxForce.val = this._HoldRotationMaxForceAdjust.val;
                         footJointDriveXTarget.val = this._FootJointDriveXTargetAdjust.val;
+
+                        holdPositionDamper.val = 15f;
+                        holdRotationDamper.val = 1.2f;
+                        linkPositionDamper.val = 40f;
+                        linkRotationDamper.val = 40f;
+                        maxVelocity.val = 0.48f;
                     }
                     else
                     {
                         footHoldRotationMaxForce.val = footHoldRotationMaxForce.defaultVal;
                         footJointDriveXTarget.val = footJointDriveXTarget.defaultVal;
+
+                        holdPositionDamper.SetValToDefault();
+                        holdRotationDamper.SetValToDefault();
+                        linkPositionDamper.SetValToDefault();
+                        linkRotationDamper.SetValToDefault();
+                        maxVelocity.SetValToDefault();
                     }
                 }
             }
@@ -1170,6 +1144,11 @@ namespace mmd2timeline
         public void OnDestroy()
         {
             Reset();
+
+            _PersonAtomHelper.Restore();
+            _PersonAtomHelper = null;
+            // 重置动作
+            ResetPose();
 
             RestoreEyeBehavior();
 

@@ -453,6 +453,7 @@ namespace mmd2timeline
             this["Force Disable IK"] = "强制关闭IK";
             this["Motion Settings"] = "动作设置";
             this["Reset Model Before Motion Start"] = "动作开始前重置动作模型";
+            this["Generic Motion Scale"] = "全局动作缩放";
         }
     }
 }

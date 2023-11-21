@@ -188,7 +188,7 @@ namespace mmd2timeline
                     }
                     if (config.CameraFOVEnabled)
                     {
-                        _CameraControl.cameraFOV = fov * (1 + _CameraSetting.CameraScale / 1f);
+                        _CameraControl.cameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
                     }
                     _CameraControl.cameraToControl.orthographic = orthographic;
                 }
@@ -209,7 +209,7 @@ namespace mmd2timeline
 
                     if (config.CameraFOVEnabled)
                     {
-                        SuperController.singleton.monitorCameraFOV = fov * (1 + _CameraSetting.CameraScale / 1f);
+                        SuperController.singleton.monitorCameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
                     }
                     SuperController.singleton.MonitorCenterCamera.orthographic = orthographic;
                 }
@@ -297,7 +297,7 @@ namespace mmd2timeline
                     return;
 
                 // 如果是要禁用导航，则重置导航装置的位置和角度
-                if (!disable)
+                if (disable)
                 {
                     SuperController.singleton.ResetNavigationRigPositionRotation();
                 }

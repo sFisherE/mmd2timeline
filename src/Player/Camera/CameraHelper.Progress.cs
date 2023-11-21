@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace mmd2timeline
 {
@@ -113,8 +114,8 @@ namespace mmd2timeline
 
             // 限制最大帧数，刷新太快可能造成镜头抖动
             // 暂时不开启这个处理，便于底端程序优化镜头动作算法
-            //if (Mathf.Abs(lastProgress - progress) < 1f / 60f)
-            //    return;
+            if (Mathf.Abs(lastProgress - progress) < 1f / 60f)
+                return;
 
             lastProgress = progress;
 
@@ -124,7 +125,7 @@ namespace mmd2timeline
             try
             {
                 // 调用MMDCamera的播放进度
-                _MmdCamera.SetPlayPos((double)value);
+                _MmdCamera.SetPlayPos((double)progress);
             }
             catch (Exception e)
             {
