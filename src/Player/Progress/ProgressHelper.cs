@@ -96,7 +96,7 @@ namespace mmd2timeline
                     // 如果 如果原设定值为0，则修改设定值
                     if (_length <= 0f)
                     {
-                        SetLength(value);
+                        SetMaxLength(value);
                     }
                 }
             }
@@ -133,9 +133,9 @@ namespace mmd2timeline
         /// <returns></returns>
         internal bool CheckEnd(float progress)
         {
-            if (_mmdSetting != null && _mmdSetting.Length > 0f)
+            if (_mmdSetting != null && _mmdSetting.MaxLength > 0f)
             {
-                return progress > _mmdSetting.Length;
+                return progress > _mmdSetting.MaxLength;
             }
             else
             {
@@ -263,7 +263,7 @@ namespace mmd2timeline
             ResetProgress();
 
             // 记录设定的长度数值
-            _length = setting.Length;
+            _length = setting.MaxLength;
 
             if (_length > 0f)
             {
@@ -271,7 +271,7 @@ namespace mmd2timeline
                 MaxTime = _length;
 
                 // 设置播放长度
-                SetLength(_length);
+                SetMaxLength(_length);
             }
         }
 
@@ -313,9 +313,9 @@ namespace mmd2timeline
         /// 设置播放长度
         /// </summary>
         /// <param name="length"></param>
-        void SetLength(float length)
+        void SetMaxLength(float length)
         {
-            _mmdSetting.Length = length;
+            _mmdSetting.MaxLength = length;
             _maxLengthJSON.valNoCallback = length;
             _maxLengthJSON.SetDefaultFromCurrent();
             _progressJSON.max = length;

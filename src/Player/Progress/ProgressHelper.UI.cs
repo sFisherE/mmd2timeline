@@ -44,7 +44,7 @@ namespace mmd2timeline
             _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Progress"), 0f, 0f, 0f, v => SetProgress(v), rightSide);
             _SettingsUI.Elements.Add(_progressJSON);
 
-            _maxLengthJSON = Utils.SetupSliderFloat(self, Lang.Get("Max Length"), 0f, 0f, 0f, v => SetLength(v), rightSide);
+            _maxLengthJSON = Utils.SetupSliderFloat(self, Lang.Get("Max Length"), 0f, 0f, 0f, v => SetMaxLength(v), rightSide);
             _SettingsUI.Elements.Add(_maxLengthJSON);
         }
 

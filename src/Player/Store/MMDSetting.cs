@@ -9,18 +9,18 @@ namespace mmd2timeline.Store
         /// <summary>
         /// 总播放长度
         /// </summary>
-        public float Length
+        public float MaxLength
         {
             get
             {
-                if (this.HasKey("Length"))
-                    return this["Length"].AsFloat;
+                if (this.HasKey("MaxLength"))
+                    return this["MaxLength"].AsFloat;
                 else
                     return 0f;
             }
             set
             {
-                this["Length"].AsFloat = value;
+                this["MaxLength"].AsFloat = value;
             }
         }
 
@@ -60,6 +60,16 @@ namespace mmd2timeline.Store
 
         public void LoadFromJSONClass(JSONClass setting)
         {
+            // 最大播放长度
+            if (setting.HasKey("MaxLength"))
+            {
+                var maxLength = setting["MaxLength"].AsFloat;
+
+                if (maxLength > 0f)
+                {
+                    this["MaxLength"].AsFloat = maxLength;
+                }
+            }
             // 处理动作
             if (setting.HasKey("Motions"))
             {
