@@ -422,12 +422,30 @@ namespace mmd2timeline
         /// </summary>
         public void SetPersonAllJoints()
         {
-            // 设置左右关节控制数据
-            var allJointsController = this._PersonAtom.GetComponentInChildren<AllJointsController>();
+            AllJointsController allJointsController = GetAllJointsController();
 
             SetPersonAllJointsSpringPercent(allJointsController);
             SetPersonAllJointsDamperPercent(allJointsController);
             SetPersonAllJointsMaxVelocity(allJointsController);
+        }
+
+        /// <summary>
+        /// 获取人物的所有关节控制器
+        /// </summary>
+        /// <returns></returns>
+        private AllJointsController GetAllJointsController()
+        {
+            // 设置左右关节控制数据
+            var allJointsController = this._PersonAtom.GetComponentInChildren<AllJointsController>();
+
+            if (allJointsController == null)
+            {
+                allJointsController = _PersonAtom.GetStorableByID("AllJointsControl") as AllJointsController;
+            }
+
+            if (allJointsController == null)
+                LogUtil.LogWarning($"{_PersonAtom.name} AllJointsController:IS NULL");
+            return allJointsController;
         }
 
         /// <summary>
@@ -457,7 +475,7 @@ namespace mmd2timeline
             if (allJointsController == null)
             {
                 // 设置左右关节控制数据
-                allJointsController = this._PersonAtom.GetComponentInChildren<AllJointsController>();
+                allJointsController = GetAllJointsController();
             }
             var springPercentJSON = allJointsController.GetFloatJSONParam("springPercent");
             springPercentJSON.val = v;
@@ -490,7 +508,7 @@ namespace mmd2timeline
             if (allJointsController == null)
             {
                 // 设置左右关节控制数据
-                allJointsController = this._PersonAtom.GetComponentInChildren<AllJointsController>();
+                allJointsController = GetAllJointsController();
             }
             var damperPercentJSON = allJointsController.GetFloatJSONParam("damperPercent");
             damperPercentJSON.val = v;
@@ -523,7 +541,7 @@ namespace mmd2timeline
             if (allJointsController == null)
             {
                 // 设置左右关节控制数据
-                allJointsController = this._PersonAtom.GetComponentInChildren<AllJointsController>();
+                allJointsController = GetAllJointsController();
             }
             var maxVelocityJSON = allJointsController.GetFloatJSONParam("maxVeloctiy");
 

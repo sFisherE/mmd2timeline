@@ -208,6 +208,41 @@ namespace mmd2timeline
             }
         }
 
+        /// <summary>
+        /// 设置所有人物的关节阻尼百分比
+        /// </summary>
+        /// <param name="v"></param>
+        internal void SetPersonAllJointsDamperPercent(float v)
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.SetPersonAllJointsDamperPercent(v);
+            }
+        }
+
+        /// <summary>
+        /// 设置所有人物的关节弹簧百分比
+        /// </summary>
+        /// <param name="v"></param>
+        internal void SetPersonAllJointsSpringPercent(float v)
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.SetPersonAllJointsSpringPercent(v);
+            }
+        }
+
+        /// <summary>
+        /// 设置所有人物的关节最大速度
+        /// </summary>
+        /// <param name="v"></param>
+        internal void SetPersonAllJointsMaxVelocity(float v)
+        {
+            foreach (var pair in _group)
+            {
+                pair.Value.SetPersonAllJointsMaxVelocity(v);
+            }
+        }
         ///// <summary>
         ///// 所有人物进行准备
         ///// </summary>
