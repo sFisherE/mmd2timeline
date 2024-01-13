@@ -141,6 +141,9 @@ namespace mmd2timeline
 
             RegisterAction(new JSONStorableAction("Import From File", () => this.Playlist.BeginImport()));
             RegisterAction(new JSONStorableAction("Export Playlist", () => this.Playlist.BeginExport()));
+
+            RegisterAction(new JSONStorableAction("Favorite", () => this.CurrentItem?.Favorite()));
+            RegisterAction(new JSONStorableAction("Toggle Favorite", () => this.ToggleFavorite()));
         }
 
         #region 各种事件处理函数
