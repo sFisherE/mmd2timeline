@@ -317,14 +317,45 @@ namespace mmd2timeline
         /// <summary>
         /// 当前UI模式
         /// </summary>
-        int currentUIMode = PlayerUIMode.Init;
+        int _currentUIMode = PlayerUIMode.Init;
+
+        int CurrentUIMode
+        {
+            get
+            {
+                return _currentUIMode;
+            }
+            set
+            {
+                if (_currentUIMode != value)
+                {
+                    _currentUIMode = value;
+
+                    switch (_currentUIMode)
+                    {
+                        case PlayerUIMode.Init:
+                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_INIT);
+                            break;
+                        case PlayerUIMode.Edit:
+                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_EDIT);
+                            break;
+                        case PlayerUIMode.Play:
+                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_PLAY);
+                            break;
+                        case PlayerUIMode.Load:
+                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_LOAD);
+                            break;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 刷新UI模式
         /// </summary>
         void RefreshUIByCurrentUIMode()
         {
-            if (currentUIMode == PlayerUIMode.Edit)
+            if (CurrentUIMode == PlayerUIMode.Edit)
             {
                 ShowEditUI();
             }
@@ -366,7 +397,7 @@ namespace mmd2timeline
 
                     _PluginInfo.height = 1000f;
 
-                    currentUIMode = PlayerUIMode.Init;
+                    CurrentUIMode = PlayerUIMode.Init;
                 }
             }
             catch (Exception ex)
@@ -399,7 +430,7 @@ namespace mmd2timeline
 
                 _PluginInfo.height = 286f + 30f + 65f + 115f;
 
-                currentUIMode = PlayerUIMode.Play;
+                CurrentUIMode = PlayerUIMode.Play;
             }
             catch (Exception ex)
             {
@@ -431,7 +462,7 @@ namespace mmd2timeline
                 ShowDebugUIs(true);
                 _PluginInfo.height = 745f + 30f + 70f + 115f;
 
-                currentUIMode = PlayerUIMode.Edit;
+                CurrentUIMode = PlayerUIMode.Edit;
             }
             catch (Exception ex)
             {

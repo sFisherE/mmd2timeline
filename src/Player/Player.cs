@@ -322,7 +322,9 @@ namespace mmd2timeline
             else
             {
                 // 等待3秒后下一个
-                WaitForSecondsRealtime(3f, Next);
+                //StartCoroutine(WaitForSecondsRealtime(3f, Next));
+
+                Next();
             }
         }
 
@@ -1081,8 +1083,6 @@ namespace mmd2timeline
             }
 
             _ProgressHelper.Play();
-
-            _triggerHelper.Trigger(TRIGGER_START_PLAYING);
         }
 
         /// <summary>
@@ -1197,6 +1197,8 @@ namespace mmd2timeline
             yield return null;//new WaitForSeconds(1);
 
             _IsLoading = false;
+
+            _triggerHelper.Trigger(TRIGGER_START_PLAYING);
 
             if (_WaitingForPlay)
             {

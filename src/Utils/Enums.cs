@@ -256,11 +256,15 @@ namespace mmd2timeline
         /// 编辑
         /// </summary>
         public const int Edit = 2;
+        /// <summary>
+        /// 加载
+        /// </summary>
+        public const int Load = 3;
 
         /// <summary>
         /// 初始化枚举类
         /// </summary>
-        private static EnumClass enums = new EnumClass("Init", "Play", "Edit");
+        private static EnumClass enums = new EnumClass("Init", "Play", "Edit", "Load");
 
         /// <summary>
         /// 获取名称列表
