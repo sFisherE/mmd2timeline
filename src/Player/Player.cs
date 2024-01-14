@@ -1,3 +1,4 @@
+using MacGruber;
 using mmd2timeline.Store;
 using SimpleJSON;
 using System;
@@ -142,9 +143,24 @@ namespace mmd2timeline
             RegisterAction(new JSONStorableAction("Import From File", () => this.Playlist.BeginImport()));
             RegisterAction(new JSONStorableAction("Export Playlist", () => this.Playlist.BeginExport()));
 
-            RegisterAction(new JSONStorableAction("Favorite", () => this.CurrentItem?.Favorite()));
+            RegisterAction(new JSONStorableAction("Load All", () => this.LoadAll()));
+            RegisterAction(new JSONStorableAction("Load Favorite", () => this.LoadFavorite()));
+
+            //RegisterAction(new JSONStorableAction("Favorite", () => this.CurrentItem?.Favorite()));
             RegisterAction(new JSONStorableAction("Toggle Favorite", () => this.ToggleFavorite()));
+
+            _isFavorite = new JSONStorableBool("Favorite Status", false);
+            _isFavorite.setCallbackFunction = b =>
+            {
+                if (b)
+                    _triggerHelper.Trigger(TRIGGER_FAVORITED);
+                else
+                    _triggerHelper.Trigger(TRIGGER_UNFAVORITED);
+            };
+            RegisterBool(_isFavorite);
         }
+
+        JSONStorableBool _isFavorite;
 
         #region 各种事件处理函数
 
@@ -296,6 +312,8 @@ namespace mmd2timeline
         /// <param name="isEnd"></param>
         void OnProgressEnded(bool isEnd)
         {
+            _triggerHelper.Trigger(TRIGGER_IS_END);
+
             if (Playlist.PlayMode == MMDPlayMode.Once)
             {
                 this.isEnd = true;
@@ -303,7 +321,8 @@ namespace mmd2timeline
             }
             else
             {
-                this.Next();
+                // 等待3秒后下一个
+                WaitForSecondsRealtime(3f, Next);
             }
         }
 
@@ -400,12 +419,29 @@ namespace mmd2timeline
         }
 
         #region Save/Load
+        /// <summary>
+        /// 获取保存的JSON数据
+        /// </summary>
+        /// <param name="includePhysical"></param>
+        /// <param name="includeAppearance"></param>
+        /// <param name="forceStore"></param>
+        /// <returns></returns>
         public override JSONClass GetJSON(bool includePhysical = true, bool includeAppearance = true, bool forceStore = false)
         {
             var json = base.GetJSON(includePhysical, includeAppearance, forceStore);
             try
             {
-                needsStore = true;
+                if (includePhysical || forceStore)
+                {
+                    needsStore = true;
+
+                    // 生成所有触发器的JSON数据
+                    var allTriggers = _triggerHelper.GetAllTriggers();
+                    foreach (var et in allTriggers)
+                    {
+                        json[et.Name] = et.GetJSON(base.subScenePrefix);
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -414,12 +450,29 @@ namespace mmd2timeline
             return json;
         }
 
+        /// <summary>
+        /// 从JSON数据恢复
+        /// </summary>
+        /// <param name="jc"></param>
+        /// <param name="restorePhysical"></param>
+        /// <param name="restoreAppearance"></param>
+        /// <param name="presetAtoms"></param>
+        /// <param name="setMissingToDefault"></param>
         public override void RestoreFromJSON(JSONClass jc, bool restorePhysical = true, bool restoreAppearance = true, JSONArray presetAtoms = null, bool setMissingToDefault = true)
         {
             base.RestoreFromJSON(jc, restorePhysical, restoreAppearance, presetAtoms, setMissingToDefault);
 
             try
             {
+                if (!base.physicalLocked && restorePhysical && !IsCustomPhysicalParamLocked("trigger"))
+                {
+                    // 恢复所有触发器的数据
+                    var allTriggers = _triggerHelper.GetAllTriggers();
+                    foreach (var et in allTriggers)
+                    {
+                        et.RestoreFromJSON(jc, base.subScenePrefix, base.mergeRestore, setMissingToDefault);
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -483,6 +536,7 @@ namespace mmd2timeline
         /// <exception cref="NotImplementedException"></exception>
         private void UpdateFavoriteLabel(MMDEntity obj)
         {
+            _isFavorite.val = obj.InFavorite;
             _FavoriteLabel.text = obj.InFavorite ? Lang.Get("UnFavorite") : Lang.Get("Favorite");
         }
 
@@ -584,6 +638,13 @@ namespace mmd2timeline
         /// 是否已经完成初始化
         /// </summary>
         bool isInited = false;
+
+        public override void Init()
+        {
+            base.Init();
+
+            InitTriggers();
+        }
 
         public void Start()
         {
@@ -827,6 +888,8 @@ namespace mmd2timeline
 
             LogUtil.Debug($"Player::NEXT!");
 
+            _triggerHelper.Trigger(TRIGGER_PLAY_NEXT);
+
             if (isEditing)
             {
                 StartCoroutine(Repeat());
@@ -1018,6 +1081,8 @@ namespace mmd2timeline
             }
 
             _ProgressHelper.Play();
+
+            _triggerHelper.Trigger(TRIGGER_START_PLAYING);
         }
 
         /// <summary>
@@ -1123,7 +1188,6 @@ namespace mmd2timeline
             yield return null;//new WaitForSeconds(1);
             _ProgressHelper.Forward(0.001f);
             yield return new WaitForSeconds(1);
-
 
             foreach (var atom in PersonAtoms)
             {

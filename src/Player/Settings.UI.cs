@@ -41,8 +41,8 @@ namespace mmd2timeline
             //InitAutoCorrectUI();
             InitCameraSettingUI();
             InitShortcutKeyUI();
+            InitTriggerUI();
             InitLanguageUI();
-
             Utils.SetupButton(this, Lang.Get("Reset All Settings To Default"), () =>
             {
                 try
@@ -94,6 +94,19 @@ namespace mmd2timeline
 
             Utils.SetupSpacer(this, 10f, RightSide);
         }
+
+        /// <summary>
+        /// 初始化触发器UI
+        /// </summary>
+        void InitTriggerUI()
+        {
+            CreateTitleUI("Trigger Settings", RightSide);
+
+            TriggerHelper.GetInstance().InitTriggerEditUI(this);
+
+            Utils.SetupSpacer(this, 10f, RightSide);
+        }
+
 
         /// <summary>
         /// 初始化通用设置UI

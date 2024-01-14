@@ -146,6 +146,7 @@ namespace mmd2timeline
             _PlaylistChooser.isStorable = false;
             _PlaylistChooser.isRestorable = false;
             CreateFilterablePopup(_PlaylistChooser, RightSide);
+            RegisterStringChooser(_PlaylistChooser);
 
             _PlayUIs.Add(_PlaylistChooser);
 

@@ -1138,7 +1138,7 @@ namespace MacGruber
             base.RestoreFromJSON(jc, Owner.subScenePrefix, false);
         }
 
-        public void OpenPanel()
+        public void OpenPanel(MVRScript container = null)
         {
             if (!SimpleTriggerHandler.Loaded)
             {
@@ -1146,7 +1146,7 @@ namespace MacGruber
                 return;
             }
 
-            triggerActionsParent = Owner.UITransform;
+            triggerActionsParent = container != null ? container.UITransform : Owner.UITransform;
             InitTriggerUI();
             OpenTriggerActionsPanel();
             if (myNeedInit)

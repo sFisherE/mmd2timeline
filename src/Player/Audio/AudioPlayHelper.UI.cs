@@ -109,6 +109,7 @@ namespace mmd2timeline
                 LoadAudio(v);
                 SetAudioPath(v);
             };
+            self.RegisterStringChooser(_chooser);
 
             _ChooserUI.Elements.Add(_chooser);
         }

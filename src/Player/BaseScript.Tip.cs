@@ -57,7 +57,7 @@ namespace mmd2timeline
         {
             if (_TipField == null)
             {
-                LogUtil.LogWarning("The Tip is Not Inited.");
+                //LogUtil.LogWarning("The Tip is Not Inited.");
                 return;
             }
             _TipField.gameObject.SetActive(false);

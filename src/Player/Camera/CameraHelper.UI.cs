@@ -222,6 +222,7 @@ namespace mmd2timeline
                 ImportVmd(v);
                 SetCameraPath(v);
             };
+            self.RegisterStringChooser(_chooser);
 
             _ChooserUI.Elements.Add(_chooser);
         }

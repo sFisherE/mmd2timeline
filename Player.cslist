@@ -87,11 +87,13 @@ src\Player\BaseScript.FullElements.cs
 src\Player\BaseScript.Tip.cs
 src\Player\BaseScript.UI.cs
 src\Player\BaseScript.UI.Show.cs
+src\Player\Trigger\TriggerHelper.cs
 src\Player\Player.cs
 src\Player\Player.Tip.cs
 src\Player\Player.PlayConfirm.cs
 src\Player\Player.Playlist.cs
 src\Player\Player.HUD.cs
+src\Player\Player.Trigger.cs
 src\Player\Player.UI.cs
 src\Player\Settings.cs
 src\Player\Settings.MotionMode.cs

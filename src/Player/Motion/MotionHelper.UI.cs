@@ -194,6 +194,8 @@ namespace mmd2timeline
             {
                 var motionChooser = SetupStringChooser(self, $"{Lang.Get("Motion")} {(i + 1)}", self.noneStrings, rightSide: rightSide);
                 motionChooser.setCallbackFunction = UpdateMotionValue;
+                self.RegisterStringChooser(motionChooser);
+
                 _MotionSettingsUI.OuterElements.Add(motionChooser);
                 _MotionChoosers.Add(motionChooser);
             }
@@ -347,6 +349,7 @@ namespace mmd2timeline
                 heelSettingsGroup.RefreshView(v);
                 UpdateEnableHighHeel();
             }, rightSide);
+            self.RegisterBool(_EnableHeelJSON);
             _MotionSettingsUI.OuterElements.Add(_EnableHeelJSON);
             heelSettingsGroup.ToggleBool = _EnableHeelJSON;
 

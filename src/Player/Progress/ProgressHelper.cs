@@ -352,6 +352,9 @@ namespace mmd2timeline
                     // 更新进度条进度（不触发UI控件的值更改事件）
                     _progressJSON.valNoCallback = _progress;
 
+                    // 触发器
+                    _progressFloatTrigger.Trigger(_progress);
+
                     // 抛出进度更改事件
                     OnProgressChanged?.Invoke(_progress, hardUpdate);
                 }
