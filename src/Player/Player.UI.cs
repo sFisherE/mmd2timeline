@@ -130,10 +130,13 @@ namespace mmd2timeline
             _LoadButtons.Add(Utils.SetupTwinButton(this, Lang.Get("Load Folder"), () => StopPlayAndRun(_MMDFolderHelper.LoadFolder), Lang.Get("Load File"), () => _MMDFolderHelper.LoadFile(this.Playlist.CurrentMMD), RightSide));
 
             #region 播放列表UI
-            _PlayUIs.Add(SetupStaticEnumsChooser<MMDPlayMode>("Play Mode", MMDPlayMode.Names, MMDPlayMode.GetName(MMDPlayMode.Default), RightSide, m =>
+
+            var playModeChooser = SetupStaticEnumsChooser<MMDPlayMode>("Play Mode", MMDPlayMode.Names, MMDPlayMode.GetName(MMDPlayMode.Default), RightSide, m =>
             {
                 this.Playlist.PlayMode = MMDPlayMode.GetValue(m);
-            }));
+            });
+            RegisterStringChooser(playModeChooser);
+            _PlayUIs.Add(playModeChooser);
 
             _MMDUIs.Add(_UIPlayButton = Utils.SetupButton(this, Lang.Get("Play"), () => TogglePlaying(), RightSide));
 
@@ -206,6 +209,8 @@ namespace mmd2timeline
 
                 _ProgressHelper.SetPlaySpeed(s);
             };
+            RegisterFloat(_PlaySpeedJSON);
+
             var playSpeedSlider = CreateSlider(_PlaySpeedJSON, RightSide);
             playSpeedSlider.ConfigureQuickButtons(-0.01f, -0.10f, -0.25f, -0.50f, 0.01f, 0.10f, 0.25f, 0.5f);
             _PlayUIs.Add(_PlaySpeedJSON);

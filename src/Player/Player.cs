@@ -149,6 +149,8 @@ namespace mmd2timeline
             //RegisterAction(new JSONStorableAction("Favorite", () => this.CurrentItem?.Favorite()));
             RegisterAction(new JSONStorableAction("Toggle Favorite", () => this.ToggleFavorite()));
 
+            RegisterAction(new JSONStorableAction("Reset Person Motion", () => StartCoroutine(ResetAllPersonMotion())));
+
             _isFavorite = new JSONStorableBool("Favorite Status", false);
             _isFavorite.setCallbackFunction = b =>
             {
@@ -297,6 +299,16 @@ namespace mmd2timeline
                     SuperController.singleton.HideMainHUD();
                 }
 
+                // 播放时重发一下镜头状态
+                if (_CameraHelper.IsActive)
+                {
+                    _triggerHelper.Trigger(TRIGGER_CAMERA_ACTIVATED);
+                }
+                else
+                {
+                    _triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+                }
+
                 _AudioPlayHelper.SetProgress(progress, true);
             }
             else
@@ -399,6 +411,7 @@ namespace mmd2timeline
             // 初始化镜头助手
             _CameraHelper = CameraHelper.GetInstance();
             _CameraHelper.OnCameraMotionLoaded += OnCameraLoaded;
+            _CameraHelper.OnCameraActivateStatusChanged += OnCameraActivateStatusChanged;
 
             //--音频播放助手--------------------------------------------------------------
             _AudioPlayHelper = AudioPlayHelper.GetInstance();
@@ -418,6 +431,23 @@ namespace mmd2timeline
             CreateUI();
 
             //RefreshPersonAtoms();
+        }
+
+        /// <summary>
+        /// 镜头激活状态更改事件处理函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="activate"></param>
+        private void OnCameraActivateStatusChanged(CameraHelper sender, bool activate)
+        {
+            if (activate)
+            {
+                _triggerHelper.Trigger(TRIGGER_CAMERA_ACTIVATED);
+            }
+            else
+            {
+                _triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+            }
         }
 
         #region Save/Load
@@ -669,6 +699,8 @@ namespace mmd2timeline
             // 设定有原子添加，等待处理
             hasAtomAdded = true;
             isInited = true;
+
+            _triggerHelper.Trigger(TRIGGER_SCRIPT_LOADED);
         }
 
         #region 处理人物位置同步
@@ -721,35 +753,40 @@ namespace mmd2timeline
             #endregion
 
             #region 快捷键控制
-            // 如果按了SPACE键则切换播放状态
-            if (Input.GetKeyDown(KeyCode.Space) && config.EnableSpacePlay)
+
+            // 只有在播放和编辑模式才会检查快捷键
+            if (_currentUIMode == PlayerUIMode.Play || _currentUIMode == PlayerUIMode.Edit)
             {
-                TogglePlaying();
-                return;
-            }
-            // 左箭头后退1s
-            if (Input.GetKeyUp(KeyCode.LeftArrow) && config.EnableLeftArrow)
-            {
-                _ProgressHelper.Back();
-                return;
-            }
-            // 右箭头前进1s
-            if (Input.GetKeyUp(KeyCode.RightArrow) && config.EnableRightArrow)
-            {
-                _ProgressHelper.Forward();
-                return;
-            }
-            // 下箭头 下一个
-            if (Input.GetKeyUp(KeyCode.UpArrow) && config.EnableUpArrow)
-            {
-                this.Prev();
-                return;
-            }
-            // 下箭头 下一个
-            if (Input.GetKeyUp(KeyCode.DownArrow) && config.EnableDownArrow)
-            {
-                this.Next();
-                return;
+                // 如果按了SPACE键则切换播放状态
+                if (Input.GetKeyDown(KeyCode.Space) && config.EnableSpacePlay)
+                {
+                    TogglePlaying();
+                    return;
+                }
+                // 左箭头后退1s
+                if (Input.GetKeyUp(KeyCode.LeftArrow) && config.EnableLeftArrow)
+                {
+                    _ProgressHelper.Back();
+                    return;
+                }
+                // 右箭头前进1s
+                if (Input.GetKeyUp(KeyCode.RightArrow) && config.EnableRightArrow)
+                {
+                    _ProgressHelper.Forward();
+                    return;
+                }
+                // 下箭头 下一个
+                if (Input.GetKeyUp(KeyCode.UpArrow) && config.EnableUpArrow)
+                {
+                    this.Prev();
+                    return;
+                }
+                // 下箭头 下一个
+                if (Input.GetKeyUp(KeyCode.DownArrow) && config.EnableDownArrow)
+                {
+                    this.Next();
+                    return;
+                }
             }
             #endregion
 

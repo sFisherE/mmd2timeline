@@ -108,6 +108,9 @@ namespace mmd2timeline
                 {
                     _isActive = value;
 
+                    // 触发事件
+                    OnCameraActivateStatusChanged?.Invoke(this, _isActive);
+
                     if (value)
                         Activate();
                     else

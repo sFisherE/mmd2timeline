@@ -14,6 +14,17 @@ namespace mmd2timeline
     internal partial class CameraHelper
     {
         /// <summary>
+        /// 镜头激活状态更改的回调委托
+        /// </summary>
+        /// <param name="length">返回动作长度</param>
+        public delegate void CameraActivateStatusChangeCallback(CameraHelper sender, bool activate);
+
+        /// <summary>
+        /// 镜头激活状态更改的事件
+        /// </summary>
+        public event CameraActivateStatusChangeCallback OnCameraActivateStatusChanged;
+
+        /// <summary>
         /// 配置数据
         /// </summary>
         protected static readonly Config config = Config.GetInstance();

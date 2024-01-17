@@ -9,6 +9,8 @@ namespace mmd2timeline
     {
         TriggerHelper _triggerHelper = TriggerHelper.GetInstance();
 
+        const string TRIGGER_SCRIPT_LOADED = "Script Loaded Trigger";
+
         const string TRIGGER_START_PLAYING = "Start Playing Trigger";
         const string TRIGGER_PLAY_NEXT = "Play Next Trigger";
         const string TRIGGER_IS_END = "Is End Trigger";
@@ -21,9 +23,14 @@ namespace mmd2timeline
         const string TRIGGER_PLAYMODE_EDIT = "In Edit Mode Trigger";
         const string TRIGGER_PLAYMODE_LOAD = "In Load Mode Trigger";
 
+        const string TRIGGER_CAMERA_ACTIVATED = "Camera Activated Trigger";
+        const string TRIGGER_CAMERA_DEACTIVATED = "Camera Deactivated Trigger";
+
+
         void InitTriggers()
         {
             _triggerHelper.InitTriggers(this);
+            _triggerHelper.AddTrigger(TRIGGER_SCRIPT_LOADED);
             _triggerHelper.AddTrigger(TRIGGER_FAVORITED);
             _triggerHelper.AddTrigger(TRIGGER_UNFAVORITED);
             _triggerHelper.AddTrigger(TRIGGER_IS_END);
@@ -33,6 +40,8 @@ namespace mmd2timeline
             _triggerHelper.AddTrigger(TRIGGER_PLAYMODE_PLAY);
             _triggerHelper.AddTrigger(TRIGGER_PLAYMODE_EDIT);
             _triggerHelper.AddTrigger(TRIGGER_PLAYMODE_LOAD);
+            _triggerHelper.AddTrigger(TRIGGER_CAMERA_ACTIVATED);
+            _triggerHelper.AddTrigger(TRIGGER_CAMERA_DEACTIVATED);
         }
     }
 }
