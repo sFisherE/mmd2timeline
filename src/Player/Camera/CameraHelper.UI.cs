@@ -275,6 +275,8 @@ namespace mmd2timeline
                 if (string.IsNullOrEmpty(choice))
                 {
                     choice = _chooser.defaultVal;
+
+                    this.IsActive = false;
                 }
 
                 _chooser.valNoCallback = choice;

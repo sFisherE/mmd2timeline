@@ -26,7 +26,6 @@ namespace mmd2timeline
         const string TRIGGER_CAMERA_ACTIVATED = "Camera Activated Trigger";
         const string TRIGGER_CAMERA_DEACTIVATED = "Camera Deactivated Trigger";
 
-
         void InitTriggers()
         {
             _triggerHelper.InitTriggers(this);

@@ -104,12 +104,12 @@ namespace mmd2timeline
             }
             set
             {
+                // 触发事件
+                OnCameraActivateStatusChanged?.Invoke(this, _isActive);
+
                 if (_isActive != value)
                 {
                     _isActive = value;
-
-                    // 触发事件
-                    OnCameraActivateStatusChanged?.Invoke(this, _isActive);
 
                     if (value)
                         Activate();
@@ -313,6 +313,8 @@ namespace mmd2timeline
                     GlobalSceneOptions.singleton.disableNavigation = disable;
                 }
                 SuperController.singleton.disableNavigation = disable;
+
+                //OnCameraActivateStatusChanged?.Invoke(this, !disable);
             }
         }
 

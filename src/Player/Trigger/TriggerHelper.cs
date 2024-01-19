@@ -42,7 +42,7 @@ namespace mmd2timeline
             _isInited = true;
 
             // Adding the rename listener
-            //SuperController.singleton.onAtomUIDRenameHandlers += OnAtomRename;
+            SuperController.singleton.onAtomUIDRenameHandlers += OnAtomRename;
         }
 
         /// <summary>

@@ -1,4 +1,3 @@
-using MacGruber;
 using mmd2timeline.Store;
 using SimpleJSON;
 using System;
@@ -211,7 +210,6 @@ namespace mmd2timeline
                 {
                     PersonAtoms.Add(atom);
                 }
-                atom.collisionEnabled = false;
                 if (CurrentItem != null)
                 {
                     StartCoroutine(InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData()));
@@ -298,22 +296,27 @@ namespace mmd2timeline
                     // 隐藏主HUD
                     SuperController.singleton.HideMainHUD();
                 }
-
-                // 播放时重发一下镜头状态
-                if (_CameraHelper.IsActive)
-                {
-                    _triggerHelper.Trigger(TRIGGER_CAMERA_ACTIVATED);
-                }
                 else
                 {
-                    _triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+                    //_triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
                 }
 
                 _AudioPlayHelper.SetProgress(progress, true);
+
+                //// 播放时重发一下镜头状态
+                //if (_CameraHelper.IsActive)
+                //{
+                //    _triggerHelper.Trigger(TRIGGER_CAMERA_ACTIVATED);
+                //}
+                //else
+                //{
+                //    _triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+                //}
             }
             else
             {
                 _AudioPlayHelper.Stop(1);
+                //_triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
             }
             SetPlayButton();
         }
@@ -987,7 +990,7 @@ namespace mmd2timeline
             SetAllPersonOff();
             yield return null;
 
-            _ProgressHelper.SetProgress(0.001f, true);
+            _ProgressHelper.SetProgress(0.0f, true);
             //StopAndStartOver();
             yield return new WaitForSeconds(1);
 
@@ -995,6 +998,8 @@ namespace mmd2timeline
             yield return null;
 
             _ProgressHelper.Play();
+
+            _triggerHelper.Trigger(TRIGGER_START_PLAYING);
 
             yield break;
         }
@@ -1252,6 +1257,8 @@ namespace mmd2timeline
         /// <returns></returns>
         IEnumerator InitPersonAtomMotionHelper(Atom atom)
         {
+            atom.collisionEnabled = false;
+
             // 实例化MMD人物
             var motionHelper = InitMotionHelper(atom);
 
@@ -1259,6 +1266,10 @@ namespace mmd2timeline
             {
                 yield return motionHelper.CoInitAtom();
             }
+
+            yield return null;
+
+            atom.collisionEnabled = true;
         }
 
         /// <summary>
@@ -1268,6 +1279,8 @@ namespace mmd2timeline
         /// <param name="fileData"></param>
         IEnumerator InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
         {
+            atom.collisionEnabled = false;
+
             // 实例化MMD人物
             var motionHelper = InitMotionHelper(atom);
 
@@ -1297,6 +1310,9 @@ namespace mmd2timeline
                 // 设置人物动作
                 motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
             }
+
+            yield return null;
+            atom.collisionEnabled = true;
         }
 
         /// <summary>
@@ -1338,11 +1354,24 @@ namespace mmd2timeline
                 // 如果是新的对象，进行初始化
                 helper.CreatePersonMotionUI(this, LeftSide);
                 helper.OnMotionLoaded += OnMotionLoaded;
+                helper.OnMotionInited += OnMotionInited;
 
                 RefreshUIByCurrentUIMode();
             }
 
             return helper;
+        }
+
+        /// <summary>
+        /// 动作初始化完成的事件
+        /// </summary>
+        /// <param name="sender"></param>
+        private void OnMotionInited(MotionHelper sender)
+        {
+            if (sender.PersonAtom && !sender.PersonAtom.collisionEnabled)
+            {
+                sender.PersonAtom.collisionEnabled = true;
+            }
         }
 
         /// <summary>
@@ -1622,6 +1651,7 @@ namespace mmd2timeline
             foreach (var m in _MotionHelperGroup.Helpers)
             {
                 m.OnMotionLoaded -= OnMotionLoaded;
+                m.OnMotionInited -= OnMotionInited;
             }
             _MotionHelperGroup.OnDestroy();
             _MotionHelperGroup = null;

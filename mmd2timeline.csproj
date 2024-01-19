@@ -274,6 +274,8 @@
     <Compile Include="src\Player\Store\MMDFile.cs" />
     <Compile Include="src\Player\Store\MMDSetting.cs" />
     <Compile Include="src\Player\Store\PersonMotion.cs" />
+    <Compile Include="src\Player\Tools\PrefabManager.cs" />
+    <Compile Include="src\Player\Tools\UIOverlay.cs" />
     <Compile Include="src\Player\Trigger\TriggerHelper.cs" />
     <Compile Include="src\Utils\Config.cs" />
     <Compile Include="src\Utils\Enums.cs" />

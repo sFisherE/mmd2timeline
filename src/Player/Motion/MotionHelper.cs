@@ -21,6 +21,17 @@ namespace mmd2timeline
         protected static readonly Config config = Config.GetInstance();
 
         /// <summary>
+        /// 动作初始化完成的回调委托
+        /// </summary>
+        /// <param name="length">返回动作长度</param>
+        public delegate void MotionInitedCallback(MotionHelper sender);
+
+        /// <summary>
+        /// 动作初始化完成的事件
+        /// </summary>
+        public event MotionInitedCallback OnMotionInited;
+
+        /// <summary>
         /// 人物原子助手
         /// </summary>
         private PersonAtomHelper _PersonAtomHelper;
@@ -256,6 +267,9 @@ namespace mmd2timeline
             InitSettingValues();
 
             LoadBoneRotationAdjustValues();
+
+            // 触发动作初始化完成的事件
+            OnMotionInited?.Invoke(this);
         }
 
         /// <summary>
