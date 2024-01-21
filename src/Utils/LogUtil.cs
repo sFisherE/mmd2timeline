@@ -6,9 +6,9 @@ namespace mmd2timeline
     {
         public static void Debug(string log)
         {
-#if DEBUG
+//#if DEBUG
             Log(log);
-#endif
+//#endif
         }
         public static void Debug(Exception ex, string source = null)
         {

@@ -120,8 +120,6 @@ namespace mmd2timeline
         /// </summary>
         private void LoadByLanguage()
         {
-            LogUtil.Debug($"{Application.systemLanguage}");
-
             var path = Config.saveDataPath;
 
             if (!string.IsNullOrEmpty(_PluginPath))

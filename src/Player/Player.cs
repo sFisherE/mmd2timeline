@@ -149,19 +149,7 @@ namespace mmd2timeline
             RegisterAction(new JSONStorableAction("Toggle Favorite", () => this.ToggleFavorite()));
 
             RegisterAction(new JSONStorableAction("Reset Person Motion", () => StartCoroutine(ResetAllPersonMotion())));
-
-            _isFavorite = new JSONStorableBool("Favorite Status", false);
-            _isFavorite.setCallbackFunction = b =>
-            {
-                if (b)
-                    _triggerHelper.Trigger(TRIGGER_FAVORITED);
-                else
-                    _triggerHelper.Trigger(TRIGGER_UNFAVORITED);
-            };
-            RegisterBool(_isFavorite);
         }
-
-        JSONStorableBool _isFavorite;
 
         #region 各种事件处理函数
 
@@ -188,8 +176,6 @@ namespace mmd2timeline
         /// <param name="atom"></param>
         void CheckAtomAdded(Atom atom)
         {
-            LogUtil.Debug($"---------------CheckAtomAdded:{atom.uid}");
-
             if (atom.type == "Person")
             {
                 // 正在加载中，不进行处理
@@ -327,7 +313,7 @@ namespace mmd2timeline
         /// <param name="isEnd"></param>
         void OnProgressEnded(bool isEnd)
         {
-            _triggerHelper.Trigger(TRIGGER_IS_END);
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_IS_END);
 
             if (Playlist.PlayMode == MMDPlayMode.Once)
             {
@@ -445,11 +431,11 @@ namespace mmd2timeline
         {
             if (activate)
             {
-                _triggerHelper.Trigger(TRIGGER_CAMERA_ACTIVATED);
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_ACTIVATED);
             }
             else
             {
-                _triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_DEACTIVATED);
             }
         }
 
@@ -470,12 +456,14 @@ namespace mmd2timeline
                 {
                     needsStore = true;
 
-                    // 生成所有触发器的JSON数据
-                    var allTriggers = _triggerHelper.GetAllTriggers();
-                    foreach (var et in allTriggers)
-                    {
-                        json[et.Name] = et.GetJSON(base.subScenePrefix);
-                    }
+                    json = _triggerHelper.GetJSON(json);
+
+                    //// 生成所有触发器的JSON数据
+                    //var allTriggers = _triggerHelper.GetAllTriggers();
+                    //foreach (var et in allTriggers)
+                    //{
+                    //    json[et.Name] = et.GetJSON(base.subScenePrefix);
+                    //}
                 }
             }
             catch (Exception exc)
@@ -499,15 +487,16 @@ namespace mmd2timeline
 
             try
             {
-                if (!base.physicalLocked && restorePhysical && !IsCustomPhysicalParamLocked("trigger"))
-                {
-                    // 恢复所有触发器的数据
-                    var allTriggers = _triggerHelper.GetAllTriggers();
-                    foreach (var et in allTriggers)
-                    {
-                        et.RestoreFromJSON(jc, base.subScenePrefix, base.mergeRestore, setMissingToDefault);
-                    }
-                }
+                _triggerHelper.RestoreFromJSON(jc);
+                //if (!base.physicalLocked && restorePhysical && !IsCustomPhysicalParamLocked("trigger"))
+                //{
+                //    //// 恢复所有触发器的数据
+                //    //var allTriggers = _triggerHelper.GetAllTriggers();
+                //    //foreach (var et in allTriggers)
+                //    //{
+                //    //    et.RestoreFromJSON(jc, base.subScenePrefix, base.mergeRestore, setMissingToDefault);
+                //    //}
+                //}
             }
             catch (Exception exc)
             {
@@ -529,8 +518,6 @@ namespace mmd2timeline
         /// <param name="length"></param>
         void OnAudioLoaded(float length)
         {
-            LogUtil.Debug($"Player::OnAudioLoaded:{length}");
-
             _ProgressHelper.MaxTime = length;
         }
 
@@ -540,8 +527,6 @@ namespace mmd2timeline
         /// <param name="length"></param>
         void OnCameraLoaded(float length)
         {
-            LogUtil.Debug($"Player::OnCameraLoaded:{length}");
-
             _ProgressHelper.MaxTime = length;
         }
 
@@ -551,8 +536,6 @@ namespace mmd2timeline
         /// <param name="maxtime"></param>
         void OnMotionLoaded(MotionHelper sender, float length)
         {
-            LogUtil.Debug($"Player::OnMotionLoaded:{length}");
-
             if (sender.PersonAtom && !sender.PersonAtom.collisionEnabled)
             {
                 sender.PersonAtom.collisionEnabled = true;
@@ -571,7 +554,14 @@ namespace mmd2timeline
         /// <exception cref="NotImplementedException"></exception>
         private void UpdateFavoriteLabel(MMDEntity obj)
         {
-            _isFavorite.val = obj.InFavorite;
+            if (obj.InFavorite)
+            {
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_FAVORITED);
+            }
+            else
+            {
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_UNFAVORITED);
+            }
             _FavoriteLabel.text = obj.InFavorite ? Lang.Get("UnFavorite") : Lang.Get("Favorite");
         }
 
@@ -678,13 +668,11 @@ namespace mmd2timeline
         {
             base.Init();
 
-            InitTriggers();
+            //InitTriggers();
         }
 
         public void Start()
         {
-            LogUtil.Debug("---------------Start!!!!!");
-
             // 初始化模型目录
             //Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
 
@@ -703,7 +691,7 @@ namespace mmd2timeline
             hasAtomAdded = true;
             isInited = true;
 
-            _triggerHelper.Trigger(TRIGGER_SCRIPT_LOADED);
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_SCRIPT_LOADED);
         }
 
         #region 处理人物位置同步
@@ -928,9 +916,7 @@ namespace mmd2timeline
             if (!_MotionHelperGroup.AllIsReady())
                 return;
 
-            LogUtil.Debug($"Player::NEXT!");
-
-            _triggerHelper.Trigger(TRIGGER_PLAY_NEXT);
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAY_NEXT);
 
             if (isEditing)
             {
@@ -999,7 +985,7 @@ namespace mmd2timeline
 
             _ProgressHelper.Play();
 
-            _triggerHelper.Trigger(TRIGGER_START_PLAYING);
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, _AudioPlayHelper.PlayingAudio.displayName);
 
             yield break;
         }
@@ -1192,8 +1178,6 @@ namespace mmd2timeline
                 UpdateFavoriteLabel(entity);
             }
 
-            LogUtil.Debug($"Player::PlayMMD:{entity.Title}");
-
             var fileData = entity.GetFileData();
 
             // 如果没有内容，停止播放
@@ -1240,7 +1224,7 @@ namespace mmd2timeline
 
             _IsLoading = false;
 
-            _triggerHelper.Trigger(TRIGGER_START_PLAYING);
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, _AudioPlayHelper.PlayingAudio.displayName);
 
             if (_WaitingForPlay)
             {
@@ -1584,8 +1568,6 @@ namespace mmd2timeline
         /// </summary>
         public override void OnEnable()
         {
-            LogUtil.Debug("---------------OnEnable!!!!!");
-
             SuperController.singleton.onAtomAddedHandlers += OnAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers += OnAtomRemoved;
 
@@ -1603,8 +1585,6 @@ namespace mmd2timeline
         /// </summary>
         public override void OnDisable()
         {
-            LogUtil.Debug("---------------OnDisable!!!!!");
-
             SuperController.singleton.onAtomAddedHandlers -= OnAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers -= OnAtomRemoved;
 
@@ -1622,8 +1602,6 @@ namespace mmd2timeline
         /// </summary>
         public override void OnDestroy()
         {
-            LogUtil.Debug("---------------OnDestroy!!!!!");
-
             SuperController.singleton.onAtomAddedHandlers -= OnAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers -= OnAtomRemoved;
 

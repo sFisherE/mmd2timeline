@@ -353,7 +353,7 @@ namespace mmd2timeline
                     _progressJSON.valNoCallback = _progress;
 
                     // 触发器
-                    _progressFloatTrigger.Trigger(_progress);
+                    //_progressFloatTrigger.Trigger($"{_progress}");
 
                     // 抛出进度更改事件
                     OnProgressChanged?.Invoke(_progress, hardUpdate);

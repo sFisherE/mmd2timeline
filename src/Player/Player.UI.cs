@@ -339,16 +339,16 @@ namespace mmd2timeline
                     switch (_currentUIMode)
                     {
                         case PlayerUIMode.Init:
-                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_INIT);
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_INIT);
                             break;
                         case PlayerUIMode.Edit:
-                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_EDIT);
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_EDIT);
                             break;
                         case PlayerUIMode.Play:
-                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_PLAY);
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_PLAY);
                             break;
                         case PlayerUIMode.Load:
-                            _triggerHelper.Trigger(TRIGGER_PLAYMODE_LOAD);
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_LOAD);
                             break;
                     }
                 }

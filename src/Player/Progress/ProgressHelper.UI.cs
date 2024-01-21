@@ -30,7 +30,7 @@ namespace mmd2timeline
         /// </summary>
         JSONStorableFloat _maxLengthJSON;
 
-        FloatTrigger _progressFloatTrigger;
+        //TriggerEvent _progressFloatTrigger;
 
         /// <summary>
         /// 初始化设置UI
@@ -42,7 +42,7 @@ namespace mmd2timeline
 
             _SettingsUI = new GroupUI(self);
 
-            _progressFloatTrigger = TriggerHelper.GetInstance().AddFloatTrigger("Progress Triger") as FloatTrigger;
+            //_progressFloatTrigger = TriggerEventHelper.GetInstance().AddTrigger("Progress Triger");
 
             // 播放进度
             _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Progress"), 0f, 0f, 0f, v => SetProgress(v), rightSide);
