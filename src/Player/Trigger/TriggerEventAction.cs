@@ -54,15 +54,6 @@ namespace mmd2timeline
         }
 
         /// <summary>
-        /// 设置目标原子UID
-        /// </summary>
-        /// <param name="uid"></param>
-        public void SetAtomUID(string uid)
-        {
-            _atomUID = uid;
-        }
-
-        /// <summary>
         /// 获取目标原子
         /// </summary>
         public Atom Atom
@@ -81,17 +72,6 @@ namespace mmd2timeline
             get { return _receiverName; }
         }
 
-        /// <summary>
-        /// 设置接收者名称
-        /// </summary>
-        /// <param name="id"></param>
-        public void SetReceiverName(string id)
-        {
-            _receiverName = id;
-
-            // 重置目标类型
-            _targetType = null;
-        }
         /// <summary>
         /// 接收器
         /// </summary>
@@ -128,15 +108,6 @@ namespace mmd2timeline
                     _valueCustom = value;
                 }
             }
-        }
-
-        /// <summary>
-        /// 设置自定义
-        /// </summary>
-        /// <param name="on"></param>
-        public void SetValueCustom(bool on)
-        {
-            _valueCustom = on;
         }
 
         int? _targetType;
@@ -206,17 +177,6 @@ namespace mmd2timeline
             get { return _target; }
         }
 
-        /// <summary>
-        /// 设置目标
-        /// </summary>
-        /// <param name="target"></param>
-        public void SetTarget(string target)
-        {
-            _target = target;
-            // 重置目标类型
-            _targetType = null;
-        }
-
         bool _valueOfBool;
         /// <summary>
         /// 布尔值
@@ -278,6 +238,60 @@ namespace mmd2timeline
         public string Value;
 
         /// <summary>
+        /// 设置目标原子UID
+        /// </summary>
+        /// <param name="uid"></param>
+        public void SetAtomUID(string uid)
+        {
+            if (_atomUID != uid)
+            {
+                _atomUID = uid;
+
+                SetReceiverName(null);
+            }
+        }
+
+        /// <summary>
+        /// 设置接收者名称
+        /// </summary>
+        /// <param name="id"></param>
+        public void SetReceiverName(string id)
+        {
+            if (_receiverName != id)
+            {
+                _receiverName = id;
+                SetTarget(null);
+            }
+
+        }
+        /// <summary>
+        /// 设置自定义
+        /// </summary>
+        /// <param name="on"></param>
+        public void SetValueCustom(bool on)
+        {
+            _valueCustom = on;
+        }
+
+        /// <summary>
+        /// 设置目标
+        /// </summary>
+        /// <param name="target"></param>
+        public void SetTarget(string target)
+        {
+            if (_target != target)
+            {
+                _target = target;
+
+                // 重置目标类型
+                _targetType = null;
+                _valueOfBool = false;
+                _valueOfFloat = 0f;
+                _valueOfString = null;
+            }
+        }
+
+        /// <summary>
         /// 设置值
         /// </summary>
         /// <param name="value"></param>
@@ -317,14 +331,14 @@ namespace mmd2timeline
         /// <param name="valueString"></param>
         public void SetValue(string atom, string receiver, string target, int targetType = TriggerEventType.Bool, bool custom = false, bool valueBool = false, float valueFloat = 0f, string valueString = null)
         {
-            SetAtomUID(atom);
-            SetReceiverName(receiver);
-            SetTarget(target);
+            _atomUID = atom;
+            _receiverName = receiver;
+            _target = target;
             _targetType = null;
-            SetValueCustom(custom);
-            SetValue(valueBool);
-            SetValue(valueFloat);
-            SetValue(valueString);
+            _valueCustom = custom;
+            _valueOfBool = valueBool;
+            _valueOfFloat = valueFloat;
+            _valueOfString = valueString;
         }
 
         /// <summary>

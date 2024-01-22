@@ -265,7 +265,7 @@ namespace mmd2timeline
             _triggerSettingsTitle = CreateTitleUI(_DEFAULT_TRIGGER_SETTINGS_TITLE, RightSide);
 
             // 动作选择器
-            _actionChooser = Utils.SetupStringChooser(this, $"Trigger Actions", new List<string>(), RightSide);
+            _actionChooser = Utils.SetupStringChooser(this, $"Actions", new List<string>(), RightSide);
             _actionChooser.setCallbackFunction = a =>
             {
                 ResetActionsUI();
@@ -286,8 +286,9 @@ namespace mmd2timeline
                     }
                     else
                     {
-                        _atomChooser.valNoCallback = choices.First();
-                        _currentTriggerEventAction.SetAtomUID(_atomChooser.val);
+                        _currentTriggerEventAction.SetAtomUID(null);
+                        _atomChooser.valNoCallback = null;
+                        //_currentTriggerEventAction.SetAtomUID(_atomChooser.val);
                     }
 
                     RefreshReceivers();
@@ -405,6 +406,8 @@ namespace mmd2timeline
             _valueStringChooserSetter.valNoCallback = null;
             _valueFloatSetter.valNoCallback = 0f;
             _valueStringJSON.valNoCallback = null;
+
+            ShowValueUI(false);
         }
 
         /// <summary>
@@ -620,15 +623,33 @@ namespace mmd2timeline
         /// </summary>
         private void RefreshValues()
         {
-            var isCustom = _valueSourceChooser.val != _valueSourceChooser.defaultVal;
-
             ShowValueUI(false);
 
             var needShowUIs = new List<object>();
+
+            #region 设置值来源参数
             if (CurrentTargetCanSetByPlugin)
             {
                 needShowUIs.Add(_valueSourceChooser);
+
+                if (_currentTriggerEventAction.ValueCustom)
+                {
+                    _valueSourceChooser.valNoCallback = _valueSourceChooser.choices.Last();
+                }
+                else
+                {
+                    _valueSourceChooser.valNoCallback = _valueSourceChooser.defaultVal;
+                }
             }
+            else
+            {
+                // 如果当前目标不可使用插件进行设置，设置为自定义参数模式
+                _currentTriggerEventAction.SetValueCustom(true);
+                _valueSourceChooser.valNoCallback = _valueSourceChooser.choices.Last();
+            }
+            #endregion
+
+            var isCustom = _valueSourceChooser.val != _valueSourceChooser.defaultVal;
 
             try
             {
@@ -706,13 +727,17 @@ namespace mmd2timeline
             get
             {
                 var targetType = _currentTriggerEventAction.TargetType;
+
+                if (targetType == TriggerEventType.Bool) return true;
+
                 switch (targetType)
                 {
                     case TriggerEventType.Bool:
                     case TriggerEventType.Float:
+                        return _currentTrigger.EventType == targetType;
                     case TriggerEventType.String:
                     case TriggerEventType.Chooser:
-                        return _currentTrigger.EventType == targetType;
+                        return _currentTrigger.EventType == TriggerEventType.String || _currentTrigger.EventType == TriggerEventType.Chooser;
                     default:
                         return false;
                 }
@@ -724,25 +749,6 @@ namespace mmd2timeline
         /// </summary>
         private void RefreshValueSource()
         {
-            var isCustom = _currentTriggerEventAction.ValueCustom;
-
-            if (isCustom || !CurrentTargetCanSetByPlugin)
-            {
-                _valueSourceChooser.valNoCallback = _valueSourceChooser.choices.Last();
-            }
-            else
-            {
-                _valueSourceChooser.valNoCallback = _valueSourceChooser.choices.First();
-            }
-
-            // 是否设定为自定义
-            var setCustom = _valueSourceChooser.val != _valueSourceChooser.defaultVal;
-
-            if (isCustom != setCustom)
-            {
-                _currentTriggerEventAction.SetValueCustom(setCustom);
-            }
-
             RefreshValues();
         }
 
@@ -751,26 +757,44 @@ namespace mmd2timeline
         /// </summary>
         private void RefreshTargets()
         {
-            var choices = GetActionTargets(_currentTriggerEventAction.Receiver);
+            _targetChooser.choices = new List<string>();
+            _targetChooser.valNoCallback = null;
 
-            if (_targetChooser != null)
+            if (!string.IsNullOrEmpty(_receiverChooser.val))
             {
-                _targetChooser.choices = new List<string>();
+                var choices = GetActionTargets(_currentTriggerEventAction.Receiver);
+
                 _targetChooser.choices = choices;
 
                 if (choices.Contains(_currentTriggerEventAction.Target))
                 {
                     _targetChooser.valNoCallback = _currentTriggerEventAction.Target;
                 }
-                else
-                {
-                    _targetChooser.valNoCallback = choices.First();
-                    _currentTriggerEventAction.SetTarget(_targetChooser.val);
-                }
-
-                RefreshValueSource();
             }
+
+            RefreshValueSource();
         }
+
+        /// <summary>
+        /// 忽略的目标选择器
+        /// </summary>
+        List<string> _ignoreTargetChoices = new List<string> {
+            "SaveToStore1",
+            "SaveToStore2",
+            "SaveToStore3",
+            "RestoreAllFromStore1",
+            "RestoreAllFromStore2",
+            "RestoreAllFromStore3",
+            "RestorePhysicsFromStore1",
+            "RestorePhysicsFromStore2",
+            "RestorePhysicsFromStore3",
+            "RestoreAppearanceFromStore1",
+            "RestoreAppearanceFromStore2",
+            "RestoreAppearanceFromStore3",
+            "RestoreAllFromDefaults",
+            "RestorePhysicalFromDefaults",
+            "RestoreAppearanceFromDefaults"
+        };
 
         /// <summary>
         /// 获取动作目标
@@ -783,83 +807,96 @@ namespace mmd2timeline
         {
             List<string> targetChoices = new List<string>();
 
-            var boolChoices = receiver.GetBoolParamNames();
-            var floatChoices = receiver.GetFloatParamNames();
-            var stringChooserChoices = receiver.GetStringChooserParamNames();
-            var stringChoices = receiver.GetStringParamNames();
-            var actionChoices = receiver.GetActionNames();
+            //var boolChoices = receiver.GetBoolParamNames();
+            //var floatChoices = receiver.GetFloatParamNames();
+            //var stringChooserChoices = receiver.GetStringChooserParamNames();
+            //var stringChoices = receiver.GetStringParamNames();
+            //var actionChoices = receiver.GetActionNames();
 
-            List<string> tempChoices = new List<string>();
-            List<string> temp2Choices = new List<string>();
+            var paramsChoices = receiver.GetAllParamAndActionNames();
 
-            foreach (string choice in actionChoices)
+            //List<string> tempChoices = new List<string>();
+            //List<string> temp2Choices = new List<string>();
+
+            foreach (var choice in paramsChoices)
             {
-                if ((choice != "SaveToStore1" && choice != "SaveToStore2" && choice != "SaveToStore3" && choice != "RestoreAllFromStore1" && choice != "RestoreAllFromStore2" && choice != "RestoreAllFromStore3" && choice != "RestorePhysicsFromStore1" && choice != "RestorePhysicsFromStore2" && choice != "RestorePhysicsFromStore3" && choice != "RestoreAppearanceFromStore1" && choice != "RestoreAppearanceFromStore2" && choice != "RestoreAppearanceFromStore3" && choice != "RestoreAllFromDefaults" && choice != "RestorePhysicalFromDefaults" && choice != "RestoreAppearanceFromDefaults"))
-                {
-                    if (AddTargetChoices(choice))
-                    {
-                        targetChoices.Add(choice);
-                    }
-                }
-            }
-            foreach (string choice in boolChoices)
-            {
-                if (AddTargetChoices(choice))
-                {
-                    if (choice.Length >= 6 && choice.Substring(choice.Length - 6, 6) == "Result")
-                    {
-                        tempChoices.Add(choice);
-                    }
-                    else
-                    {
-                        temp2Choices.Add(choice);
-                    }
-                }
-            }
-            foreach (string choice in stringChooserChoices)
-            {
-                if (AddTargetChoices(choice))
-                {
-                    if (choice.Length >= 6 && choice.Substring(choice.Length - 6, 6) == "Result")
-                    {
-                        tempChoices.Add(choice);
-                    }
-                    else
-                    {
-                        temp2Choices.Add(choice);
-                    }
-                }
-            }
-            foreach (string choice in floatChoices)
-            {
-                if (AddTargetChoices(choice))
-                {
-                    if (choice.Length >= 6 && choice.Substring(choice.Length - 6, 6) == "Result")
-                    {
-                        tempChoices.Add(choice);
-                    }
-                    else
-                    {
-                        temp2Choices.Add(choice);
-                    }
-                }
-            }
-            foreach (string choice in tempChoices)
-            {
-                targetChoices.Add(choice);
-            }
-            foreach (string choice in stringChoices)
-            {
-                if (AddTargetChoices(choice))
+                if (CheckTargetChoice(choice))
                 {
                     targetChoices.Add(choice);
                 }
             }
-            temp2Choices.Sort();
-            foreach (string choice in temp2Choices)
-            {
-                targetChoices.Add(choice);
-            }
+
+            //List<string> tempChoices = new List<string>();
+            //List<string> temp2Choices = new List<string>();
+
+            //foreach (string choice in actionChoices)
+            //{
+            //    if ((choice != "SaveToStore1" && choice != "SaveToStore2" && choice != "SaveToStore3" && choice != "RestoreAllFromStore1" && choice != "RestoreAllFromStore2" && choice != "RestoreAllFromStore3" && choice != "RestorePhysicsFromStore1" && choice != "RestorePhysicsFromStore2" && choice != "RestorePhysicsFromStore3" && choice != "RestoreAppearanceFromStore1" && choice != "RestoreAppearanceFromStore2" && choice != "RestoreAppearanceFromStore3" && choice != "RestoreAllFromDefaults" && choice != "RestorePhysicalFromDefaults" && choice != "RestoreAppearanceFromDefaults"))
+            //    {
+            //        if (AddTargetChoices(choice))
+            //        {
+            //            targetChoices.Add(choice);
+            //        }
+            //    }
+            //}
+            //foreach (string choice in boolChoices)
+            //{
+            //    if (AddTargetChoices(choice))
+            //    {
+            //        if (choice.Length >= 6 && choice.Substring(choice.Length - 6, 6) == "Result")
+            //        {
+            //            tempChoices.Add(choice);
+            //        }
+            //        else
+            //        {
+            //            temp2Choices.Add(choice);
+            //        }
+            //    }
+            //}
+            //foreach (string choice in stringChooserChoices)
+            //{
+            //    if (AddTargetChoices(choice))
+            //    {
+            //        if (choice.Length >= 6 && choice.Substring(choice.Length - 6, 6) == "Result")
+            //        {
+            //            tempChoices.Add(choice);
+            //        }
+            //        else
+            //        {
+            //            temp2Choices.Add(choice);
+            //        }
+            //    }
+            //}
+            //foreach (string choice in floatChoices)
+            //{
+            //    if (AddTargetChoices(choice))
+            //    {
+            //        if (choice.Length >= 6 && choice.Substring(choice.Length - 6, 6) == "Result")
+            //        {
+            //            tempChoices.Add(choice);
+            //        }
+            //        else
+            //        {
+            //            temp2Choices.Add(choice);
+            //        }
+            //    }
+            //}
+            //foreach (string choice in tempChoices)
+            //{
+            //    targetChoices.Add(choice);
+            //}
+            //foreach (string choice in stringChoices)
+            //{
+            //    if (AddTargetChoices(choice))
+            //    {
+            //        targetChoices.Add(choice);
+            //    }
+            //}
+            //temp2Choices.Sort();
+            //foreach (string choice in temp2Choices)
+            //{
+            //    targetChoices.Add(choice);
+            //}
 
             if (targetChoices.Count == 0)
             {
@@ -868,8 +905,16 @@ namespace mmd2timeline
             return targetChoices;
         }
 
-        protected bool AddTargetChoices(string choice)
+        /// <summary>
+        /// 检查目标选择器是否有效
+        /// </summary>
+        /// <param name="choice"></param>
+        /// <returns></returns>
+        protected bool CheckTargetChoice(string choice)
         {
+            if (_ignoreTargetChoices.Contains(choice))
+                return false;
+
             Atom atom = _currentTriggerEventAction.Atom;
 
             if (atom != null)
@@ -896,25 +941,22 @@ namespace mmd2timeline
         /// <param name="atomUID"></param>
         private void RefreshReceivers()
         {
-            List<string> choices = GetAtomReceivers(_currentTriggerEventAction.AtomUID);
+            _receiverChooser.choices = new List<string>();
+            _receiverChooser.valNoCallback = null;
 
-            if (_receiverChooser != null)
+            if (!string.IsNullOrEmpty(_atomChooser.val))
             {
-                _receiverChooser.choices = new List<string>();
+                List<string> choices = GetAtomReceivers(_atomChooser.val);
+
                 _receiverChooser.choices = choices;
 
                 if (choices.Contains(_currentTriggerEventAction.ReceiverName))
                 {
                     _receiverChooser.valNoCallback = _currentTriggerEventAction.ReceiverName;
                 }
-                else
-                {
-                    _receiverChooser.valNoCallback = choices.First();
-                    _currentTriggerEventAction.SetReceiverName(_receiverChooser.val);
-                }
-
-                RefreshTargets();
             }
+
+            RefreshTargets();
         }
 
         /// <summary>
