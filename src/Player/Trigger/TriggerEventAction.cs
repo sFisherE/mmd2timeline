@@ -347,6 +347,147 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 触发浮点类型的动作
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        public void Trigger(float value, float min, float max)
+        {
+            if (Receiver != null)
+            {
+                if (TargetType == TriggerEventType.Float)
+                {
+                    var actionFloatJSON = Receiver.GetFloatJSONParam(Target);
+
+                    if (actionFloatJSON != null)
+                    {
+                        if (ValueCustom)
+                        {
+                            actionFloatJSON.val = ValueOfFloat;
+                        }
+                        else
+                        {
+                            var m = value / (max - min);
+
+                            actionFloatJSON.val = m;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 触发选择器事件
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="choices"></param>
+        public void Trigger(string value, List<string> choices)
+        {
+            if (Receiver != null)
+            {
+                if (TargetType == TriggerEventType.Chooser)
+                {
+                    var actionChooserJSON = Receiver.GetStringChooserJSONParam(Target);
+                    if (actionChooserJSON != null)
+                    {
+                        if (ValueCustom)
+                        {
+                            actionChooserJSON.val = ValueOfString;
+                        }
+                        else
+                        {
+                            actionChooserJSON.choices = choices;
+                            actionChooserJSON.val = value;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 触发布尔事件
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="choices"></param>
+        public void Trigger(bool value)
+        {
+            if (Receiver != null)
+            {
+                if (TargetType == TriggerEventType.Bool)
+                {
+                    var actionBoolJSON = Receiver.GetBoolJSONParam(Target);
+
+                    if (actionBoolJSON != null)
+                    {
+                        if (ValueCustom)
+                        {
+                            actionBoolJSON.val = ValueOfBool;
+                        }
+                        else
+                        {
+                            actionBoolJSON.val = value;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 触发动作事件
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="choices"></param>
+        public void Trigger()
+        {
+            if (Receiver != null)
+            {
+                if (TargetType == TriggerEventType.Action || TargetType == TriggerEventType.Other)
+                {
+                    Receiver.CallAction(Target);
+
+                    return;
+                }
+                var actionParam = Receiver.GetParam(Target);
+
+                if (actionParam == null)
+                    return;
+
+                switch (TargetType)
+                {
+                    case TriggerEventType.Bool:
+                        var actionBoolJSON = actionParam as JSONStorableBool;
+                        if (actionBoolJSON != null)
+                        {
+                            actionBoolJSON.val = ValueOfBool;
+                        }
+                        break;
+                    case TriggerEventType.Float:
+                        var actionFloatJSON = actionParam as JSONStorableFloat;
+                        if (actionFloatJSON != null)
+                        {
+                            actionFloatJSON.val = ValueOfFloat;
+                        }
+                        break;
+                    case TriggerEventType.Chooser:
+                        var actionChooserJSON = actionParam as JSONStorableStringChooser;
+                        if (actionChooserJSON != null)
+                        {
+                            actionChooserJSON.val = ValueOfString;
+                        }
+                        break;
+                    case TriggerEventType.String:
+                        var actionStringJSON = actionParam as JSONStorableString;
+                        if (actionStringJSON != null)
+                        {
+                            actionStringJSON.val = ValueOfString;
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
         /// 运行动作
         /// </summary>
         /// <param name="value"></param>
@@ -354,83 +495,19 @@ namespace mmd2timeline
         {
             if (Receiver != null)
             {
-                // 如果是动作或其他类型的目标，直接执行
-                if (TargetType == TriggerEventType.Action || TargetType == TriggerEventType.Other)
+                if (TargetType == TriggerEventType.String)
                 {
-                    Receiver.CallAction(Target);
-
-                    return;
-                }
-
-                var actionParamJSON = Receiver.GetParam(Target);
-
-                if (actionParamJSON == null)
-                {
-                    LogUtil.LogWarning("Trigger Event Action (" + this.Name + ") was unable to load target (" + Target + ")");
-                }
-                else
-                {
-                    var useValue = (TargetType == _trigger.EventType && !ValueCustom);
-
-                    switch (TargetType)
+                    var actionStringJSON = Receiver.GetStringJSONParam(Target);
+                    if (actionStringJSON != null)
                     {
-                        case TriggerEventType.Bool:
-                            var actionBoolJSON = actionParamJSON as JSONStorableBool;
-                            if (useValue)
-                            {
-                                bool v;
-
-                                if (bool.TryParse(value, out v))
-                                {
-                                    actionBoolJSON.val = v;
-                                }
-                            }
-                            else
-                            {
-                                actionBoolJSON.val = ValueOfBool;
-                            }
-                            break;
-                        case TriggerEventType.Float:
-                            var actionFloatJSON = actionParamJSON as JSONStorableFloat;
-                            if (useValue)
-                            {
-                                float f;
-
-                                if (float.TryParse(value, out f))
-                                {
-                                    actionFloatJSON.val = f;
-                                }
-                            }
-                            else
-                            {
-                                actionFloatJSON.val = ValueOfFloat;
-                            }
-                            break;
-                        case TriggerEventType.String:
-                            var actionStringJSON = actionParamJSON as JSONStorableString;
-                            if (useValue)
-                            {
-                                actionStringJSON.val = value;
-                            }
-                            else
-                            {
-                                actionStringJSON.val = ValueOfString;
-                            }
-                            break;
-                        case TriggerEventType.Chooser:
-                            var actionChooserJSON = actionParamJSON as JSONStorableStringChooser;
-                            if (useValue)
-                            {
-                                actionChooserJSON.val = value;
-                            }
-                            else
-                            {
-                                actionChooserJSON.val = ValueOfString;
-                            }
-                            break;
-                        default:
-                            LogUtil.LogWarning("Trigger Event Action Type (" + TriggerEventType.GetName(TargetType) + ") was unable to load target (" + Target + ")");
-                            break;
+                        if (ValueCustom)
+                        {
+                            actionStringJSON.val = ValueOfString;
+                        }
+                        else
+                        {
+                            actionStringJSON.val = value;
+                        }
                     }
                 }
             }

@@ -153,11 +153,120 @@ namespace mmd2timeline
         /// 触发
         /// </summary>
         /// <param name="name"></param>
-        internal void Trigger(string name, string value = null)
+        internal void Trigger(string name)
         {
+            LogUtil.Debug($"Trigger-v:{name}");
             var trigger = GetTrigger(name);
 
-            trigger?.Trigger(value);
+            if (trigger == null)
+                return;
+
+            // 只有浮点类型的触发器才会传递float值
+            trigger.Trigger();
+        }
+
+        /// <summary>
+        /// 触发
+        /// </summary>
+        /// <param name="name"></param>
+        internal void Trigger(string name, string value)
+        {
+            LogUtil.Debug($"Trigger-s:{name}");
+
+            var trigger = GetTrigger(name);
+
+            if (trigger == null)
+                return;
+
+            // 只有浮点类型的触发器才会传递float值
+            if (trigger.EventType == TriggerEventType.String)
+            {
+                trigger.Trigger(value);
+            }
+            else
+            {
+                trigger.Trigger();
+            }
+        }
+
+        /// <summary>
+        /// 触发类型为Float的事件
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        internal void Trigger(string name, bool value)
+        {
+            LogUtil.Debug($"Trigger-b:{name}");
+
+            var trigger = GetTrigger(name);
+
+            if (trigger == null)
+                return;
+
+            // 只有浮点类型的触发器才会传递float值
+            if (trigger.EventType == TriggerEventType.Bool)
+            {
+                trigger.Trigger(value);
+            }
+            else
+            {
+                trigger.Trigger();
+            }
+        }
+
+        /// <summary>
+        /// 触发类型为Float的事件
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        internal void Trigger(string name, float value, float min = 0f, float max = 1f)
+        {
+            //LogUtil.Debug($"Trigger-f:{name}");
+
+            var trigger = GetTrigger(name);
+
+            if (trigger == null)
+                return;
+
+            // 只有浮点类型的触发器才会传递float值
+            if (trigger.EventType == TriggerEventType.Float)
+            {
+                trigger.Trigger(value, min, max);
+            }
+            else
+            {
+                trigger.Trigger();
+            }
+        }
+
+        /// <summary>
+        /// 触发Chooser类型的事件
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="choices"></param>
+        internal void Trigger(string name, string value, List<string> choices)
+        {
+            LogUtil.Debug($"Trigger-c:{name}");
+
+            var trigger = GetTrigger(name);
+
+            if (trigger == null)
+                return;
+
+            // 只有浮点类型的触发器才会传递float值
+            if (trigger.EventType == TriggerEventType.Chooser)
+            {
+                trigger.Trigger(value, choices);
+            }
+            else
+            {
+                trigger.Trigger();
+            }
         }
 
         string triggerKey = "MMDTriggers";

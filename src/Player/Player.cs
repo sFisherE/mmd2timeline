@@ -251,6 +251,8 @@ namespace mmd2timeline
         /// <param name="hardUpdate">强制更新音频进度</param>
         private void SyncProgress(float progress, bool hardUpdate)
         {
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PROGRESS_CHANGE, progress, 0f, _ProgressHelper.MaxTime);
+
             // 设置镜头播放进度
             SetMMDCameraProgress(progress);
 
@@ -313,7 +315,7 @@ namespace mmd2timeline
         /// <param name="isEnd"></param>
         void OnProgressEnded(bool isEnd)
         {
-            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_IS_END);
+            //_triggerHelper.Trigger(TriggerEventHelper.TRIGGER_IS_END);
 
             if (Playlist.PlayMode == MMDPlayMode.Once)
             {
@@ -422,6 +424,8 @@ namespace mmd2timeline
             //RefreshPersonAtoms();
         }
 
+        JSONStorableBool _cameraActiveJSON;
+
         /// <summary>
         /// 镜头激活状态更改事件处理函数
         /// </summary>
@@ -429,14 +433,7 @@ namespace mmd2timeline
         /// <param name="activate"></param>
         private void OnCameraActivateStatusChanged(CameraHelper sender, bool activate)
         {
-            if (activate)
-            {
-                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_ACTIVATED);
-            }
-            else
-            {
-                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_DEACTIVATED);
-            }
+            _cameraActiveJSON.val = activate;
         }
 
         #region Save/Load
@@ -669,6 +666,20 @@ namespace mmd2timeline
             base.Init();
 
             //InitTriggers();
+
+            _cameraActiveJSON = new JSONStorableBool($"Camera Active Status", false);
+
+            _cameraActiveJSON.setCallbackFunction = v =>
+            {
+                if (v)
+                {
+                    _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_ACTIVATED);
+                }
+                else
+                {
+                    _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_DEACTIVATED);
+                }
+            };
         }
 
         public void Start()
@@ -916,6 +927,8 @@ namespace mmd2timeline
             if (!_MotionHelperGroup.AllIsReady())
                 return;
 
+            _cameraActiveJSON.val = false;
+
             _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAY_NEXT);
 
             if (isEditing)
@@ -985,7 +998,7 @@ namespace mmd2timeline
 
             _ProgressHelper.Play();
 
-            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, _AudioPlayHelper.PlayingAudio.displayName);
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, CurrentItem.Title);
 
             yield break;
         }
@@ -1224,14 +1237,15 @@ namespace mmd2timeline
 
             _IsLoading = false;
 
-            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, _AudioPlayHelper.PlayingAudio.displayName);
-
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, CurrentItem.Title);
             if (_WaitingForPlay)
             {
                 _WaitingForPlay = false;
 
                 this.StartPlaying();
             }
+            yield return null;//new WaitForSeconds(1);
+            _cameraActiveJSON.val = false;
         }
 
         /// <summary>
@@ -1623,6 +1637,7 @@ namespace mmd2timeline
             _AudioPlayHelper = null;
 
             _CameraHelper.OnCameraMotionLoaded -= OnCameraLoaded;
+            _CameraHelper.OnCameraActivateStatusChanged -= OnCameraActivateStatusChanged;
             _CameraHelper.OnDestroy();
             _CameraHelper = null;
 

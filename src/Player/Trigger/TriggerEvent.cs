@@ -216,11 +216,90 @@ namespace mmd2timeline
         /// 运行事件
         /// </summary>
         /// <param name="value"></param>
-        public void Trigger(string value = null)
+        public void Trigger()
         {
             foreach (var action in _actionList)
             {
-                action.Trigger(value);
+                action.Trigger();
+            }
+        }
+
+        /// <summary>
+        /// 运行事件
+        /// </summary>
+        /// <param name="value"></param>
+        public void Trigger(bool value)
+        {
+            foreach (var action in _actionList)
+            {
+                if (action.TargetType == TriggerEventType.Bool)
+                {
+                    action.Trigger(value);
+                }
+                else
+                {
+                    action.Trigger();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 运行事件
+        /// </summary>
+        /// <param name="value"></param>
+        public void Trigger(string value)
+        {
+            foreach (var action in _actionList)
+            {
+                if (action.TargetType == TriggerEventType.String)
+                {
+                    action.Trigger(value);
+                }
+                else
+                {
+                    action.Trigger();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 触发Choose类型的事件
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="choices"></param>
+        public void Trigger(string value, List<string> choices)
+        {
+            foreach (var action in _actionList)
+            {
+                if (action.TargetType == TriggerEventType.Chooser)
+                {
+                    action.Trigger(value, choices);
+                }
+                else
+                {
+                    action.Trigger();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 触发Float事件
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        public void Trigger(float value, float min = 0f, float max = 1f)
+        {
+            foreach (var action in _actionList)
+            {
+                if (action.TargetType == TriggerEventType.Float)
+                {
+                    action.Trigger(value, min, max);
+                }
+                else
+                {
+                    action.Trigger();
+                }
             }
         }
 

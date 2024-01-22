@@ -277,7 +277,7 @@ namespace mmd2timeline
                 {
                     _actionTitle.text.text = _currentTriggerEventAction.Name;
 
-                    var choices = SuperController.singleton.GetAtomUIDs();
+                    var choices = SuperController.singleton.GetAtomUIDs().ToList();
                     _atomChooser.choices = choices;
 
                     if (choices.Contains(_currentTriggerEventAction.AtomUID))
