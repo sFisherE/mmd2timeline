@@ -148,6 +148,8 @@ namespace mmd2timeline
             //RegisterAction(new JSONStorableAction("Favorite", () => this.CurrentItem?.Favorite()));
             RegisterAction(new JSONStorableAction("Toggle Favorite", () => this.ToggleFavorite()));
 
+            RegisterAction(new JSONStorableAction("Toggle Play Mode", () => this.TogglePlayMode()));
+
             RegisterAction(new JSONStorableAction("Reset Person Motion", () => StartCoroutine(ResetAllPersonMotion())));
         }
 
@@ -424,8 +426,6 @@ namespace mmd2timeline
             //RefreshPersonAtoms();
         }
 
-        JSONStorableBool _cameraActiveJSON;
-
         /// <summary>
         /// 镜头激活状态更改事件处理函数
         /// </summary>
@@ -666,20 +666,7 @@ namespace mmd2timeline
             base.Init();
 
             //InitTriggers();
-
-            _cameraActiveJSON = new JSONStorableBool($"Camera Active Status", false);
-
-            _cameraActiveJSON.setCallbackFunction = v =>
-            {
-                if (v)
-                {
-                    _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_ACTIVATED);
-                }
-                else
-                {
-                    _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_CAMERA_DEACTIVATED);
-                }
-            };
+            InitStatusParams();
         }
 
         public void Start()
@@ -696,13 +683,23 @@ namespace mmd2timeline
             HideHUDMessage();
 
             // 从默认播放列表加载内容
-            StartCoroutine(this.Playlist.LoadFromDefalut());
+            StartCoroutine(StartDeferred());
+        }
+
+        /// <summary>
+        /// 延迟执行
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator StartDeferred()
+        {
+            yield return this.Playlist.LoadFromDefalut();
+            yield return null;
 
             // 设定有原子添加，等待处理
             hasAtomAdded = true;
             isInited = true;
-
-            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_SCRIPT_LOADED);
+            yield return null;
+            //_triggerHelper.Trigger(TriggerEventHelper.TRIGGER_SCRIPT_LOADED);
         }
 
         #region 处理人物位置同步
@@ -753,6 +750,11 @@ namespace mmd2timeline
                 return;
             }
             #endregion
+
+            if (_scriptLoadedJSON?.val == false)
+            {
+                _scriptLoadedJSON.val = true;
+            }
 
             #region 快捷键控制
 
@@ -927,7 +929,7 @@ namespace mmd2timeline
             if (!_MotionHelperGroup.AllIsReady())
                 return;
 
-            _cameraActiveJSON.val = false;
+            //_cameraActiveJSON.val = false;
 
             _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAY_NEXT);
 
@@ -1057,6 +1059,8 @@ namespace mmd2timeline
                 {
                     _UIPlayButton.buttonText.text = sPause;
 
+                    _playStatusJSON.val = true;
+
                     if (!config.CameraActive)
                     {
                         _CameraHelper.DisableNavigation(false);
@@ -1072,6 +1076,8 @@ namespace mmd2timeline
                 var sPlay = Lang.Get("Play");
                 if (_UIPlayButton.buttonText.text != sPlay)
                 {
+                    _playStatusJSON.val = false;
+
                     _UIPlayButton.buttonText.text = sPlay;
                     _CameraHelper.DisableNavigation(false);
                 }
@@ -1244,8 +1250,8 @@ namespace mmd2timeline
 
                 this.StartPlaying();
             }
-            yield return null;//new WaitForSeconds(1);
-            _cameraActiveJSON.val = false;
+            //yield return null;//new WaitForSeconds(1);
+            //_cameraActiveJSON.val = false;
         }
 
         /// <summary>

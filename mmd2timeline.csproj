@@ -258,6 +258,7 @@
     <Compile Include="src\Player\Player.HUD.cs" />
     <Compile Include="src\Player\Player.PlayConfirm.cs" />
     <Compile Include="src\Player\Player.Playlist.cs" />
+    <Compile Include="src\Player\Player.Status.cs" />
     <Compile Include="src\Player\Player.Tip.cs" />
     <Compile Include="src\Player\Player.Trigger.cs" />
     <Compile Include="src\Player\Player.UI.cs" />

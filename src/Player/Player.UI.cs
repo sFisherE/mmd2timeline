@@ -55,6 +55,11 @@ namespace mmd2timeline
         UIDynamicButton _UIPlayButton;
 
         /// <summary>
+        /// 播放模式选择器
+        /// </summary>
+        JSONStorableStringChooser _playModeChooser;
+
+        /// <summary>
         /// 播放列表选择器
         /// </summary>
         JSONStorableStringChooser _PlaylistChooser;
@@ -131,12 +136,13 @@ namespace mmd2timeline
 
             #region 播放列表UI
 
-            var playModeChooser = SetupStaticEnumsChooser<MMDPlayMode>("Play Mode", MMDPlayMode.Names, MMDPlayMode.GetName(MMDPlayMode.Default), RightSide, m =>
+            _playModeChooser = SetupStaticEnumsChooser<MMDPlayMode>("Play Mode", MMDPlayMode.Names, MMDPlayMode.GetName(MMDPlayMode.Default), RightSide, m =>
             {
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_CHANGED, m);
                 this.Playlist.PlayMode = MMDPlayMode.GetValue(m);
             });
-            RegisterStringChooser(playModeChooser);
-            _PlayUIs.Add(playModeChooser);
+            RegisterStringChooser(_playModeChooser);
+            _PlayUIs.Add(_playModeChooser);
 
             _MMDUIs.Add(_UIPlayButton = Utils.SetupButton(this, Lang.Get("Play"), () => TogglePlaying(), RightSide));
 
@@ -304,6 +310,28 @@ namespace mmd2timeline
 
             _DebugUIs.RefreshView();
             #endregion
+        }
+
+        /// <summary>
+        /// 切换播放模式
+        /// </summary>
+        void TogglePlayMode()
+        {
+            var current = _playModeChooser.val;
+            var choices = _playModeChooser.choices;
+
+            var index = choices.IndexOf(current);
+
+            index++;
+
+            if (index >= choices.Count)
+            {
+                index = 0;
+            }
+
+            var next = choices[index];
+
+            _playModeChooser.val = next;
         }
 
         /// <summary>

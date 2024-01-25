@@ -97,6 +97,7 @@ src\Player\Player.PlayConfirm.cs
 src\Player\Player.Playlist.cs
 src\Player\Player.HUD.cs
 src\Player\Player.Trigger.cs
+src\Player\Player.Status.cs
 src\Player\Player.UI.cs
 src\Player\Settings.cs
 src\Player\Settings.MotionMode.cs

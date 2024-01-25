@@ -26,13 +26,17 @@ namespace mmd2timeline
 
         internal const string TRIGGER_PROGRESS_CHANGE = "Progress Trigger";
 
+        internal const string TRIGGER_PLAYING = "Playing Status Trigger";
+
+        internal const string TRIGGER_PLAYMODE_CHANGED = "Play Mode Changed Trigger";
+
         //const string TRIGGER_CAMERA_DEACTIVATED = "Camera Deactivated Trigger";
 
         //MVRScript _owner;
         //internal MVRScript Owner { get { return _owner; } set { _owner = value; } }
         bool _isInited = false;
         readonly Dictionary<string, TriggerEvent> _triggers = new Dictionary<string, TriggerEvent>() {
-            {TRIGGER_SCRIPT_LOADED, new TriggerEvent(TRIGGER_SCRIPT_LOADED, TriggerEventType.Action)},
+            {TRIGGER_SCRIPT_LOADED, new TriggerEvent(TRIGGER_SCRIPT_LOADED, TriggerEventType.Bool)},
             {TRIGGER_START_PLAYING, new TriggerEvent(TRIGGER_START_PLAYING, TriggerEventType.String)},
             {TRIGGER_PLAY_NEXT, new TriggerEvent(TRIGGER_PLAY_NEXT, TriggerEventType.Action)},
             {TRIGGER_IS_END, new TriggerEvent(TRIGGER_IS_END, TriggerEventType.Action)},
@@ -45,6 +49,8 @@ namespace mmd2timeline
             {TRIGGER_CAMERA_ACTIVATED, new TriggerEvent(TRIGGER_CAMERA_ACTIVATED, TriggerEventType.Action)},
             {TRIGGER_CAMERA_DEACTIVATED, new TriggerEvent(TRIGGER_CAMERA_DEACTIVATED, TriggerEventType.Action)},
             {TRIGGER_PROGRESS_CHANGE,new TriggerEvent(TRIGGER_PROGRESS_CHANGE, TriggerEventType.Float)},
+            {TRIGGER_PLAYING,new TriggerEvent(TRIGGER_PLAYING,TriggerEventType.Bool)},
+            {TRIGGER_PLAYMODE_CHANGED,new TriggerEvent(TRIGGER_PLAYMODE_CHANGED,TriggerEventType.String)},
         };
 
         internal delegate void TriggerListChangedCallback();
@@ -155,7 +161,6 @@ namespace mmd2timeline
         /// <param name="name"></param>
         internal void Trigger(string name)
         {
-            LogUtil.Debug($"Trigger-v:{name}");
             var trigger = GetTrigger(name);
 
             if (trigger == null)
@@ -171,8 +176,6 @@ namespace mmd2timeline
         /// <param name="name"></param>
         internal void Trigger(string name, string value)
         {
-            LogUtil.Debug($"Trigger-s:{name}");
-
             var trigger = GetTrigger(name);
 
             if (trigger == null)
@@ -198,8 +201,6 @@ namespace mmd2timeline
         /// <param name="max"></param>
         internal void Trigger(string name, bool value)
         {
-            LogUtil.Debug($"Trigger-b:{name}");
-
             var trigger = GetTrigger(name);
 
             if (trigger == null)
@@ -225,8 +226,6 @@ namespace mmd2timeline
         /// <param name="max"></param>
         internal void Trigger(string name, float value, float min = 0f, float max = 1f)
         {
-            //LogUtil.Debug($"Trigger-f:{name}");
-
             var trigger = GetTrigger(name);
 
             if (trigger == null)
@@ -251,8 +250,6 @@ namespace mmd2timeline
         /// <param name="choices"></param>
         internal void Trigger(string name, string value, List<string> choices)
         {
-            LogUtil.Debug($"Trigger-c:{name}");
-
             var trigger = GetTrigger(name);
 
             if (trigger == null)

@@ -104,8 +104,8 @@ namespace mmd2timeline
             }
             set
             {
-                // 触发事件
-                OnCameraActivateStatusChanged?.Invoke(this, _isActive);
+                //// 触发事件
+                //OnCameraActivateStatusChanged?.Invoke(this, _isActive);
 
                 if (_isActive != value)
                 {
@@ -314,7 +314,7 @@ namespace mmd2timeline
                 }
                 SuperController.singleton.disableNavigation = disable;
 
-                //OnCameraActivateStatusChanged?.Invoke(this, !disable);
+                OnCameraActivateStatusChanged?.Invoke(this, SuperController.singleton.navigationDisabled);
             }
         }
 
@@ -328,6 +328,7 @@ namespace mmd2timeline
 
             _NavigationRigSnapshot = NavigationRigSnapshot.Snap();
 
+            // 禁用导航
             DisableNavigation();
 
             // 监控设备没有被激活
