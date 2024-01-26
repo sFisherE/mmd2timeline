@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MacGruber;
+using System;
 using System.Collections.Generic;
 
 namespace mmd2timeline
@@ -194,6 +195,8 @@ namespace mmd2timeline
             {
                 var motionChooser = SetupStringChooser(self, $"{Lang.Get("Motion")} {(i + 1)}", self.noneStrings, rightSide: rightSide);
                 motionChooser.setCallbackFunction = UpdateMotionValue;
+                self.RegisterStringChooser(motionChooser);
+
                 _MotionSettingsUI.OuterElements.Add(motionChooser);
                 _MotionChoosers.Add(motionChooser);
             }
@@ -341,12 +344,30 @@ namespace mmd2timeline
 
             #region 高跟设置UI
 
+            //string TRIGGER_HEEL_ACTIVATED = "Heel Activated Trigger";
+            //string TRIGGER_HEEL_DEACTIVATED = "Heel Deactivated Trigger";
+
+            //var _triggerHelper = TriggerEventHelper.GetInstance();
+
+            //var heelActivatedTrigger = _triggerHelper.AddTrigger(TRIGGER_HEEL_ACTIVATED) as TriggerEvent;
+            //var heelDeactivatedTrigger = _triggerHelper.AddTrigger(TRIGGER_HEEL_DEACTIVATED) as TriggerEvent;
+
             // 是否启用高跟鞋
             _EnableHeelJSON = SetupToggle(self, "Enable High Heel", false, v =>
             {
+                //if (v)
+                //{
+                //    heelActivatedTrigger.Trigger();
+                //}
+                //else
+                //{
+                //    heelDeactivatedTrigger.Trigger();
+                //}
+
                 heelSettingsGroup.RefreshView(v);
                 UpdateEnableHighHeel();
             }, rightSide);
+            self.RegisterBool(_EnableHeelJSON);
             _MotionSettingsUI.OuterElements.Add(_EnableHeelJSON);
             heelSettingsGroup.ToggleBool = _EnableHeelJSON;
 

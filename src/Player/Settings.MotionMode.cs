@@ -39,16 +39,7 @@ namespace mmd2timeline
         /// <param name="v"></param>
         void SetAllPersonJointsSpringPercent(float v)
         {
-            var persons = SuperController.singleton.GetAtoms().Where(a => a.type == "Person").ToArray();
-
-            foreach (var person in persons)
-            {
-                var allJointsController = person.GetComponentInChildren<AllJointsController>();
-
-                var springPercentJSON = allJointsController.GetFloatJSONParam("springPercent");
-                springPercentJSON.val = v;
-                allJointsController.SetAllJointsPercentHoldSpring();
-            }
+            MotionHelperGroup.GetInstance().SetPersonAllJointsSpringPercent(v);
         }
 
         /// <summary>
@@ -57,16 +48,7 @@ namespace mmd2timeline
         /// <param name="v"></param>
         void SetAllPersonJointsDamperPercent(float v)
         {
-            var persons = SuperController.singleton.GetAtoms().Where(a => a.type == "Person").ToArray();
-
-            foreach (var person in persons)
-            {
-                var allJointsController = person.GetComponentInChildren<AllJointsController>();
-
-                var damperPercentJSON = allJointsController.GetFloatJSONParam("damperPercent");
-                damperPercentJSON.val = v;
-                allJointsController.SetAllJointsPercentHoldDamper();
-            }
+            MotionHelperGroup.GetInstance().SetPersonAllJointsDamperPercent(v);
         }
         /// <summary>
         /// 设定场景中所有人物的关节最大速度
@@ -74,22 +56,7 @@ namespace mmd2timeline
         /// <param name="v"></param>
         void SetAllPersonJointsMaxVelocity(float v)
         {
-            var persons = SuperController.singleton.GetAtoms().Where(a => a.type == "Person").ToArray();
-
-            foreach (var person in persons)
-            {
-                var allJointsController = person.GetComponentInChildren<AllJointsController>();
-
-                var maxVelocityJSON = allJointsController.GetFloatJSONParam("maxVeloctiy");
-
-                if (maxVelocityJSON == null)
-                {
-                    maxVelocityJSON = allJointsController.GetFloatJSONParam("maxVelocity");
-                }
-
-                maxVelocityJSON.val = v;
-                allJointsController.SetAllJointsMaxVelocity();
-            }
+            MotionHelperGroup.GetInstance().SetPersonAllJointsMaxVelocity(v);
         }
 
         void SetAllPersonPhysicsMesh(string name, bool on)

@@ -82,6 +82,10 @@ src\Player\Playlist\Playlist.cs
 src\Player\Playlist\Playlist.ImportExport.cs
 src\Player\Progress\ProgressHelper.cs
 src\Player\Progress\ProgressHelper.UI.cs
+src\Player\Trigger\TriggerEventAction.cs
+src\Player\Trigger\TriggerEvent.cs
+src\Player\Trigger\TriggerEventHelper.cs
+src\Player\Trigger\TriggerEventType.cs
 src\Player\BaseScript.cs
 src\Player\BaseScript.FullElements.cs
 src\Player\BaseScript.Tip.cs
@@ -92,7 +96,11 @@ src\Player\Player.Tip.cs
 src\Player\Player.PlayConfirm.cs
 src\Player\Player.Playlist.cs
 src\Player\Player.HUD.cs
+src\Player\Player.Trigger.cs
+src\Player\Player.Status.cs
 src\Player\Player.UI.cs
 src\Player\Settings.cs
 src\Player\Settings.MotionMode.cs
 src\Player\Settings.UI.cs
+src\Player\Trigger.cs
+src\Player\Trigger.UI.cs

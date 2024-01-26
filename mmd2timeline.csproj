@@ -258,7 +258,9 @@
     <Compile Include="src\Player\Player.HUD.cs" />
     <Compile Include="src\Player\Player.PlayConfirm.cs" />
     <Compile Include="src\Player\Player.Playlist.cs" />
+    <Compile Include="src\Player\Player.Status.cs" />
     <Compile Include="src\Player\Player.Tip.cs" />
+    <Compile Include="src\Player\Player.Trigger.cs" />
     <Compile Include="src\Player\Player.UI.cs" />
     <Compile Include="src\Player\Playlist\Playlist.Control.cs" />
     <Compile Include="src\Player\Playlist\Playlist.cs" />
@@ -273,6 +275,12 @@
     <Compile Include="src\Player\Store\MMDFile.cs" />
     <Compile Include="src\Player\Store\MMDSetting.cs" />
     <Compile Include="src\Player\Store\PersonMotion.cs" />
+    <Compile Include="src\Player\Trigger.cs" />
+    <Compile Include="src\Player\Trigger.UI.cs" />
+    <Compile Include="src\Player\Trigger\TriggerEvent.cs" />
+    <Compile Include="src\Player\Trigger\TriggerEventAction.cs" />
+    <Compile Include="src\Player\Trigger\TriggerEventHelper.cs" />
+    <Compile Include="src\Player\Trigger\TriggerEventType.cs" />
     <Compile Include="src\Utils\Config.cs" />
     <Compile Include="src\Utils\Enums.cs" />
     <Compile Include="src\Utils\Lang.cs" />

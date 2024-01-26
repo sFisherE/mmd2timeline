@@ -28,6 +28,8 @@ namespace mmd2timeline
             // 隐藏加载文件和目录的按钮
             ShowLoadButtons(false);
             _LoadTips.gameObject.SetActive(false);
+
+            CurrentUIMode = PlayerUIMode.Load;
         }
 
         /// <summary>

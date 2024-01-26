@@ -141,6 +141,16 @@ namespace mmd2timeline
 
             RegisterAction(new JSONStorableAction("Import From File", () => this.Playlist.BeginImport()));
             RegisterAction(new JSONStorableAction("Export Playlist", () => this.Playlist.BeginExport()));
+
+            RegisterAction(new JSONStorableAction("Load All", () => this.LoadAll()));
+            RegisterAction(new JSONStorableAction("Load Favorite", () => this.LoadFavorite()));
+
+            //RegisterAction(new JSONStorableAction("Favorite", () => this.CurrentItem?.Favorite()));
+            RegisterAction(new JSONStorableAction("Toggle Favorite", () => this.ToggleFavorite()));
+
+            RegisterAction(new JSONStorableAction("Toggle Play Mode", () => this.TogglePlayMode()));
+
+            RegisterAction(new JSONStorableAction("Reset Person Motion", () => StartCoroutine(ResetAllPersonMotion())));
         }
 
         #region 各种事件处理函数
@@ -168,8 +178,6 @@ namespace mmd2timeline
         /// <param name="atom"></param>
         void CheckAtomAdded(Atom atom)
         {
-            LogUtil.Debug($"---------------CheckAtomAdded:{atom.uid}");
-
             if (atom.type == "Person")
             {
                 // 正在加载中，不进行处理
@@ -190,7 +198,6 @@ namespace mmd2timeline
                 {
                     PersonAtoms.Add(atom);
                 }
-                atom.collisionEnabled = false;
                 if (CurrentItem != null)
                 {
                     StartCoroutine(InitPersonAtomMotionHelper(atom, CurrentItem.GetFileData()));
@@ -246,6 +253,8 @@ namespace mmd2timeline
         /// <param name="hardUpdate">强制更新音频进度</param>
         private void SyncProgress(float progress, bool hardUpdate)
         {
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PROGRESS_CHANGE, progress, 0f, _ProgressHelper.MaxTime);
+
             // 设置镜头播放进度
             SetMMDCameraProgress(progress);
 
@@ -277,12 +286,27 @@ namespace mmd2timeline
                     // 隐藏主HUD
                     SuperController.singleton.HideMainHUD();
                 }
+                else
+                {
+                    //_triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+                }
 
                 _AudioPlayHelper.SetProgress(progress, true);
+
+                //// 播放时重发一下镜头状态
+                //if (_CameraHelper.IsActive)
+                //{
+                //    _triggerHelper.Trigger(TRIGGER_CAMERA_ACTIVATED);
+                //}
+                //else
+                //{
+                //    _triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
+                //}
             }
             else
             {
                 _AudioPlayHelper.Stop(1);
+                //_triggerHelper.Trigger(TRIGGER_CAMERA_DEACTIVATED);
             }
             SetPlayButton();
         }
@@ -293,6 +317,8 @@ namespace mmd2timeline
         /// <param name="isEnd"></param>
         void OnProgressEnded(bool isEnd)
         {
+            //_triggerHelper.Trigger(TriggerEventHelper.TRIGGER_IS_END);
+
             if (Playlist.PlayMode == MMDPlayMode.Once)
             {
                 this.isEnd = true;
@@ -300,7 +326,10 @@ namespace mmd2timeline
             }
             else
             {
-                this.Next();
+                // 等待3秒后下一个
+                //StartCoroutine(WaitForSecondsRealtime(3f, Next));
+
+                Next();
             }
         }
 
@@ -375,6 +404,7 @@ namespace mmd2timeline
             // 初始化镜头助手
             _CameraHelper = CameraHelper.GetInstance();
             _CameraHelper.OnCameraMotionLoaded += OnCameraLoaded;
+            _CameraHelper.OnCameraActivateStatusChanged += OnCameraActivateStatusChanged;
 
             //--音频播放助手--------------------------------------------------------------
             _AudioPlayHelper = AudioPlayHelper.GetInstance();
@@ -396,13 +426,42 @@ namespace mmd2timeline
             //RefreshPersonAtoms();
         }
 
+        /// <summary>
+        /// 镜头激活状态更改事件处理函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="activate"></param>
+        private void OnCameraActivateStatusChanged(CameraHelper sender, bool activate)
+        {
+            _cameraActiveJSON.val = activate;
+        }
+
         #region Save/Load
+        /// <summary>
+        /// 获取保存的JSON数据
+        /// </summary>
+        /// <param name="includePhysical"></param>
+        /// <param name="includeAppearance"></param>
+        /// <param name="forceStore"></param>
+        /// <returns></returns>
         public override JSONClass GetJSON(bool includePhysical = true, bool includeAppearance = true, bool forceStore = false)
         {
             var json = base.GetJSON(includePhysical, includeAppearance, forceStore);
             try
             {
-                needsStore = true;
+                if (includePhysical || forceStore)
+                {
+                    needsStore = true;
+
+                    json = _triggerHelper.GetJSON(json);
+
+                    //// 生成所有触发器的JSON数据
+                    //var allTriggers = _triggerHelper.GetAllTriggers();
+                    //foreach (var et in allTriggers)
+                    //{
+                    //    json[et.Name] = et.GetJSON(base.subScenePrefix);
+                    //}
+                }
             }
             catch (Exception exc)
             {
@@ -411,12 +470,30 @@ namespace mmd2timeline
             return json;
         }
 
+        /// <summary>
+        /// 从JSON数据恢复
+        /// </summary>
+        /// <param name="jc"></param>
+        /// <param name="restorePhysical"></param>
+        /// <param name="restoreAppearance"></param>
+        /// <param name="presetAtoms"></param>
+        /// <param name="setMissingToDefault"></param>
         public override void RestoreFromJSON(JSONClass jc, bool restorePhysical = true, bool restoreAppearance = true, JSONArray presetAtoms = null, bool setMissingToDefault = true)
         {
             base.RestoreFromJSON(jc, restorePhysical, restoreAppearance, presetAtoms, setMissingToDefault);
 
             try
             {
+                _triggerHelper.RestoreFromJSON(jc);
+                //if (!base.physicalLocked && restorePhysical && !IsCustomPhysicalParamLocked("trigger"))
+                //{
+                //    //// 恢复所有触发器的数据
+                //    //var allTriggers = _triggerHelper.GetAllTriggers();
+                //    //foreach (var et in allTriggers)
+                //    //{
+                //    //    et.RestoreFromJSON(jc, base.subScenePrefix, base.mergeRestore, setMissingToDefault);
+                //    //}
+                //}
             }
             catch (Exception exc)
             {
@@ -438,8 +515,6 @@ namespace mmd2timeline
         /// <param name="length"></param>
         void OnAudioLoaded(float length)
         {
-            LogUtil.Debug($"Player::OnAudioLoaded:{length}");
-
             _ProgressHelper.MaxTime = length;
         }
 
@@ -449,8 +524,6 @@ namespace mmd2timeline
         /// <param name="length"></param>
         void OnCameraLoaded(float length)
         {
-            LogUtil.Debug($"Player::OnCameraLoaded:{length}");
-
             _ProgressHelper.MaxTime = length;
         }
 
@@ -460,8 +533,6 @@ namespace mmd2timeline
         /// <param name="maxtime"></param>
         void OnMotionLoaded(MotionHelper sender, float length)
         {
-            LogUtil.Debug($"Player::OnMotionLoaded:{length}");
-
             if (sender.PersonAtom && !sender.PersonAtom.collisionEnabled)
             {
                 sender.PersonAtom.collisionEnabled = true;
@@ -480,6 +551,14 @@ namespace mmd2timeline
         /// <exception cref="NotImplementedException"></exception>
         private void UpdateFavoriteLabel(MMDEntity obj)
         {
+            if (obj.InFavorite)
+            {
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_FAVORITED);
+            }
+            else
+            {
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_UNFAVORITED);
+            }
             _FavoriteLabel.text = obj.InFavorite ? Lang.Get("UnFavorite") : Lang.Get("Favorite");
         }
 
@@ -582,10 +661,16 @@ namespace mmd2timeline
         /// </summary>
         bool isInited = false;
 
+        public override void Init()
+        {
+            base.Init();
+
+            //InitTriggers();
+            InitStatusParams();
+        }
+
         public void Start()
         {
-            LogUtil.Debug("---------------Start!!!!!");
-
             // 初始化模型目录
             //Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
 
@@ -598,11 +683,23 @@ namespace mmd2timeline
             HideHUDMessage();
 
             // 从默认播放列表加载内容
-            StartCoroutine(this.Playlist.LoadFromDefalut());
+            StartCoroutine(StartDeferred());
+        }
+
+        /// <summary>
+        /// 延迟执行
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator StartDeferred()
+        {
+            yield return this.Playlist.LoadFromDefalut();
+            yield return null;
 
             // 设定有原子添加，等待处理
             hasAtomAdded = true;
             isInited = true;
+            yield return null;
+            //_triggerHelper.Trigger(TriggerEventHelper.TRIGGER_SCRIPT_LOADED);
         }
 
         #region 处理人物位置同步
@@ -654,36 +751,46 @@ namespace mmd2timeline
             }
             #endregion
 
+            if (_scriptLoadedJSON?.val == false)
+            {
+                _scriptLoadedJSON.val = true;
+            }
+
             #region 快捷键控制
-            // 如果按了SPACE键则切换播放状态
-            if (Input.GetKeyDown(KeyCode.Space) && config.EnableSpacePlay)
+
+            // 只有在播放和编辑模式才会检查快捷键
+            if (_currentUIMode == PlayerUIMode.Play || _currentUIMode == PlayerUIMode.Edit)
             {
-                TogglePlaying();
-                return;
-            }
-            // 左箭头后退1s
-            if (Input.GetKeyUp(KeyCode.LeftArrow) && config.EnableLeftArrow)
-            {
-                _ProgressHelper.Back();
-                return;
-            }
-            // 右箭头前进1s
-            if (Input.GetKeyUp(KeyCode.RightArrow) && config.EnableRightArrow)
-            {
-                _ProgressHelper.Forward();
-                return;
-            }
-            // 下箭头 下一个
-            if (Input.GetKeyUp(KeyCode.UpArrow) && config.EnableUpArrow)
-            {
-                this.Prev();
-                return;
-            }
-            // 下箭头 下一个
-            if (Input.GetKeyUp(KeyCode.DownArrow) && config.EnableDownArrow)
-            {
-                this.Next();
-                return;
+                // 如果按了SPACE键则切换播放状态
+                if (Input.GetKeyDown(KeyCode.Space) && config.EnableSpacePlay)
+                {
+                    TogglePlaying();
+                    return;
+                }
+                // 左箭头后退1s
+                if (Input.GetKeyUp(KeyCode.LeftArrow) && config.EnableLeftArrow)
+                {
+                    _ProgressHelper.Back();
+                    return;
+                }
+                // 右箭头前进1s
+                if (Input.GetKeyUp(KeyCode.RightArrow) && config.EnableRightArrow)
+                {
+                    _ProgressHelper.Forward();
+                    return;
+                }
+                // 下箭头 下一个
+                if (Input.GetKeyUp(KeyCode.UpArrow) && config.EnableUpArrow)
+                {
+                    this.Prev();
+                    return;
+                }
+                // 下箭头 下一个
+                if (Input.GetKeyUp(KeyCode.DownArrow) && config.EnableDownArrow)
+                {
+                    this.Next();
+                    return;
+                }
             }
             #endregion
 
@@ -822,7 +929,9 @@ namespace mmd2timeline
             if (!_MotionHelperGroup.AllIsReady())
                 return;
 
-            LogUtil.Debug($"Player::NEXT!");
+            //_cameraActiveJSON.val = false;
+
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAY_NEXT);
 
             if (isEditing)
             {
@@ -882,7 +991,7 @@ namespace mmd2timeline
             SetAllPersonOff();
             yield return null;
 
-            _ProgressHelper.SetProgress(0.001f, true);
+            _ProgressHelper.SetProgress(0.0f, true);
             //StopAndStartOver();
             yield return new WaitForSeconds(1);
 
@@ -890,6 +999,8 @@ namespace mmd2timeline
             yield return null;
 
             _ProgressHelper.Play();
+
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, CurrentItem.Title);
 
             yield break;
         }
@@ -948,6 +1059,8 @@ namespace mmd2timeline
                 {
                     _UIPlayButton.buttonText.text = sPause;
 
+                    _playStatusJSON.val = true;
+
                     if (!config.CameraActive)
                     {
                         _CameraHelper.DisableNavigation(false);
@@ -963,6 +1076,8 @@ namespace mmd2timeline
                 var sPlay = Lang.Get("Play");
                 if (_UIPlayButton.buttonText.text != sPlay)
                 {
+                    _playStatusJSON.val = false;
+
                     _UIPlayButton.buttonText.text = sPlay;
                     _CameraHelper.DisableNavigation(false);
                 }
@@ -1082,8 +1197,6 @@ namespace mmd2timeline
                 UpdateFavoriteLabel(entity);
             }
 
-            LogUtil.Debug($"Player::PlayMMD:{entity.Title}");
-
             var fileData = entity.GetFileData();
 
             // 如果没有内容，停止播放
@@ -1115,10 +1228,11 @@ namespace mmd2timeline
             //    LogUtil.LogError(e, $"InitPersonAtomMotionHelper");
             //}
 
+            // 播放前设置一下人物关节参数
+            _MotionHelperGroup.SetPersonAllJoints();
             yield return null;//new WaitForSeconds(1);
             _ProgressHelper.Forward(0.001f);
             yield return new WaitForSeconds(1);
-
 
             foreach (var atom in PersonAtoms)
             {
@@ -1129,12 +1243,15 @@ namespace mmd2timeline
 
             _IsLoading = false;
 
+            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_START_PLAYING, CurrentItem.Title);
             if (_WaitingForPlay)
             {
                 _WaitingForPlay = false;
 
                 this.StartPlaying();
             }
+            //yield return null;//new WaitForSeconds(1);
+            //_cameraActiveJSON.val = false;
         }
 
         /// <summary>
@@ -1144,6 +1261,8 @@ namespace mmd2timeline
         /// <returns></returns>
         IEnumerator InitPersonAtomMotionHelper(Atom atom)
         {
+            atom.collisionEnabled = false;
+
             // 实例化MMD人物
             var motionHelper = InitMotionHelper(atom);
 
@@ -1151,6 +1270,10 @@ namespace mmd2timeline
             {
                 yield return motionHelper.CoInitAtom();
             }
+
+            yield return null;
+
+            atom.collisionEnabled = true;
         }
 
         /// <summary>
@@ -1160,6 +1283,8 @@ namespace mmd2timeline
         /// <param name="fileData"></param>
         IEnumerator InitPersonAtomMotionHelper(Atom atom, MMDEntity.FilesData fileData)
         {
+            atom.collisionEnabled = false;
+
             // 实例化MMD人物
             var motionHelper = InitMotionHelper(atom);
 
@@ -1189,6 +1314,9 @@ namespace mmd2timeline
                 // 设置人物动作
                 motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
             }
+
+            yield return null;
+            atom.collisionEnabled = true;
         }
 
         /// <summary>
@@ -1230,11 +1358,24 @@ namespace mmd2timeline
                 // 如果是新的对象，进行初始化
                 helper.CreatePersonMotionUI(this, LeftSide);
                 helper.OnMotionLoaded += OnMotionLoaded;
+                helper.OnMotionInited += OnMotionInited;
 
                 RefreshUIByCurrentUIMode();
             }
 
             return helper;
+        }
+
+        /// <summary>
+        /// 动作初始化完成的事件
+        /// </summary>
+        /// <param name="sender"></param>
+        private void OnMotionInited(MotionHelper sender)
+        {
+            if (sender.PersonAtom && !sender.PersonAtom.collisionEnabled)
+            {
+                sender.PersonAtom.collisionEnabled = true;
+            }
         }
 
         /// <summary>
@@ -1447,8 +1588,6 @@ namespace mmd2timeline
         /// </summary>
         public override void OnEnable()
         {
-            LogUtil.Debug("---------------OnEnable!!!!!");
-
             SuperController.singleton.onAtomAddedHandlers += OnAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers += OnAtomRemoved;
 
@@ -1466,8 +1605,6 @@ namespace mmd2timeline
         /// </summary>
         public override void OnDisable()
         {
-            LogUtil.Debug("---------------OnDisable!!!!!");
-
             SuperController.singleton.onAtomAddedHandlers -= OnAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers -= OnAtomRemoved;
 
@@ -1485,8 +1622,6 @@ namespace mmd2timeline
         /// </summary>
         public override void OnDestroy()
         {
-            LogUtil.Debug("---------------OnDestroy!!!!!");
-
             SuperController.singleton.onAtomAddedHandlers -= OnAtomAdded;
             SuperController.singleton.onAtomRemovedHandlers -= OnAtomRemoved;
 
@@ -1508,12 +1643,14 @@ namespace mmd2timeline
             _AudioPlayHelper = null;
 
             _CameraHelper.OnCameraMotionLoaded -= OnCameraLoaded;
+            _CameraHelper.OnCameraActivateStatusChanged -= OnCameraActivateStatusChanged;
             _CameraHelper.OnDestroy();
             _CameraHelper = null;
 
             foreach (var m in _MotionHelperGroup.Helpers)
             {
                 m.OnMotionLoaded -= OnMotionLoaded;
+                m.OnMotionInited -= OnMotionInited;
             }
             _MotionHelperGroup.OnDestroy();
             _MotionHelperGroup = null;

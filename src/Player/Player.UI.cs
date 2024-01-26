@@ -55,6 +55,11 @@ namespace mmd2timeline
         UIDynamicButton _UIPlayButton;
 
         /// <summary>
+        /// 播放模式选择器
+        /// </summary>
+        JSONStorableStringChooser _playModeChooser;
+
+        /// <summary>
         /// 播放列表选择器
         /// </summary>
         JSONStorableStringChooser _PlaylistChooser;
@@ -130,10 +135,14 @@ namespace mmd2timeline
             _LoadButtons.Add(Utils.SetupTwinButton(this, Lang.Get("Load Folder"), () => StopPlayAndRun(_MMDFolderHelper.LoadFolder), Lang.Get("Load File"), () => _MMDFolderHelper.LoadFile(this.Playlist.CurrentMMD), RightSide));
 
             #region 播放列表UI
-            _PlayUIs.Add(SetupStaticEnumsChooser<MMDPlayMode>("Play Mode", MMDPlayMode.Names, MMDPlayMode.GetName(MMDPlayMode.Default), RightSide, m =>
+
+            _playModeChooser = SetupStaticEnumsChooser<MMDPlayMode>("Play Mode", MMDPlayMode.Names, MMDPlayMode.GetName(MMDPlayMode.Default), RightSide, m =>
             {
+                _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_CHANGED, m);
                 this.Playlist.PlayMode = MMDPlayMode.GetValue(m);
-            }));
+            });
+            RegisterStringChooser(_playModeChooser);
+            _PlayUIs.Add(_playModeChooser);
 
             _MMDUIs.Add(_UIPlayButton = Utils.SetupButton(this, Lang.Get("Play"), () => TogglePlaying(), RightSide));
 
@@ -146,6 +155,7 @@ namespace mmd2timeline
             _PlaylistChooser.isStorable = false;
             _PlaylistChooser.isRestorable = false;
             CreateFilterablePopup(_PlaylistChooser, RightSide);
+            RegisterStringChooser(_PlaylistChooser);
 
             _PlayUIs.Add(_PlaylistChooser);
 
@@ -205,6 +215,8 @@ namespace mmd2timeline
 
                 _ProgressHelper.SetPlaySpeed(s);
             };
+            RegisterFloat(_PlaySpeedJSON);
+
             var playSpeedSlider = CreateSlider(_PlaySpeedJSON, RightSide);
             playSpeedSlider.ConfigureQuickButtons(-0.01f, -0.10f, -0.25f, -0.50f, 0.01f, 0.10f, 0.25f, 0.5f);
             _PlayUIs.Add(_PlaySpeedJSON);
@@ -301,6 +313,28 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 切换播放模式
+        /// </summary>
+        void TogglePlayMode()
+        {
+            var current = _playModeChooser.val;
+            var choices = _playModeChooser.choices;
+
+            var index = choices.IndexOf(current);
+
+            index++;
+
+            if (index >= choices.Count)
+            {
+                index = 0;
+            }
+
+            var next = choices[index];
+
+            _playModeChooser.val = next;
+        }
+
+        /// <summary>
         /// 停止播放并执行目标方法
         /// </summary>
         /// <param name="action"></param>
@@ -316,14 +350,45 @@ namespace mmd2timeline
         /// <summary>
         /// 当前UI模式
         /// </summary>
-        int currentUIMode = PlayerUIMode.Init;
+        int _currentUIMode = PlayerUIMode.Init;
+
+        int CurrentUIMode
+        {
+            get
+            {
+                return _currentUIMode;
+            }
+            set
+            {
+                if (_currentUIMode != value)
+                {
+                    _currentUIMode = value;
+
+                    switch (_currentUIMode)
+                    {
+                        case PlayerUIMode.Init:
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_INIT);
+                            break;
+                        case PlayerUIMode.Edit:
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_EDIT);
+                            break;
+                        case PlayerUIMode.Play:
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_PLAY);
+                            break;
+                        case PlayerUIMode.Load:
+                            _triggerHelper.Trigger(TriggerEventHelper.TRIGGER_PLAYMODE_LOAD);
+                            break;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 刷新UI模式
         /// </summary>
         void RefreshUIByCurrentUIMode()
         {
-            if (currentUIMode == PlayerUIMode.Edit)
+            if (CurrentUIMode == PlayerUIMode.Edit)
             {
                 ShowEditUI();
             }
@@ -365,7 +430,7 @@ namespace mmd2timeline
 
                     _PluginInfo.height = 1000f;
 
-                    currentUIMode = PlayerUIMode.Init;
+                    CurrentUIMode = PlayerUIMode.Init;
                 }
             }
             catch (Exception ex)
@@ -398,7 +463,7 @@ namespace mmd2timeline
 
                 _PluginInfo.height = 286f + 30f + 65f + 115f;
 
-                currentUIMode = PlayerUIMode.Play;
+                CurrentUIMode = PlayerUIMode.Play;
             }
             catch (Exception ex)
             {
@@ -430,7 +495,7 @@ namespace mmd2timeline
                 ShowDebugUIs(true);
                 _PluginInfo.height = 745f + 30f + 70f + 115f;
 
-                currentUIMode = PlayerUIMode.Edit;
+                CurrentUIMode = PlayerUIMode.Edit;
             }
             catch (Exception ex)
             {

@@ -222,6 +222,7 @@ namespace mmd2timeline
                 ImportVmd(v);
                 SetCameraPath(v);
             };
+            self.RegisterStringChooser(_chooser);
 
             _ChooserUI.Elements.Add(_chooser);
         }
@@ -274,6 +275,8 @@ namespace mmd2timeline
                 if (string.IsNullOrEmpty(choice))
                 {
                     choice = _chooser.defaultVal;
+
+                    this.IsActive = false;
                 }
 
                 _chooser.valNoCallback = choice;
