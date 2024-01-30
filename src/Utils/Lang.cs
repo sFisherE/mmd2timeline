@@ -101,6 +101,9 @@ namespace mmd2timeline
         private void GenerateLangProfile()
         {
             this.Save(LangFilePath);
+
+            // 保存完成后打开保存目录
+            SuperController.singleton.OpenFolderInExplorer(Config.saveDataPath);
         }
 
         /// <summary>
@@ -452,6 +455,45 @@ namespace mmd2timeline
             this["Motion Settings"] = "动作设置";
             this["Reset Model Before Motion Start"] = "动作开始前重置动作模型";
             this["Generic Motion Scale"] = "全局动作缩放";
+
+            this["Select trigger on the left side"] = "从左侧列表中选择触发器进行设置";
+            this["Actions"] = "动作";
+            this["Add New Action"] = "添加动作";
+            this["Remove Action"] = "移除动作";
+            this["Up"] = "往上";
+            this["Down"] = "向下";
+            this["Atom"] = "原子";
+            this["Receiver"] = "接收器";
+            this["Target"] = "目标";
+            this["Value Source"] = "值来源";
+            this["From Plugin"] = "来自插件";
+            this["Bool Value"] = "布尔值";
+            this["String Chooser Value"] = "选择器值";
+            this["Float Value"] = "浮点值";
+            this["String Value"] = "字符串值";
+            this["Test Action"] = "测试动作";
+            this["off"] = "关";
+            this["Script Loaded Trigger"] = "插件接在完成触发器";
+            this["Start Playing Trigger"] = "开始播放触发器";
+            this["Play Next Trigger"] = "播放下一个触发器";
+            this["Is End Trigger"] = "播放结束触发器";
+            this["Favorited Trigger"] = "已收藏触发器";
+            this["Not Favorite Trigger"] = "未收藏触发器";
+            this["In Init Mode Trigger"] = "进入等待模式触发器";
+            this["In Play Mode Trigger"] = "进入播放模式触发器";
+            this["In Edit Mode Trigger"] = "进入编辑模式触发器";
+            this["In Load Mode Trigger"] = "进入加载模式触发器";
+            this["Camera Activated Trigger"] = "镜头已启用触发器";
+            this["Camera Deactivated Trigger"] = "镜头未启用触发器";
+            this["Progress Trigger"] = "播放进度触发器";
+            this["Playing Status Trigger"] = "播放状态触发器";
+            this["Play Mode Changed Trigger"] = "播放模式改变触发器";
+            this["Motion 1"] = "动作 1";
+            this["Motion 2"] = "动作 2";
+            this["Motion 3"] = "动作 3";
+            this["Motion 4"] = "动作 4";
+            this["Settings"] = "设置";
+            this["Action"] = "动作";
         }
     }
 }
