@@ -64,14 +64,14 @@ namespace mmd2timeline
 
             _SettingsUI = new GroupUI(self);
 
-            var toggleJSON = Utils.SetupToggle(self, Lang.Get("Show Camera Settings"), false, v =>
+            var toggleJSON = self.SetupToggle("Show Camera Settings", Lang.Get("Show Camera Settings"), false, v =>
             {
                 _SettingsUI?.RefreshView(v);
             }, rightSide);
             _SettingsUI.ToggleBool = toggleJSON;
 
             // 镜头动作播放进度
-            _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Camera Progress"), 0f, 0f, 0f, v =>
+            _progressJSON = self.SetupSliderFloat("Camera Progress", Lang.Get("Camera Progress"), 0f, 0f, 0f, v =>
             {
                 // 更新镜头进度
                 _MmdCamera.SetPlayPos((double)v);
@@ -87,7 +87,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_timeDelayJSON);
 
             // 位置偏移X
-            _PositionOffsetXJSON = Utils.SetupSliderFloat(self, Lang.Get("Position Offset X"), 0f, -2f, 2f, v =>
+            _PositionOffsetXJSON = self.SetupSliderFloat("Position Offset X", 0f, -2f, 2f, v =>
             {
                 //  更新位置偏移
                 _CameraSetting.PositionOffsetX = v;
@@ -96,7 +96,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_PositionOffsetXJSON);
 
             // 位置偏移Y
-            _PositionOffsetYJSON = Utils.SetupSliderFloat(self, Lang.Get("Position Offset Y"), -0.1f, -2f, 2f, v =>
+            _PositionOffsetYJSON = self.SetupSliderFloat("Position Offset Y", -0.1f, -2f, 2f, v =>
             {
                 // 更新位置偏移
                 _CameraSetting.PositionOffsetY = v;
@@ -105,7 +105,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_PositionOffsetYJSON);
 
             // 位置偏移Z
-            _PositionOffsetZJSON = Utils.SetupSliderFloat(self, Lang.Get("Position Offset Z"), 0f, -2f, 2f, v =>
+            _PositionOffsetZJSON = self.SetupSliderFloat("Position Offset Z", 0f, -2f, 2f, v =>
             {
                 // 更新位置偏移
                 _CameraSetting.PositionOffsetZ = v;
@@ -114,7 +114,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_PositionOffsetZJSON);
 
             // 方向偏移X
-            _RotationOffsetXJSON = Utils.SetupSliderFloat(self, Lang.Get("Rotation Offset X"), 0f, -180f, 180f, v =>
+            _RotationOffsetXJSON = self.SetupSliderFloat("Rotation Offset X", 0f, -180f, 180f, v =>
             {
                 // 更新方向偏移
                 _CameraSetting.RotationOffsetX = v;
@@ -123,7 +123,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_RotationOffsetXJSON);
 
             // 方向偏移Y
-            _RotationOffsetYJSON = Utils.SetupSliderFloat(self, Lang.Get("Rotation Offset Y"), 0f, -180f, 180f, v =>
+            _RotationOffsetYJSON = self.SetupSliderFloat("Rotation Offset Y", 0f, -180f, 180f, v =>
             {
                 // 更新方向偏移
                 _CameraSetting.RotationOffsetY = v;
@@ -132,7 +132,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_RotationOffsetYJSON);
 
             // 方向偏移Z
-            _RotationOffsetZJSON = Utils.SetupSliderFloat(self, Lang.Get("Rotation Offset Z"), 0f, -180f, 180f, v =>
+            _RotationOffsetZJSON = self.SetupSliderFloat("Rotation Offset Z", 0f, -180f, 180f, v =>
             {
                 // 更新方向偏移
                 _CameraSetting.RotationOffsetZ = v;
@@ -141,7 +141,7 @@ namespace mmd2timeline
             _SettingsUI.Elements.Add(_RotationOffsetZJSON);
 
             // 镜头缩放
-            _CameraScaleJSON = Utils.SetupSliderFloat(self, Lang.Get("Camera Scale"), 0, -0.5f, 0.5f, v =>
+            _CameraScaleJSON = self.SetupSliderFloat("Camera Scale", 0, -0.5f, 0.5f, v =>
             {
                 // 更新镜头缩放
                 _CameraSetting.CameraScale = v;

@@ -207,7 +207,8 @@ namespace mmd2timeline
             _CameraHelper.CreateSettingsUI(this, RightSide);
 
             #region 播放速度UI配置
-            _PlaySpeedJSON = new JSONStorableFloat(Lang.Get("Play Speed"), 1f, 0f, 2f);
+            var speedParamName = "Play Speed";
+            _PlaySpeedJSON = new JSONStorableFloat(speedParamName, 1f, 0f, 2f);
             _PlaySpeedJSON.setCallbackFunction = s =>
             {
                 // Time.timeScale = s;
@@ -219,6 +220,7 @@ namespace mmd2timeline
 
             var playSpeedSlider = CreateSlider(_PlaySpeedJSON, RightSide);
             playSpeedSlider.ConfigureQuickButtons(-0.01f, -0.10f, -0.25f, -0.50f, 0.01f, 0.10f, 0.25f, 0.5f);
+            playSpeedSlider.label = Lang.Get(speedParamName);
             _PlayUIs.Add(_PlaySpeedJSON);
             #endregion
 

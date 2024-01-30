@@ -61,6 +61,96 @@ namespace mmd2timeline
     }
 
     /// <summary>
+    /// 值来源模式
+    /// </summary>
+    internal class BoolValue
+    {
+        public const int False = 0;
+        public const int True = 1;
+
+        /// <summary>
+        /// 初始化枚举类
+        /// </summary>
+        private static EnumClass enums = new EnumClass("False", "True");
+
+        /// <summary>
+        /// 获取名称列表
+        /// </summary>
+        public static List<string> Names
+        {
+            get
+            {
+                return enums.Names;
+            }
+        }
+
+        /// <summary>
+        /// 根据名称获取值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static int GetValue(string name)
+        {
+            return enums.GetValue(name);
+        }
+
+        /// <summary>
+        /// 根据值获取名称
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetName(int value)
+        {
+            return enums.GetName(value);
+        }
+    }
+
+    /// <summary>
+    /// 值来源模式
+    /// </summary>
+    internal class ValueSourceMode
+    {
+        public const int FromPlugin = 0;
+        public const int Custom = 1;
+
+        /// <summary>
+        /// 初始化枚举类
+        /// </summary>
+        private static EnumClass enums = new EnumClass("From Plugin", "Custom");
+
+        /// <summary>
+        /// 获取名称列表
+        /// </summary>
+        public static List<string> Names
+        {
+            get
+            {
+                return enums.Names;
+            }
+        }
+
+        /// <summary>
+        /// 根据名称获取值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static int GetValue(string name)
+        {
+            return enums.GetValue(name);
+        }
+
+        /// <summary>
+        /// 根据值获取名称
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetName(int value)
+        {
+            return enums.GetName(value);
+        }
+    }
+
+    /// <summary>
     /// 相机控制模式
     /// </summary>
     internal class CameraControlModes

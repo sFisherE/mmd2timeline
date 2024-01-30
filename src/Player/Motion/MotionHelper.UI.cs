@@ -193,7 +193,7 @@ namespace mmd2timeline
             // 生成动作选择器
             for (var i = 0; i < MAX_MOTION_COUNT; i++)
             {
-                var motionChooser = SetupStringChooser(self, $"{Lang.Get("Motion")} {(i + 1)}", self.noneStrings, rightSide: rightSide);
+                var motionChooser = SetupStringChooser(self, $"Motion {(i + 1)}", self.noneStrings, rightSide: rightSide);
                 motionChooser.setCallbackFunction = UpdateMotionValue;
                 self.RegisterStringChooser(motionChooser);
 
@@ -571,7 +571,7 @@ namespace mmd2timeline
         /// <returns></returns>
         JSONStorableStringChooser SetupStringChooser(BaseScript self, string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
         {
-            return self.SetupStringChooserNoLang(GetParamName(label), label, entries, popupPanelHeight, rightSide);
+            return self.SetupStringChooserNoLang(GetParamName(label), Lang.Get(label), entries, popupPanelHeight, rightSide);
         }
         /// <summary>
         /// 设置EnumsChooser控件
