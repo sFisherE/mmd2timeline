@@ -410,7 +410,7 @@ namespace mmd2timeline
         /// <param name="valueFormat"></param>
         private JSONStorableFloat SetupSliderFloat(float value, string label, float defaultValue, float minValue, float maxValue, Action<float> callback, bool rightSide, string valueFormat = "")
         {
-            var slider = Utils.SetupSliderFloat(this, Lang.Get(label), defaultValue, minValue, maxValue, callback, rightSide, valueFormat);
+            var slider = SetupSliderFloat(label, defaultValue, minValue, maxValue, callback, rightSide, valueFormat);
             slider.val = value;
 
             _StorableFloats.Add(slider);
@@ -427,7 +427,7 @@ namespace mmd2timeline
         /// <param name="rightSide"></param>
         private JSONStorableBool SetupToggle(bool value, string label, bool defaultValue, Action<bool> callback, bool rightSide)
         {
-            var toggle = Utils.SetupToggle(this, Lang.Get(label), defaultValue, callback, rightSide);
+            var toggle = SetupToggle(label, Lang.Get(label), defaultValue, callback, rightSide);
             toggle.val = value;
 
             _StorableBools.Add(toggle);
@@ -444,7 +444,7 @@ namespace mmd2timeline
         /// <returns></returns>
         private JSONStorableBool SetupToggle(bool value, string label, bool defaultValue, bool rightSide)
         {
-            var toggle = Utils.SetupToggle(this, Lang.Get(label), defaultValue, rightSide);
+            var toggle = SetupToggle(label, Lang.Get(label), defaultValue, rightSide);
             toggle.val = value;
 
             _StorableBools.Add(toggle);

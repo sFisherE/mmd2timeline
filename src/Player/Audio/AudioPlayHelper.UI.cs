@@ -45,12 +45,11 @@ namespace mmd2timeline
 
             _SettingsUI = new GroupUI(self);
 
-            _timeDelayJSON = Utils.SetupSliderFloat(self, Lang.Get("Audio Delay"), 0f, 0f, 0f, rightSide);
-            _timeDelayJSON.setCallbackFunction = v =>
+            _timeDelayJSON = self.SetupSliderFloat("Audio Delay", 0f, 0f, 0f, v =>
             {
                 // 更新延迟
                 SetTimeDelay(v);
-            };
+            }, rightSide);
             _SettingsUI.Elements.Add(_timeDelayJSON);
         }
 

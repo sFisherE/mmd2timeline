@@ -265,7 +265,7 @@ namespace mmd2timeline
             _triggerSettingsTitle = CreateTitleUI(_DEFAULT_TRIGGER_SETTINGS_TITLE, RightSide);
 
             // 动作选择器
-            _actionChooser = Utils.SetupStringChooser(this, $"Actions", new List<string>(), RightSide);
+            _actionChooser = this.SetupStringChooser($"Actions", new List<string>(), rightSide: RightSide);
             _actionChooser.setCallbackFunction = a =>
             {
                 ResetActionsUI();
@@ -299,9 +299,9 @@ namespace mmd2timeline
                 }
             };
             // 添加移除动作按钮
-            var addAndRemoveActionsButton = Utils.SetupTwinButton(this, "Add New Action", AddActionToTrigger, "Remove Action", RemoveActionFromTrigger, RightSide);
+            var addAndRemoveActionsButton = Utils.SetupTwinButton(this, Lang.Get("Add New Action"), AddActionToTrigger, Lang.Get("Remove Action"), RemoveActionFromTrigger, RightSide);
             // 上下移动动作按钮
-            var upAndDownActionsButton = Utils.SetupTwinButton(this, "Up", ActionMoveUp, "Down", ActionMoveDown, RightSide);
+            var upAndDownActionsButton = Utils.SetupTwinButton(this, Lang.Get("Up"), ActionMoveUp, Lang.Get("Down"), ActionMoveDown, RightSide);
 
             //_actionTitle = CreateTitleUI($"", RightSide);
 
@@ -311,51 +311,49 @@ namespace mmd2timeline
 
 
             // 目标原子选择器
-            _atomChooser = Utils.SetupStringChooser(this, $"Atom", new List<string>(), RightSide);
+            _atomChooser = SetupStringChooser($"Atom", new List<string>(), rightSide: RightSide);
             _atomChooser.setCallbackFunction = uid =>
             {
                 _currentTriggerEventAction.SetAtomUID(uid);
                 RefreshReceivers();
             };
 
-            _receiverChooser = Utils.SetupStringChooser(this, $"Receiver", new List<string>(), RightSide);
+            _receiverChooser = SetupStringChooser($"Receiver", new List<string>(), rightSide: RightSide);
             _receiverChooser.setCallbackFunction = storeId =>
             {
                 _currentTriggerEventAction.SetReceiverName(storeId);
                 RefreshTargets();
             };
 
-            _targetChooser = Utils.SetupStringChooser(this, $"Target", new List<string>(), RightSide);
+            _targetChooser = SetupStringChooser($"Target", new List<string>(), rightSide: RightSide);
             _targetChooser.setCallbackFunction = target =>
             {
                 _currentTriggerEventAction.SetTarget(target);
                 RefreshValueSource();
             };
 
-            _valueSourceChooser = Utils.SetupStringChooser(this, $"Value Source", new List<string> { $"From Plugin", $"Custom" }, RightSide);
-            _valueSourceChooser.setCallbackFunction = type =>
+            _valueSourceChooser = SetupStaticEnumsChooser<ValueSourceMode>($"Value Source", ValueSourceMode.Names, ValueSourceMode.GetName(ValueSourceMode.FromPlugin), RightSide, type =>
             {
                 // 更新值
                 _currentTriggerEventAction.SetValueCustom(type != _valueSourceChooser.defaultVal);
                 RefreshValues();
-            };
+            });
 
-            _valueBoolSetter = Utils.SetupStringChooser(this, $"Bool Value", new List<string> { $"True", $"False" }, RightSide);
+            _valueBoolSetter = SetupStringChooser($"Bool Value", new List<string> { $"True", $"False" }, rightSide: RightSide);
             _valueBoolSetter.setCallbackFunction = BoolValueChanged;
-            _valueStringChooserSetter = Utils.SetupStringChooser(this, $"String Chooser Value", new List<string>(), RightSide);
+            _valueStringChooserSetter = SetupStringChooser($"String Chooser Value", new List<string>(), rightSide: RightSide);
             _valueStringChooserSetter.setCallbackFunction = ChooserValueChanged;
-            _valueFloatSetter = Utils.SetupSliderFloat(this, $"Float Value", 0f, 0f, 1f, RightSide);
-            _valueFloatSetter.setCallbackFunction = FloatValueChanged;
+            _valueFloatSetter = SetupSliderFloat($"Float Value", 0f, 0f, 1f, FloatValueChanged, RightSide);
             _valueStringJSON = new JSONStorableString($"Setted String Value", null);
             _valueStringJSON.setCallbackFunction = StringValueChanged;
-            _valueStringSetter = Utils.SetupTextInput(this, $"String Value", _valueStringJSON, RightSide);
+            _valueStringSetter = Utils.SetupTextInput(this, Lang.Get($"String Value"), _valueStringJSON, RightSide);
             _valueStringSetter.height = 100f;
             _valueStringSetter.input.textComponent.alignment = UnityEngine.TextAnchor.MiddleCenter;
             _valueStringSetter.input.textComponent.fontStyle = UnityEngine.FontStyle.Bold;
 
             var spacer = Utils.SetupSpacer(this, 60f, RightSide);
 
-            var testButton = Utils.SetupButton(this, $"Test Action", () =>
+            var testButton = Utils.SetupButton(this, Lang.Get($"Test Action"), () =>
             {
                 _currentTriggerEventAction.Trigger($"True");
             }, RightSide);
@@ -435,19 +433,19 @@ namespace mmd2timeline
         /// <param name="value"></param>
         void SetTriggerButton(string name, int count)
         {
-            var tip = count > 0 ? $"{count}" : $"off";
+            var tip = count > 0 ? $"{count}" : Lang.Get($"off");
 
             var button = GetTriggerButton(name);
 
             if (button == null)
             {
-                button = Utils.SetupButton(this, $"{name} ({tip})", () => { CurrrentTriggerName = name; }, LeftSide);
+                button = Utils.SetupButton(this, $"{Lang.Get(name)} ({tip})", () => { CurrrentTriggerName = name; }, LeftSide);
                 button.buttonColor = _buttonDefaultColor;
                 _trigerButtons.Add(name, button);
             }
             else
             {
-                button.buttonText.text = $"{name} ({tip})";
+                button.buttonText.text = $"{Lang.Get(name)} ({tip})";
             }
         }
 
@@ -518,7 +516,7 @@ namespace mmd2timeline
                     _currentTrigger.OnActionRemoved += OnActionRemoved;
                     _currentTrigger.OnActionMoved += OnActionMoved;
 
-                    _triggerSettingsTitle.text.text = $"{_currentTriggerName} Settings";
+                    _triggerSettingsTitle.text.text = $"{Lang.Get(_currentTriggerName)} {Lang.Get("Settings")}";
                     ShowActionUI(true);
                     var actions = _currentTrigger.GetActions();
                     SetTriggerButton(trigger.Name, actions.Count);
@@ -592,7 +590,7 @@ namespace mmd2timeline
 
             for (var i = 0; i < actions.Count; i++)
             {
-                actionNameList.Add($"Action {i}");
+                actionNameList.Add($"{Lang.Get("Action")} {i}");
                 actionIndexList.Add($"{i}");
             }
 

@@ -53,18 +53,18 @@ namespace mmd2timeline
 
             _FocusUI = new GroupUI(self);
 
-            _FocusOnAtomJSON = Utils.SetupToggle(self, Lang.Get("Focus On ..."), _FocusOnAtom, v =>
+            _FocusOnAtomJSON = self.SetupToggle("Focus On ...", _FocusOnAtom, v =>
             {
                 _FocusOnAtom = v;
                 _FocusUI.RefreshView(v);
             }, rightSide);
             _FocusUI.ToggleBool = _FocusOnAtomJSON;
 
-            _FocusAtomJSON = Utils.SetupStringChooser(self, Lang.Get("Target Atom"), noneStrings, rightSide);
+            _FocusAtomJSON = self.SetupStringChooser("Target Atom", noneStrings, rightSide: rightSide);
             _FocusAtomJSON.setCallbackFunction = SyncAtomChoices;
             _FocusUI.Elements.Add(_FocusAtomJSON);
 
-            _FocusReceiverJSON = Utils.SetupStringChooser(self, Lang.Get("Target Receiver"), noneStrings, rightSide);
+            _FocusReceiverJSON = self.SetupStringChooser("Target Receiver", noneStrings, rightSide: rightSide);
             _FocusUI.Elements.Add(_FocusReceiverJSON);
 
             // 生成聚焦原子列表

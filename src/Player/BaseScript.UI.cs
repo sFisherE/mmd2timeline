@@ -85,15 +85,17 @@ namespace mmd2timeline
         internal JSONStorableStringChooser SetupStringChooser(string paramName, string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
         {
             string defaultEntry = entries.Count > 0 ? entries[0] : "";
-            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, Lang.Get(label));
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, label);
             this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
             //this.RegisterStringChooser(storable);
             return storable;
         }
 
-        internal JSONStorableStringChooser SetupStringChooser(string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        internal JSONStorableStringChooser SetupStringChooser(string paramName, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
         {
-            return SetupStringChooser(label, label, entries, popupPanelHeight, rightSide);
+            string label = Lang.Get(paramName);
+
+            return SetupStringChooser(paramName, label, entries, popupPanelHeight, rightSide);
         }
 
         /// <summary>
@@ -113,7 +115,28 @@ namespace mmd2timeline
             return storable;
         }
 
-        // Create VaM-UI Toggle button
+        /// <summary>
+        /// 设置Toggle，自动将参数转换为翻译后的显示样式
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
+        internal JSONStorableBool SetupToggle(string paramName, bool defaultValue, bool rightSide)
+        {
+            string label = Lang.Get(paramName);
+
+            return SetupToggle(paramName, label, defaultValue, rightSide);
+        }
+
+        /// <summary>
+        /// 设置Toggle
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="label"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
         internal JSONStorableBool SetupToggle(string paramName, string label, bool defaultValue, bool rightSide)
         {
             JSONStorableBool storable = new JSONStorableBool(paramName, defaultValue);
@@ -122,6 +145,22 @@ namespace mmd2timeline
             toggle.label = label;
             //RegisterBool(storable);
             return storable;
+        }
+
+        /// <summary>
+        /// 设置Toggle。
+        /// 自动将参数名转换为翻译后的显示样式。
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="callback"></param>
+        /// <param name="rightSide"></param>
+        /// <returns></returns>
+        internal JSONStorableBool SetupToggle(string paramName, bool defaultValue, Action<bool> callback, bool rightSide)
+        {
+            string label = Lang.Get(paramName);
+
+            return SetupToggle(paramName, label, defaultValue, callback, rightSide);
         }
 
         /// <summary>
@@ -140,6 +179,23 @@ namespace mmd2timeline
             return storable;
         }
 
+        /// <summary>
+        /// 设置进度条
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
+        /// <param name="callback"></param>
+        /// <param name="rightSide"></param>
+        /// <param name="valueFormat"></param>
+        /// <returns></returns>
+        internal JSONStorableFloat SetupSliderFloat(string paramName, float defaultValue, float minValue, float maxValue, Action<float> callback, bool rightSide, string valueFormat = "")
+        {
+            string label = Lang.Get(paramName);
+
+            return SetupSliderFloat(paramName, label, defaultValue, minValue, maxValue, callback, rightSide, valueFormat);
+        }
         // Create VaM-UI Float slider
         internal JSONStorableFloat SetupSliderFloat(string paramName, string label, float defaultValue, float minValue, float maxValue, Action<float> callback, bool rightSide, string valueFormat = "")
         {
@@ -239,25 +295,15 @@ namespace mmd2timeline
         /// <param name="rightSide"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public JSONStorableStringChooser SetupStaticEnumsChooser<T>(string label, List<string> names, string defaultValue, bool rightSide, StaticEnumsSetCallback<T> callback)
+        public JSONStorableStringChooser SetupStaticEnumsChooser<T>(string paramName, List<string> names, string defaultValue, bool rightSide, StaticEnumsSetCallback<T> callback)
         {
-            label = Lang.Get(label);
-
-            JSONStorableStringChooser storable = new JSONStorableStringChooser(label, names.Select(n => Lang.Get(n)).ToList(), Lang.Get(defaultValue), label);
-            storable.setCallbackFunction += (string name) =>
-            {
-                callback(Lang.From(name));
-            };
-            this.CreateScrollablePopup(storable, rightSide);
-            //this.RegisterStringChooser(storable);
-            return storable;
+            var label = Lang.Get(paramName);
+            return SetupStaticEnumsChooser(paramName, label, names, defaultValue, rightSide, callback);
         }
 
         public JSONStorableStringChooser SetupStaticEnumsChooser<T>(string paramName, string label, List<string> names, string defaultValue, bool rightSide, StaticEnumsSetCallback<T> callback)
         {
-            label = Lang.Get(label);
-
-            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, names.Select(n => Lang.Get(n)).ToList(), Lang.Get(defaultValue), label);
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, names, names.Select(n => Lang.Get(n)).ToList(), defaultValue, label);
             storable.setCallbackFunction += (string name) =>
             {
                 callback(Lang.From(name));

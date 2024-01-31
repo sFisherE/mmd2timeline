@@ -45,11 +45,11 @@ namespace mmd2timeline
             //_progressFloatTrigger = TriggerEventHelper.GetInstance().AddTrigger("Progress Triger");
 
             // 播放进度
-            _progressJSON = Utils.SetupSliderFloat(self, Lang.Get("Progress"), 0f, 0f, 0f, v => SetProgress(v), rightSide);
+            _progressJSON = self.SetupSliderFloat("Progress", 0f, 0f, 0f, v => SetProgress(v), rightSide);
             self.RegisterFloat(_progressJSON);
             _SettingsUI.Elements.Add(_progressJSON);
 
-            _maxLengthJSON = Utils.SetupSliderFloat(self, Lang.Get("Max Length"), 0f, 0f, 0f, v => SetMaxLength(v), rightSide);
+            _maxLengthJSON = self.SetupSliderFloat("Max Length", 0f, 0f, 0f, v => SetMaxLength(v), rightSide);
             _SettingsUI.Elements.Add(_maxLengthJSON);
         }
 
