@@ -473,7 +473,7 @@ namespace mmd2timeline
             this["String Value"] = "字符串值";
             this["Test Action"] = "测试动作";
             this["off"] = "关";
-            this["Script Loaded Trigger"] = "插件接在完成触发器";
+            this["Script Loaded Trigger"] = "插件加载完成触发器";
             this["Start Playing Trigger"] = "开始播放触发器";
             this["Play Next Trigger"] = "播放下一个触发器";
             this["Is End Trigger"] = "播放结束触发器";
