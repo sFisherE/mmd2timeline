@@ -332,7 +332,7 @@ namespace mmd2timeline
                 RefreshValueSource();
             };
 
-            _valueSourceChooser = SetupStaticEnumsChooser<ValueSourceMode>($"Value Source", ValueSourceMode.Names, ValueSourceMode.GetName(ValueSourceMode.Custom), RightSide, type =>
+            _valueSourceChooser = SetupStaticEnumsChooser<ValueSourceMode>($"Value Source", ValueSourceMode.Names, ValueSourceMode.GetName(ValueSourceMode.FromPlugin), RightSide, type =>
             {
                 // 更新值
                 _currentTriggerEventAction.SetValueCustom(type != _valueSourceChooser.defaultVal);

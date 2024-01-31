@@ -303,7 +303,7 @@ namespace mmd2timeline
 
         public JSONStorableStringChooser SetupStaticEnumsChooser<T>(string paramName, string label, List<string> names, string defaultValue, bool rightSide, StaticEnumsSetCallback<T> callback)
         {
-            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, names, names.Select(n => Lang.Get(n)).ToList(), Lang.Get(defaultValue), label);
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, names, names.Select(n => Lang.Get(n)).ToList(), defaultValue, label);
             storable.setCallbackFunction += (string name) =>
             {
                 callback(Lang.From(name));
