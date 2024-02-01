@@ -78,7 +78,7 @@ namespace mmd2timeline
             {
                 var v = this[key].Value;
 
-                if (value.Contains(v))
+                if (value == v)
                 {
                     return key;
                 }
