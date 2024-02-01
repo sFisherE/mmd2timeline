@@ -285,6 +285,9 @@ namespace mmd2timeline
             this["Load Folder"] = "加载文件夹";
             this["Load File"] = "加载文件";
             this["Play Mode"] = "播放模式";
+            this["Sync Mode"] = "同步模式";
+            this["SyncWithGame"] = "与游戏帧同步";
+            this["SyncWithAudio"] = "与音乐同步";
             this["Playlist"] = "播放列表";
             this["Load Favorite"] = "加载收藏";
             this["Load All"] = "加载所有";

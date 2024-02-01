@@ -144,6 +144,11 @@ namespace mmd2timeline
             RegisterStringChooser(_playModeChooser);
             _PlayUIs.Add(_playModeChooser);
 
+            _PlayUIs.Add(SetupStaticEnumsChooser<ProgressSyncMode>("Sync Mode", ProgressSyncMode.Names, ProgressSyncMode.GetName(ProgressSyncMode.SyncWithAudio), RightSide, m =>
+            {
+                this._ProgressHelper.SyncMode = ProgressSyncMode.GetValue(m);
+            }));
+
             _MMDUIs.Add(_UIPlayButton = Utils.SetupButton(this, Lang.Get("Play"), () => TogglePlaying(), RightSide));
 
             _UIPlayButton.height = 60f;

@@ -210,7 +210,7 @@ namespace mmd2timeline
             if (atom.type == "AudioSource")
             {
                 _AudioPlayHelper._AudioSource2 = atom.GetComponentInChildren<AudioSource>();
-        }
+            }
         }
         /// <summary>
         /// 原子被移除的接收方法
@@ -875,13 +875,16 @@ namespace mmd2timeline
             try
             {
                 // 如果有音频、在播放中，播放速度是1，按照音频进度更新
-                if (!_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying && _ProgressHelper.Speed == 1f)
+                if (_ProgressHelper.SyncMode == ProgressSyncMode.SyncWithAudio &&
+                !_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying && _ProgressHelper.Speed == 1f)
                 {
                     _ProgressHelper.SetProgress(_AudioPlayHelper.GetAudioTime(), false);
                 }
                 else
                 {
                     _ProgressHelper.Update();
+                    if (!_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying)
+                        _AudioPlayHelper.SetAudioTime(_ProgressHelper.Progress, false);
                 }
             }
             catch (Exception ex)

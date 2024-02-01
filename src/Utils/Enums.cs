@@ -329,6 +329,59 @@ namespace mmd2timeline
         }
     }
 
+    
+    /// <summary>
+    /// 同步模式
+    /// </summary>
+    internal class ProgressSyncMode
+    {
+        /// <summary>
+        /// 与游戏帧同步
+        /// </summary>
+        public const int SyncWithAudio = 0;
+        /// <summary>
+        /// 与音频同步
+        /// </summary>
+        public const int SyncWithGame = 1;
+
+        /// <summary>
+        /// 初始化枚举类
+        /// </summary>
+        private static EnumClass enums = new EnumClass("SyncWithAudio", "SyncWithGame");
+
+        /// <summary>
+        /// 获取名称列表
+        /// </summary>
+        public static List<string> Names
+        {
+            get
+            {
+                return enums.Names;
+            }
+        }
+
+        /// <summary>
+        /// 根据名称获取值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static int GetValue(string name)
+        {
+            return enums.GetValue(name);
+        }
+
+        /// <summary>
+        /// 根据值获取名称
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetName(int value)
+        {
+            return enums.GetName(value);
+        }
+    }
+
+
     /// <summary>
     /// 播放器UI模式
     /// </summary>
