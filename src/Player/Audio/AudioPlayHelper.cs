@@ -21,7 +21,9 @@ namespace mmd2timeline
         /// <summary>
         /// 音源
         /// </summary>
-        AudioSource _AudioSource;
+        public AudioSource _AudioSource => _AudioSource2 ?? audioSourceFallback;
+        private AudioSource audioSourceFallback;
+        public AudioSource _AudioSource2;
 
         /// <summary>
         /// 是否正在加载
@@ -123,7 +125,7 @@ namespace mmd2timeline
         private AudioPlayHelper()
         {
             // 初始化音频源
-            _AudioSource = URLAudioClipManager.singleton.testAudioSource;
+            audioSourceFallback = URLAudioClipManager.singleton.testAudioSource;
         }
 
         /// <summary>
@@ -275,7 +277,7 @@ namespace mmd2timeline
         {
             Clear(true);
 
-            _AudioSource = null;
+            _AudioSource2 = null;
             _AudioClipHelper = null;
             _AudioSetting = null;
 
