@@ -173,15 +173,46 @@ namespace mmd2timeline.Store
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        internal static MMDEntity LoadFromStoreByGUID(string guid)
+        internal static MMDEntity LoadFromStoreByGUID(string guid, string packageName = null)
         {
             var fileName = $"{STORE_PATH}\\{guid}\\entity.{SAVE_EXT}";
 
-            if (FileManagerSecure.FileExists(fileName))
+            if (!string.IsNullOrEmpty(packageName))
+            {
+                fileName = packageName + ":/" + fileName;
+            }
+
+            if (!string.IsNullOrEmpty(packageName) || FileManagerSecure.FileExists(fileName))
             {
                 var json = SuperController.singleton.LoadJSON(fileName);
 
-                return LoadFromJSONClass(json as JSONClass);
+                var entity = LoadFromJSONClass(json as JSONClass);
+
+                if (entity != null && !string.IsNullOrEmpty(packageName))
+                {
+                    entity.PackageName = packageName;
+
+                    foreach (var setting in entity.Settings)
+                    {
+                        if (setting.AudioSetting.AudioPath.StartsWith("SELF"))
+                        {
+                            setting.AudioSetting.AudioPath = setting.AudioSetting.AudioPath.Replace("SELF", packageName);
+                        }
+                        else
+                        {
+                            setting.AudioSetting.AudioPath = packageName + ":/" + setting.AudioSetting.AudioPath;
+                        }
+
+                        setting.CameraSetting.CameraPath = packageName + ":/" + setting.CameraSetting.CameraPath;
+
+                        foreach (var motion in setting.Motions)
+                        {
+                            motion.Files = motion.Files.Select(f => packageName + ":/" + f).ToList();
+                        }
+                    }
+                }
+
+                return entity;
             }
             else
             {
@@ -196,13 +227,15 @@ namespace mmd2timeline.Store
         /// <returns></returns>
         internal static MMDEntity LoadFromStorByPath(string path)
         {
-            var entity = LoadFromStoreByGUID(GetGUIDByPath(path));
+            var key = FileManagerSecure.NormalizePath(path);
+
+            var entity = LoadFromStoreByGUID(GetGUIDByPath(key));
 
             if (entity == null)
             {
                 entity = new MMDEntity
                 {
-                    Key = path,
+                    Key = key,
                     Title = FileManagerSecure.GetFileName(path)
                 };
             }

@@ -176,6 +176,17 @@ namespace mmd2timeline.Store
             }
         }
 
+        string _packageName;
+
+        public string PackageName
+        {
+            get
+            {
+                return _packageName;
+            }
+            set { _packageName = value; }
+        }
+
         /// <summary>
         /// 获取mmd文件数据
         /// </summary>
@@ -200,6 +211,11 @@ namespace mmd2timeline.Store
             {
                 var fullFileName = file.FileName;
                 var fileName = FileManagerSecure.GetFileName(fullFileName);
+
+                if (!string.IsNullOrEmpty(PackageName))
+                {
+                    fullFileName = PackageName + ":/" + fullFileName;
+                }
 
                 if (file.FileType == MMDFileType.Music)
                 {
@@ -537,7 +553,7 @@ namespace mmd2timeline.Store
 
             var to = new string(chars.ToArray());
 
-            return to;
+            return FileManagerSecure.NormalizePath(to);
         }
 
         /// <summary>

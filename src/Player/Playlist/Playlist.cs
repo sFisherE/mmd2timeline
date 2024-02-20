@@ -120,6 +120,12 @@ namespace mmd2timeline
             AddTime = DateTime.UtcNow;
         }
 
+        public PlaylistItem(bool inPackage, string packageName)
+        {
+            _inPackage = inPackage;
+            _packageName = packageName;
+        }
+
         /// <summary>
         /// 项目名称
         /// </summary>
@@ -202,6 +208,34 @@ namespace mmd2timeline
                 {
                     this["AddTime"] = value.ToString();
                 }
+            }
+        }
+
+        private bool _inPackage;
+
+        internal override bool InPackage
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.SaveFileName))
+                {
+                    return base.InPackage;
+                }
+                return _inPackage;
+            }
+        }
+
+        private string _packageName;
+
+        internal override string PackageName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.SaveFileName))
+                {
+                    return base.PackageName;
+                }
+                return _packageName;
             }
         }
 

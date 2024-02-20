@@ -42,6 +42,14 @@ namespace mmd2timeline
         /// 默认MMD存储路径
         /// </summary>
         private readonly string _MMDStorePath = FileManagerSecure.GetFullPath("MMD");
+        /// <summary>
+        /// 默认CustomMMD存储路径
+        /// </summary>
+        private readonly string _MMDCustomStorePath = FileManagerSecure.GetFullPath("Custom/MMD");
+        /// <summary>
+        /// VAM根目录
+        /// </summary>
+        private readonly string _VAMRootPath = FileManagerSecure.GetFullPath(".") + "\\";
 
         /// <summary>
         /// MMD目录存储路径
@@ -82,13 +90,17 @@ namespace mmd2timeline
         /// </summary>
         private void Init()
         {
-            if (FileManagerSecure.DirectoryExists(_MMDStorePath))
+            if (FileManagerSecure.DirectoryExists(_MMDCustomStorePath))
+            {
+                _MMDFolder = _MMDCustomStorePath;
+            }
+            else if (FileManagerSecure.DirectoryExists(_MMDStorePath))
             {
                 _MMDFolder = _MMDStorePath;
             }
             else
             {
-                var folder = Application.dataPath.Replace("/", "\\");
+                var folder = FileManagerSecure.GetFullPath("."); ;
                 _MMDFolder = folder;
             }
         }
@@ -102,6 +114,7 @@ namespace mmd2timeline
             try
             {
                 SuperController.singleton.ShowMainHUDAuto();
+                SuperController.singleton.directoryBrowserUI.browseVarFilesAsDirectories = true;
                 SuperController.singleton.directoryBrowserUI.shortCuts = null;
                 SuperController.singleton.directoryBrowserUI.showFiles = true;
                 SuperController.singleton.directoryBrowserUI.fileFormat = FILE_FORMAT;
@@ -157,6 +170,7 @@ namespace mmd2timeline
             try
             {
                 SuperController.singleton.ShowMainHUDAuto();
+                SuperController.singleton.directoryBrowserUI.browseVarFilesAsDirectories = true;
                 SuperController.singleton.directoryBrowserUI.shortCuts = null;
                 SuperController.singleton.directoryBrowserUI.showFiles = true;
                 SuperController.singleton.directoryBrowserUI.fileFormat = FILE_FORMAT;
@@ -303,6 +317,11 @@ namespace mmd2timeline
         {
             // 获取目录中的文件
             var files = FileManagerSecure.GetFiles(path);
+
+            //foreach (var f in files)
+            //{
+            //    LogUtil.Log(FileManagerSecure.NormalizePath(f));
+            //}
 
             if (currentDepth > depth)
             {

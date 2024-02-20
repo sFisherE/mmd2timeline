@@ -1,4 +1,5 @@
-﻿using MVR.FileManagementSecure;
+﻿using MVR.FileManagement;
+using MVR.FileManagementSecure;
 using SimpleJSON;
 using System;
 using System.Text;
@@ -11,7 +12,34 @@ namespace mmd2timeline
     /// <remarks>主要提供文件保存/加载相关的便利方法</remarks>
     internal abstract class MSJSONClass : JSONClass
     {
-        private string _SaveFileName;
+        /// <summary>
+        /// 指示数据文件是否在压缩包中
+        /// </summary>
+        internal virtual bool InPackage
+        {
+            get
+            {
+                return FileManagerSecure.IsFileInPackage(_SaveFileName);
+            }
+        }
+
+        /// <summary>
+        /// 获取所在的包名称
+        /// </summary>
+        internal virtual string PackageName
+        {
+            get
+            {
+                if (InPackage)
+                {
+                    return _SaveFileName.Split(':')[0];
+                }
+
+                return null;
+            }
+        }
+
+        private string _SaveFileName = null;
         /// <summary>
         /// 获取或设置保存文件的名称
         /// </summary>
@@ -21,14 +49,17 @@ namespace mmd2timeline
             {
                 if (string.IsNullOrEmpty(_SaveFileName))
                 {
-                    throw new Exception("No value is set for the SaveFileName variable.");
+                    //throw new Exception("No value is set for the SaveFileName variable.");
                 }
 
                 return _SaveFileName;
             }
             set
             {
-                _SaveFileName = value;
+                if (_SaveFileName != value)
+                {
+                    _SaveFileName = value;
+                }
             }
         }
 
