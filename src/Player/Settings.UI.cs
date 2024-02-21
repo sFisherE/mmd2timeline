@@ -188,6 +188,7 @@ namespace mmd2timeline
 
                     CameraHelper.GetInstance().SetCameraAtom(target);
                 };
+                RegisterStringChooser(_cameraAtomChooser);
             }
             else
             {
@@ -387,12 +388,14 @@ namespace mmd2timeline
 
             //SetupToggle(config.AutoGazeToWindowCamera, "Auto Gaze to WindowCamera", dft.AutoGazeToWindowCamera, v => config.AutoGazeToWindowCamera = v, RightSide);
 
-            SetupEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
+            var cameraControlModeChooser = SetupEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
             {
                 config.CameraControlMode = CameraControlModes.GetValue(v);
 
                 RefreshCameraUI();
             });
+
+            RegisterStringChooser(cameraControlModeChooser);
 
             RefreshCameraAtomList();
 

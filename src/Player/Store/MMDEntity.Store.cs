@@ -52,9 +52,13 @@ namespace mmd2timeline.Store
         {
             try
             {
-                FileManagerSecure.CreateDirectory(this.StorePath);
+                // 只有不在包中的数据才能保存
+                if (!InPackage)
+                {
+                    FileManagerSecure.CreateDirectory(this.StorePath);
 
-                SuperController.singleton.SaveJSON(this, this.StoreFile);
+                    SuperController.singleton.SaveJSON(this, this.StoreFile);
+                }
 
                 NeedSave = false;
             }

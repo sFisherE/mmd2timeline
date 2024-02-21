@@ -188,6 +188,17 @@ namespace mmd2timeline.Store
         }
 
         /// <summary>
+        /// 获取此MMD实例是否在包中
+        /// </summary>
+        public bool InPackage
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(PackageName);
+            }
+        }
+
+        /// <summary>
         /// 获取mmd文件数据
         /// </summary>
         /// <returns></returns>
@@ -212,7 +223,7 @@ namespace mmd2timeline.Store
                 var fullFileName = file.FileName;
                 var fileName = FileManagerSecure.GetFileName(fullFileName);
 
-                if (!string.IsNullOrEmpty(PackageName))
+                if (InPackage)
                 {
                     fullFileName = PackageName + ":/" + fullFileName;
                 }
