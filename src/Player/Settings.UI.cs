@@ -37,6 +37,7 @@ namespace mmd2timeline
         protected void InitSettingUI()
         {
             InitGeneralSettingUI();
+            InitMotionSettingsUI();
             InitPhysicsMeshUI();
             //InitAutoCorrectUI();
             InitCameraSettingUI();
@@ -113,18 +114,50 @@ namespace mmd2timeline
         /// </summary>
         void InitGeneralSettingUI()
         {
-            //var fpsSlider = Utils.SetupSliderInt(this, "FPS", 60, 0, 300, LeftSide);
+            //var fpsSlider = Utils.SetupSliderInt(this, "FPS", 60, 0, 300, RightSide);
             //fpsSlider.setCallbackFunction = v => UnityEngine.Application.targetFrameRate = (int)v;
 
-            CreateTitleUI("General Settings", LeftSide);
+            CreateTitleUI("General Settings", RightSide);
 
-            //SetupStaticEnumsChooser<MotionEngine>(MotionEngine.GetName(config.MotionEngineMode), "Motion Engine", MotionEngine.Names, MotionEngine.GetName(dft.MotionEngineMode), LeftSide, v => config.MotionEngineMode = MotionEngine.GetValue(v));
+            //SetupStaticEnumsChooser<MotionEngine>(MotionEngine.GetName(config.MotionEngineMode), "Motion Engine", MotionEngine.Names, MotionEngine.GetName(dft.MotionEngineMode), RightSide, v => config.MotionEngineMode = MotionEngine.GetValue(v));
+
+            // 同步模式选择
+            SetupEnumsChooser<ProgressSyncMode>(ProgressSyncMode.GetName(config.SyncMode), "Sync Mode", ProgressSyncMode.Names, ProgressSyncMode.GetName(dft.SyncMode), RightSide, m =>
+            {
+                config.SyncMode = ProgressSyncMode.GetValue(m);
+            });
+
+            #region 播放速度UI配置
+            var speedParamName = "Play Speed";
+            var _PlaySpeedJSON = new JSONStorableFloat(speedParamName, dft.PlaySpeed, 0f, 2f) ;
+            _PlaySpeedJSON.setCallbackFunction = s =>
+            {
+                config.PlaySpeed = s;
+            };
+            RegisterFloat(_PlaySpeedJSON);
+
+            var playSpeedSlider = CreateSlider(_PlaySpeedJSON, RightSide);
+            playSpeedSlider.ConfigureQuickButtons(-0.01f, -0.10f, -0.25f, -0.50f, 0.01f, 0.10f, 0.25f, 0.5f);
+            playSpeedSlider.label = Lang.Get(speedParamName);
+            //_PlayUIs.Add(_PlaySpeedJSON);
+            _StorableFloats.Add(_PlaySpeedJSON);
+            #endregion
 
             SetupSliderFloat(config.Volume, "Play Volume", dft.Volume, 0f, 1f, v =>
             {
                 config.Volume = v;
                 AudioPlayHelper.GetInstance().SetVolume(config.Volume);
-            }, LeftSide, "F4");
+            }, RightSide, "F4");
+
+            Utils.SetupSpacer(this, 10f, RightSide);
+        }
+
+        /// <summary>
+        /// 初始化动作设置UI
+        /// </summary>
+        void InitMotionSettingsUI()
+        {
+            CreateTitleUI("Motion Settings", LeftSide);
 
             SetupSliderFloat(config.GlobalMotionScale, "Generic Motion Scale", dft.GlobalMotionScale, 0.1f, 2f, v =>
             {
@@ -144,7 +177,7 @@ namespace mmd2timeline
             {
                 config.AllJointsSpringPercent = v;
 
-                motionModeChooser.val = Lang.Get(MotionMode.GetName(config.CurrentMotionMode));
+                motionModeChooser.val = MotionMode.GetName(config.CurrentMotionMode);
 
                 SetAllPersonJointsSpringPercent(v);
             }, LeftSide, "F4");
@@ -153,7 +186,7 @@ namespace mmd2timeline
             {
                 config.AllJointsDamperPercent = v;
 
-                motionModeChooser.val = Lang.Get(MotionMode.GetName(config.CurrentMotionMode));
+                motionModeChooser.val = MotionMode.GetName(config.CurrentMotionMode);
 
                 SetAllPersonJointsDamperPercent(v);
             }, LeftSide, "F4");
@@ -164,13 +197,13 @@ namespace mmd2timeline
                 SetAllPersonJointsMaxVelocity(v);
             }, LeftSide, "F4");
 
-            SetupStaticEnumsChooser<PositionState>(PositionState.GetName((int)config.MotionPositionState), "Motion Position State", PositionState.Names, PositionState.GetName((int)dft.MotionPositionState), LeftSide, m =>
+            SetupEnumsChooser<PositionState>(PositionState.GetName((int)config.MotionPositionState), "Motion Position State", PositionState.Names, PositionState.GetName((int)dft.MotionPositionState), LeftSide, m =>
             {
                 config.MotionPositionState = (FreeControllerV3.PositionState)PositionState.GetValue(m);
                 //Player.ResetPersonControllerState();
             });
 
-            SetupStaticEnumsChooser<RotationState>(RotationState.GetName((int)config.MotionRotationState), "Motion Rotation State", RotationState.Names, RotationState.GetName((int)dft.MotionRotationState), LeftSide, m =>
+            SetupEnumsChooser<RotationState>(RotationState.GetName((int)config.MotionRotationState), "Motion Rotation State", RotationState.Names, RotationState.GetName((int)dft.MotionRotationState), LeftSide, m =>
             {
                 config.MotionRotationState = (FreeControllerV3.RotationState)RotationState.GetValue(m);
                 //Player.ResetPersonControllerState();
@@ -190,29 +223,29 @@ namespace mmd2timeline
         /// </summary>
         void InitPhysicsMeshUI()
         {
-            CreateTitleUI("Physics Mesh Settings", RightSide);
+            CreateTitleUI("Physics Mesh Settings", LeftSide);
 
             SetupToggle(config.MouthPhysicsMesh, "Enable Mouth Physics Mesh", dft.MouthPhysicsMesh, (v) =>
             {
                 config.MouthPhysicsMesh = v;
 
                 SetAllPersonPhysicsMesh("MouthPhysicsMesh", v);
-            }, RightSide);
+            }, LeftSide);
 
             SetupToggle(config.BreastPhysicsMesh, "Enable Breast Physics Mesh", dft.BreastPhysicsMesh, (v) =>
             {
                 config.BreastPhysicsMesh = v;
 
                 SetAllPersonPhysicsMesh("BreastPhysicsMesh", v);
-            }, RightSide);
+            }, LeftSide);
 
             SetupToggle(config.LowerPhysicsMesh, "Enable Lower Physics Mesh", dft.LowerPhysicsMesh, (v) =>
             {
                 config.LowerPhysicsMesh = v;
                 SetAllPersonPhysicsMesh("LowerPhysicsMesh", v);
-            }, RightSide);
+            }, LeftSide);
 
-            Utils.SetupSpacer(this, 10f, RightSide);
+            Utils.SetupSpacer(this, 10f, LeftSide);
         }
 
         /// <summary>
@@ -255,7 +288,7 @@ namespace mmd2timeline
 
             //SetupToggle(config.AutoGazeToWindowCamera, "Auto Gaze to WindowCamera", dft.AutoGazeToWindowCamera, v => config.AutoGazeToWindowCamera = v, RightSide);
 
-            SetupStaticEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control Mode", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
+            SetupEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control Mode", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
             {
                 config.CameraControlMode = CameraControlModes.GetValue(v);
 
@@ -314,7 +347,7 @@ namespace mmd2timeline
             // 是否允许跪姿修正
             SetupToggle(config.EnableKneeingCorrections, "Enable Kneeing Corrections", dft.EnableKneeingCorrections, (v) => config.EnableKneeingCorrections = v, LeftSide);
 
-            SetupStaticEnumsChooser(AutoCorrectHeightMode.GetName(config.AutoFixHeightMode), "Height Correction Mode", AutoCorrectHeightMode.Names, AutoCorrectHeightMode.GetName(dft.AutoFixHeightMode), LeftSide, (StaticEnumsSetCallback<AutoCorrectHeightMode>)(m =>
+            SetupEnumsChooser(AutoCorrectHeightMode.GetName(config.AutoFixHeightMode), "Height Correction Mode", AutoCorrectHeightMode.Names, AutoCorrectHeightMode.GetName(dft.AutoFixHeightMode), LeftSide, (StaticEnumsSetCallback<AutoCorrectHeightMode>)(m =>
             {
                 config.AutoFixHeightMode = AutoCorrectHeightMode.GetValue(m);
                 ShowHeightCorrectionUI();
@@ -463,10 +496,10 @@ namespace mmd2timeline
         /// <param name="rightSide"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        private JSONStorableStringChooser SetupStaticEnumsChooser<T>(string value, string label, List<string> names, string defaultValue, bool rightSide, StaticEnumsSetCallback<T> callback)
+        private JSONStorableStringChooser SetupEnumsChooser<T>(string value, string label, List<string> names, string defaultValue, bool rightSide, StaticEnumsSetCallback<T> callback)
         {
             var chooser = SetupStaticEnumsChooser<T>(label, names, defaultValue, rightSide, callback);
-            chooser.val = Lang.Get(value.ToString());
+            chooser.val = value.ToString();
 
             _StorableStrings.Add(chooser);
             return chooser;

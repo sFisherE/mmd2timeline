@@ -128,9 +128,9 @@ namespace mmd2timeline
             //}
             //LogUtil.Log($"{progress}");
 
-            // 限制最大帧数，刷新太快可能造成镜头抖动
-            if (Mathf.Abs(lastProgress - progress) < 1f / 60f)
-                return;
+            //// 限制最大帧数，刷新太快可能造成镜头抖动
+            //if (Mathf.Abs(lastProgress - progress) < 1f / 60f)
+            //    return;
 
             lastProgress = progress;
 

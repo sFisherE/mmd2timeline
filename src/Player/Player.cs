@@ -264,7 +264,8 @@ namespace mmd2timeline
             SetMMDCameraProgress(progress);
 
             // 设置音频播放进度
-            if (_ProgressHelper.Speed != 1f // 速度不为1的情况下要同步音频进度
+            if (config.SyncMode != ProgressSyncMode.SyncWithAudio // 同步进度不依据音频
+                || config.PlaySpeed != 1f // 速度不为1的情况下要同步音频进度
                 || hardUpdate // 明确设定硬更新时同步音频进度
                 || _AudioPlayHelper.IsDelay // 启用了音频延迟时需要同步进度
                 || (_AudioPlayHelper.HasAudio && _ProgressHelper.IsPlaying && !_AudioPlayHelper.IsPlaying))// 有音频 但是没有在播放时
@@ -840,7 +841,7 @@ namespace mmd2timeline
             }
 
             // 如果冻结动画或不是活动和启用状态、动作重置中、播放速度为0，进行播放进度冻结后，直接返回
-            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || !_MotionHelperGroup.AllHasAtomInited() || _PlaySpeedJSON.val <= 0f)
+            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || !_MotionHelperGroup.AllHasAtomInited() || config.PlaySpeed <= 0f)
             {
                 if (IsPlaying)
                 {
@@ -876,16 +877,16 @@ namespace mmd2timeline
             try
             {
                 // 如果有音频、在播放中，播放速度是1，按照音频进度更新
-                if (_ProgressHelper.SyncMode == ProgressSyncMode.SyncWithAudio &&
-                !_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying && _ProgressHelper.Speed == 1f)
+                if (config.SyncMode == ProgressSyncMode.SyncWithAudio &&
+                !_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying && config.PlaySpeed == 1f)
                 {
                     _ProgressHelper.SetProgress(_AudioPlayHelper.GetAudioTime(), false);
                 }
                 else
                 {
-                    _ProgressHelper.Update();
-                    if (!_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying)
-                        _AudioPlayHelper.SetAudioTime(_ProgressHelper.Progress, false);
+                    _ProgressHelper.Update(config.PlaySpeed);
+                    //if (!_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying)
+                    //    _AudioPlayHelper.SetAudioTime(_ProgressHelper.Progress, false);
                 }
             }
             catch (Exception ex)
@@ -903,7 +904,7 @@ namespace mmd2timeline
         {
             if (config.showDebugInfo)
             {
-                ShowHUDMessage($"Speed:{_ProgressHelper.Speed}" +
+                ShowHUDMessage($"Speed:{config.PlaySpeed}" +
                     $"\n" +
                     $"HasAudio:{_AudioPlayHelper.HasAudio}" +
                     $"\n" +

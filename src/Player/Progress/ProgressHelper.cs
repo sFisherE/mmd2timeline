@@ -9,7 +9,7 @@ namespace mmd2timeline
     /// </summary>
     internal partial class ProgressHelper
     {
-        public int SyncMode = ProgressSyncMode.SyncWithAudio;
+        //public int SyncMode = ProgressSyncMode.SyncWithAudio;
         
         /// <summary>
         /// 播放状态改变的回调委托
@@ -108,14 +108,14 @@ namespace mmd2timeline
         /// MMD设置数据
         /// </summary>
         MMDSetting _mmdSetting;
-        /// <summary>
-        /// 速度值
-        /// </summary>
-        float _speed = 1f;
-        /// <summary>
-        /// 获取当前播放速度
-        /// </summary>
-        public float Speed { get { return _speed; } }
+        ///// <summary>
+        ///// 速度值
+        ///// </summary>
+        //float _speed = 1f;
+        ///// <summary>
+        ///// 获取当前播放速度
+        ///// </summary>
+        //public float Speed { get { return _speed; } }
 
         /// <summary>
         /// 获取是否已经播放到末尾
@@ -221,32 +221,34 @@ namespace mmd2timeline
             }
         }
 
-        /// <summary>
-        /// 设置播放速度
-        /// </summary>
-        /// <param name="speed"></param>
-        public void SetPlaySpeed(float speed)
-        {
-            _speed = speed;
+        ///// <summary>
+        ///// 设置播放速度
+        ///// </summary>
+        ///// <param name="speed"></param>
+        //public void SetPlaySpeed(float speed)
+        //{
+        //    _speed = speed;
 
-            //_AudioSource.pitch = speed;
+        //    //Time.timeScale = speed;
 
-            //if (speed == 1f)
-            //{
-            //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Auto;
-            //}
-            //else
-            //{
-            //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Fixed;
-            //}
-        }
+        //    //_AudioSource.pitch = speed;
+
+        //    //if (speed == 1f)
+        //    //{
+        //    //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Auto;
+        //    //}
+        //    //else
+        //    //{
+        //    //    _AudioSource.velocityUpdateMode = AudioVelocityUpdateMode.Fixed;
+        //    //}
+        //}
 
         /// <summary>
         /// 更新进度数据
         /// </summary>
-        internal void Update()
+        internal void Update(float speed)
         {
-            var deltaTime = Time.deltaTime * _speed;
+            var deltaTime = Time.deltaTime * speed;
 
             var newProgress = _progress + deltaTime;
 
@@ -342,11 +344,11 @@ namespace mmd2timeline
                     // 强制更新时不进行精度调整和帧数限制
                     if (!hardUpdate)
                     {
-                        //// 调整精度
-                        //progress = (float)Math.Ceiling(progress * 10000f) / 10000f;
+                        // 调整精度
+                        progress = (float)Math.Ceiling(progress * 10000f) / 10000f;
                         // 限制最大帧数，刷新太快可能造成镜头抖动
-                        if (Mathf.Abs(_progress - progress) < (1f / 120f))
-                            return;
+                        //if (Mathf.Abs(_progress - progress) < (1f / 120f))
+                        //    return;
                     }
                     // 更新进度变量
                     _progress = progress;

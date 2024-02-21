@@ -325,6 +325,46 @@ namespace mmd2timeline
 
         #endregion
 
+        /// <summary>
+        /// 进度同步模式
+        /// </summary>
+        public int SyncMode
+        {
+            get
+            {
+                if (this.HasKey("SyncMode"))
+                    return this["SyncMode"].AsInt;
+                else
+                    return ProgressSyncMode.SyncWithAudio;
+            }
+            set
+            {
+                if (this.SyncMode != value)
+                {
+                    this["SyncMode"].AsInt = value;
+                    this.Save();
+                }
+            }
+        }
+        float _playSpeed = 1f;
+        /// <summary>
+        /// 播放速度
+        /// </summary>
+        public float PlaySpeed
+        {
+            get
+            {
+                return _playSpeed;
+            }
+            set
+            {
+                if (value != _playSpeed)
+                {
+                    _playSpeed = value;
+                }
+            }
+        }
+
         #region 动作控制相关的设置
 
         /// <summary>
