@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -210,7 +211,7 @@ namespace mmd2timeline
         /// <returns></returns>
         public float GetAudioTime()
         {
-            return _AudioSource.time;
+            return (float)Math.Ceiling(_AudioSource.time * 100f) / 100f;
         }
 
         /// <summary>
