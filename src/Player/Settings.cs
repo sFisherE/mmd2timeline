@@ -53,6 +53,7 @@ namespace mmd2timeline
 
         public override void OnDestroy()
         {
+            SuperController.singleton.onAtomUIDRenameHandlers -= OnAtomUIDChanged;
             SuperController.singleton.onAtomAddedHandlers -= OnAtomChanged;
             SuperController.singleton.onAtomRemovedHandlers -= OnAtomChanged;
 
@@ -61,6 +62,7 @@ namespace mmd2timeline
 
         public override void OnEnable()
         {
+            SuperController.singleton.onAtomUIDRenameHandlers += OnAtomUIDChanged;
             SuperController.singleton.onAtomAddedHandlers += OnAtomChanged;
             SuperController.singleton.onAtomRemovedHandlers += OnAtomChanged;
 
@@ -69,6 +71,7 @@ namespace mmd2timeline
 
         public override void OnDisable()
         {
+            SuperController.singleton.onAtomUIDRenameHandlers -= OnAtomUIDChanged;
             SuperController.singleton.onAtomAddedHandlers -= OnAtomChanged;
             SuperController.singleton.onAtomRemovedHandlers -= OnAtomChanged;
 

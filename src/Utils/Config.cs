@@ -291,6 +291,22 @@ namespace mmd2timeline
         }
 
         /// <summary>
+        /// 是否使用窗口摄像机
+        /// </summary>
+        public bool UseWindowCamera
+        {
+            get
+            {
+                if (this.IsInVR)
+                {
+                    return false;
+                }
+
+                return UseOriginalCamera || (this.SyncWindowCamera);
+            }
+        }
+
+        /// <summary>
         /// 获取是否使用原始相机
         /// </summary>
         internal bool UseOriginalCamera
@@ -298,6 +314,28 @@ namespace mmd2timeline
             get
             {
                 return this.CameraControlMode == CameraControlModes.Original;
+            }
+        }
+
+        /// <summary>
+        /// 同步WindowCarmera
+        /// </summary>
+        public bool SyncWindowCamera
+        {
+            get
+            {
+                return this.CameraControlMode == CameraControlModes.WindowCamera;
+            }
+        }
+
+        /// <summary>
+        /// 是否将镜头数据赋予原子
+        /// </summary>
+        public bool UseCameraAtom
+        {
+            get
+            {
+                return this.CameraControlMode == CameraControlModes.Atom;
             }
         }
 
@@ -993,45 +1031,6 @@ namespace mmd2timeline
         //        }
         //    }
         //}
-
-        /// <summary>
-        /// 是否使用窗口摄像机
-        /// </summary>
-        public bool UseWindowCamera
-        {
-            get
-            {
-                if (this.IsInVR)
-                {
-                    return false;
-                }
-
-                return UseOriginalCamera || (this.SyncWindowCamera);
-            }
-        }
-
-        /// <summary>
-        /// 同步WindowCarmera
-        /// </summary>
-        public bool SyncWindowCamera
-        {
-            get
-            {
-                if (this.HasKey("SyncWindowCamera"))
-                {
-                    return this["SyncWindowCamera"].AsBool;
-                }
-                else return false;
-            }
-            set
-            {
-                if (this.SyncWindowCamera != value)
-                {
-                    this["SyncWindowCamera"].AsBool = value;
-                    this.Save();
-                }
-            }
-        }
 
         #region 快捷键管理
         /// <summary>

@@ -114,6 +114,21 @@ namespace mmd2timeline
         /// 音源选择器
         /// </summary>
         JSONStorableStringChooser _audioSourceChooser;
+        /// <summary>
+        /// 镜头附加选择器
+        /// </summary>
+        JSONStorableStringChooser _cameraAtomChooser;
+
+        /// <summary>
+        /// 原子UID更改的处理函数
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        void OnAtomUIDChanged(string s, string t)
+        {
+            RefreshAudioSourceAtomList();
+            RefreshCameraAtomList();
+        }
 
         /// <summary>
         /// 原子变更的处理方法
@@ -122,6 +137,7 @@ namespace mmd2timeline
         void OnAtomChanged(Atom atom)
         {
             RefreshAudioSourceAtomList();
+            RefreshCameraAtomList();
         }
 
         /// <summary>
@@ -150,6 +166,32 @@ namespace mmd2timeline
             else
             {
                 _audioSourceChooser.choices = audioSources;
+            }
+        }
+
+        void RefreshCameraAtomList()
+        {
+            var defaultSourceName = noneString;
+
+            var cameraAtomSources = GetSceneAtoms().Where(a => a.type == "Empty").Select(a => a.uid).ToList();
+            cameraAtomSources.Insert(0, defaultSourceName);
+
+            if (_cameraAtomChooser == null)
+            {
+                _cameraAtomChooser = SetupStringChooserNoLang($"Camera Atom", Lang.Get("Camera Atom"), cameraAtomSources, rightSide: RightSide);
+                _cameraAtomChooser.setCallbackFunction = v =>
+                {
+                    Atom target = null;
+
+                    if (v != defaultSourceName)
+                        target = GetAtomById(v);
+
+                    CameraHelper.GetInstance().SetCameraAtom(target);
+                };
+            }
+            else
+            {
+                _cameraAtomChooser.choices = cameraAtomSources;
             }
         }
 
@@ -309,11 +351,10 @@ namespace mmd2timeline
         /// </summary>
         void RefreshCameraUI()
         {
-            if (config.UseOriginalCamera)
+            if (config.UseOriginalCamera || config.CameraControlMode == CameraControlModes.Atom)
             {
                 _CameraFocusUI.RefreshView(false);
                 ShowUIElements(_CameraControlUI, false);
-
                 CameraHelper.GetInstance().ShowFocusUI(false);
             }
             else
@@ -322,6 +363,8 @@ namespace mmd2timeline
                 _CameraFocusUI.RefreshView();
                 CameraHelper.GetInstance().ShowFocusUI(true);
             }
+
+            ShowUIElement(_cameraAtomChooser, config.CameraControlMode == CameraControlModes.Atom);
         }
 
         /// <summary>
@@ -344,12 +387,14 @@ namespace mmd2timeline
 
             //SetupToggle(config.AutoGazeToWindowCamera, "Auto Gaze to WindowCamera", dft.AutoGazeToWindowCamera, v => config.AutoGazeToWindowCamera = v, RightSide);
 
-            SetupEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control Mode", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
+            SetupEnumsChooser<CameraControlModes>(CameraControlModes.GetName(config.CameraControlMode), "Camera Control", CameraControlModes.Names, CameraControlModes.GetName(dft.CameraControlMode), RightSide, v =>
             {
                 config.CameraControlMode = CameraControlModes.GetValue(v);
 
                 RefreshCameraUI();
             });
+
+            RefreshCameraAtomList();
 
             _CameraControlUI.Add(SetupSliderFloat(config.CameraPositionSmoothing, "Camera Position Smoothing", dft.CameraPositionSmoothing, 0f, 1f, (v) => config.CameraPositionSmoothing = v, RightSide, "F4"));
 
@@ -359,27 +404,27 @@ namespace mmd2timeline
 
             #region 窗口镜头同步
 
-            var syncWindowCameraJSON = SetupToggle(config.SyncWindowCamera, "Play in WindowCamera", dft.SyncWindowCamera, RightSide);//_WindowCameraAtom
+            //var syncWindowCameraJSON = SetupToggle(config.SyncWindowCamera, "Play in WindowCamera", dft.SyncWindowCamera, RightSide);//_WindowCameraAtom
 
-            _StorableBools.Add(syncWindowCameraJSON);
-            _CameraControlUI.Add(syncWindowCameraJSON);
+            //_StorableBools.Add(syncWindowCameraJSON);
+            //_CameraControlUI.Add(syncWindowCameraJSON);
 
-            syncWindowCameraJSON.setCallbackFunction = v =>
-            {
-                if (v)
-                {
-                    config.SyncWindowCamera = v;
-                }
-                else
-                {
-                    config.SyncWindowCamera = false;
+            //syncWindowCameraJSON.setCallbackFunction = v =>
+            //{
+            //    if (v)
+            //    {
+            //        config.SyncWindowCamera = v;
+            //    }
+            //    else
+            //    {
+            //        config.SyncWindowCamera = false;
 
-                    if (v)
-                    {
-                        syncWindowCameraJSON.valNoCallback = false;
-                    }
-                }
-            };
+            //        if (v)
+            //        {
+            //            syncWindowCameraJSON.valNoCallback = false;
+            //        }
+            //    }
+            //};
 
             #endregion
 

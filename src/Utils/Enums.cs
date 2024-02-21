@@ -157,11 +157,13 @@ namespace mmd2timeline
     {
         public const int Original = 0;
         public const int Custom = 1;
+        public const int WindowCamera = 2;
+        public const int Atom = 3;
 
         /// <summary>
         /// 初始化枚举类
         /// </summary>
-        private static EnumClass enums = new EnumClass("Original", "Custom");
+        private static EnumClass enums = new EnumClass("Original", "Custom", "WindowCamera", "Atom");
 
         /// <summary>
         /// 获取名称列表
@@ -329,7 +331,7 @@ namespace mmd2timeline
         }
     }
 
-    
+
     /// <summary>
     /// 同步模式
     /// </summary>

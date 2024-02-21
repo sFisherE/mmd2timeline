@@ -22,6 +22,10 @@ namespace mmd2timeline
         Quaternion _RotationOffset = Quaternion.Euler(0f, 0f, 0f);
         Vector3 _PositionOffset = Vector3.zero;
 
+        Atom _cameraAtom;
+
+        internal void SetCameraAtom(Atom atom) { _cameraAtom = atom; }
+
         /// <summary>
         /// 更新旋转偏移
         /// </summary>
@@ -197,17 +201,24 @@ namespace mmd2timeline
                 }
                 else
                 {
-                    var navigationRigPosition = GetPosition(position, rotation, NavigationRig);
-
-                    if (_positionLock)
+                    if (config.UseCameraAtom && _cameraAtom != null)
                     {
-                        NavigationRig.position = navigationRigPosition;
+                        _cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
                     }
-
-                    if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
+                    else
                     {
-                        var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
-                        NavigationRig.rotation = navigationRigRotation;
+                        var navigationRigPosition = GetPosition(position, rotation, NavigationRig);
+
+                        if (_positionLock)
+                        {
+                            NavigationRig.position = navigationRigPosition;
+                        }
+
+                        if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
+                        {
+                            var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
+                            NavigationRig.rotation = navigationRigRotation;
+                        }
                     }
 
                     if (config.CameraFOVEnabled)
