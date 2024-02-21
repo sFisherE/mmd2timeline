@@ -497,6 +497,8 @@ namespace mmd2timeline
             this["Motion 4"] = "动作 4";
             this["Settings"] = "设置";
             this["Action"] = "动作";
+            this["Audio Settings"] = "音频设置";
+            this["Audio Source"] = "音频源";
         }
     }
 }

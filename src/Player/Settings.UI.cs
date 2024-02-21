@@ -1,6 +1,7 @@
 ﻿using MacGruber;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace mmd2timeline
@@ -37,6 +38,7 @@ namespace mmd2timeline
         protected void InitSettingUI()
         {
             InitGeneralSettingUI();
+            InitAudioSettingsUI();
             InitMotionSettingsUI();
             InitPhysicsMeshUI();
             //InitAutoCorrectUI();
@@ -108,6 +110,66 @@ namespace mmd2timeline
         //    Utils.SetupSpacer(this, 10f, RightSide);
         //}
 
+        /// <summary>
+        /// 音源选择器
+        /// </summary>
+        JSONStorableStringChooser _audioSourceChooser;
+
+        /// <summary>
+        /// 原子变更的处理方法
+        /// </summary>
+        /// <param name="atom"></param>
+        void OnAtomChanged(Atom atom)
+        {
+            RefreshAudioSourceAtomList();
+        }
+
+        /// <summary>
+        /// 刷新音频原子列表
+        /// </summary>
+        void RefreshAudioSourceAtomList()
+        {
+            var defaultSourceName = "[Default]";
+
+            var audioSources = GetSceneAtoms().Where(a => a.audioSourceControls.Length > 0).Select(a => a.uid).ToList();
+            audioSources.Insert(0, defaultSourceName);
+
+            if (_audioSourceChooser == null)
+            {
+                _audioSourceChooser = SetupStringChooserNoLang($"Audio Source", Lang.Get("Audio Source"), audioSources, rightSide: RightSide);
+                _audioSourceChooser.setCallbackFunction = v =>
+                {
+                    Atom target = null;
+
+                    if (v != defaultSourceName)
+                        target = GetAtomById(v);
+
+                    AudioPlayHelper.GetInstance().SetAudioSource(target);
+                };
+            }
+            else
+            {
+                _audioSourceChooser.choices = audioSources;
+            }
+        }
+
+        /// <summary>
+        /// 初始化音频设置UI
+        /// </summary>
+        void InitAudioSettingsUI()
+        {
+            CreateTitleUI("Audio Settings", RightSide);
+
+            SetupSliderFloat(config.Volume, "Play Volume", dft.Volume, 0f, 1f, v =>
+            {
+                config.Volume = v;
+                AudioPlayHelper.GetInstance().SetVolume(config.Volume);
+            }, RightSide, "F4");
+
+            RefreshAudioSourceAtomList();
+
+            Utils.SetupSpacer(this, 10f, RightSide);
+        }
 
         /// <summary>
         /// 初始化通用设置UI
@@ -129,7 +191,7 @@ namespace mmd2timeline
 
             #region 播放速度UI配置
             var speedParamName = "Play Speed";
-            var _PlaySpeedJSON = new JSONStorableFloat(speedParamName, dft.PlaySpeed, 0f, 2f) ;
+            var _PlaySpeedJSON = new JSONStorableFloat(speedParamName, dft.PlaySpeed, 0f, 2f);
             _PlaySpeedJSON.setCallbackFunction = s =>
             {
                 config.PlaySpeed = s;
@@ -142,12 +204,6 @@ namespace mmd2timeline
             //_PlayUIs.Add(_PlaySpeedJSON);
             _StorableFloats.Add(_PlaySpeedJSON);
             #endregion
-
-            SetupSliderFloat(config.Volume, "Play Volume", dft.Volume, 0f, 1f, v =>
-            {
-                config.Volume = v;
-                AudioPlayHelper.GetInstance().SetVolume(config.Volume);
-            }, RightSide, "F4");
 
             Utils.SetupSpacer(this, 10f, RightSide);
         }

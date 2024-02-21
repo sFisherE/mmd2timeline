@@ -208,10 +208,6 @@ namespace mmd2timeline
                     StartCoroutine(InitPersonAtomMotionHelper(atom));
                 }
             }
-            if (atom.type == "AudioSource")
-            {
-                _AudioPlayHelper._AudioSource2 = atom.GetComponentInChildren<AudioSource>();
-            }
         }
         /// <summary>
         /// 原子被移除的接收方法
@@ -915,8 +911,8 @@ namespace mmd2timeline
                     $"A.Progress:{_AudioPlayHelper.GetAudioTime().ToString("0.000")}" +
                     $"\n" +
                     $"lowestControlName:{_MotionHelperGroup.Helpers.FirstOrDefault()?.lowestControlName}" +
-                    $"\n" +
-                    $"AudioSource:{_AudioPlayHelper._AudioSource}" +
+                    //$"\n" +
+                    //$"AudioSource:{_AudioPlayHelper._AudioSource}" +
                     msg);
             }
         }
