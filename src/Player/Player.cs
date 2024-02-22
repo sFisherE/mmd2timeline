@@ -1226,8 +1226,6 @@ namespace mmd2timeline
 
             _ProgressHelper.InitSettings(CurrentItem.CurrentSetting);
 
-            LogUtil.Log($"{fileData.AudioPaths.Count}");
-
             // 加载音频设置
             _AudioPlayHelper.InitPlay(CurrentItem, fileData.AudioPaths, fileData.AudioNames);
 

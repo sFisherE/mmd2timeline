@@ -153,19 +153,6 @@ namespace mmd2timeline
             _chooser.choices = choices.ToArray().ToList();
             _chooser.displayChoices = displayChoices.ToArray().ToList();
 
-            LogUtil.Log("choices-----");
-
-            foreach (var c in choices)
-            {
-                LogUtil.Log(c);
-            }
-            LogUtil.Log("displayChoices-------");
-
-            foreach (var c in displayChoices)
-            {
-                LogUtil.Log(c);
-            }
-
             if (string.IsNullOrEmpty(choice))
             {
                 choice = _chooser.defaultVal;
