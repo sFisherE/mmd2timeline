@@ -14,6 +14,11 @@ namespace mmd2timeline
     internal partial class CameraHelper
     {
         /// <summary>
+        /// 对应的MMD实体
+        /// </summary>
+        MMDEntity _MMDEntity = null;
+
+        /// <summary>
         /// 镜头激活状态更改的回调委托
         /// </summary>
         /// <param name="length">返回动作长度</param>
@@ -149,11 +154,14 @@ namespace mmd2timeline
         /// </summary>
         /// <param name="choices"></param>
         /// <param name="displayChoices"></param>
-        /// <param name="choice"></param>
         /// <param name="settings"></param>
-        internal void InitPlay(List<string> choices, List<string> displayChoices, string choice, CameraSetting settings)
+        internal void InitPlay(MMDEntity entity, List<string> choices, List<string> displayChoices)
         {
-            _CameraSetting = settings;
+            _MMDEntity = entity;
+
+            _CameraSetting = entity.CameraSetting;
+
+            var choice = string.IsNullOrEmpty(_CameraSetting.CameraPath) ? noneString : _CameraSetting.CameraPath;
 
             _delay = _CameraSetting?.TimeDelay ?? 0f;
 
@@ -170,9 +178,32 @@ namespace mmd2timeline
                 SetDelayRange(0f);
             }
 
-            SetChooser(displayChoices, choices, settings?.CameraPath);
+            SetChooser(displayChoices, choices, choice);
 
             InitSettingValues();
+        }
+
+        /// <summary>
+        /// 获取真实路径
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private string GetRealPath(string path)
+        {
+            // 检查数据是否在VAR包中，如果是，更改路径
+            if (_MMDEntity != null && _MMDEntity.InPackage && !string.IsNullOrEmpty(path))
+            {
+                if (path.StartsWith("SELF"))
+                {
+                    path = path.Replace("SELF", _MMDEntity.PackageName);
+                }
+                else
+                {
+                    path = _MMDEntity.PackageName + ":/" + path;
+                }
+            }
+
+            return path;
         }
 
         /// <summary>
@@ -196,7 +227,7 @@ namespace mmd2timeline
                 // 初始化MMD镜头的本地旋转
                 this._MmdCamera.transform.localRotation = Quaternion.identity;
                 // 加载MMD镜头数据文件
-                this._MmdCamera.LoadCameraMotion(path);
+                this._MmdCamera.LoadCameraMotion(GetRealPath(path));
 
                 var cameraMotion = this._MmdCamera._cameraMotion;
 

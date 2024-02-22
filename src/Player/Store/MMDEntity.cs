@@ -217,16 +217,14 @@ namespace mmd2timeline.Store
             var motions = new List<string>();
             var expressions = new List<string>();
 
+            // 检重
+            var files = this.Files.DistinctBy(f => f.FileName);
+
             // 轮询MMD文件，并对文件自动选择进行预处理
-            foreach (MMDFile file in this.Files)
+            foreach (MMDFile file in files)
             {
                 var fullFileName = file.FileName;
                 var fileName = FileManagerSecure.GetFileName(fullFileName);
-
-                if (InPackage)
-                {
-                    fullFileName = PackageName + ":/" + fullFileName;
-                }
 
                 if (file.FileType == MMDFileType.Music)
                 {

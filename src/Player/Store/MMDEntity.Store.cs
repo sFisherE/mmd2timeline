@@ -195,25 +195,6 @@ namespace mmd2timeline.Store
                 if (entity != null && !string.IsNullOrEmpty(packageName))
                 {
                     entity.PackageName = packageName;
-
-                    foreach (var setting in entity.Settings)
-                    {
-                        if (setting.AudioSetting.AudioPath.StartsWith("SELF"))
-                        {
-                            setting.AudioSetting.AudioPath = setting.AudioSetting.AudioPath.Replace("SELF", packageName);
-                        }
-                        else
-                        {
-                            setting.AudioSetting.AudioPath = packageName + ":/" + setting.AudioSetting.AudioPath;
-                        }
-
-                        setting.CameraSetting.CameraPath = packageName + ":/" + setting.CameraSetting.CameraPath;
-
-                        foreach (var motion in setting.Motions)
-                        {
-                            motion.Files = motion.Files.Select(f => packageName + ":/" + f).ToList();
-                        }
-                    }
                 }
 
                 return entity;

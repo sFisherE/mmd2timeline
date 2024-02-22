@@ -1211,10 +1211,10 @@ namespace mmd2timeline
             {
                 CurrentItem = entity;
 
-                UpdateFavoriteLabel(entity);
+                UpdateFavoriteLabel(CurrentItem);
             }
 
-            var fileData = entity.GetFileData();
+            var fileData = CurrentItem.GetFileData();
 
             // 如果没有内容，停止播放
             if (fileData.DefaultCamera == noneString
@@ -1224,12 +1224,15 @@ namespace mmd2timeline
                 this.StopPlaying();
             }
 
-            _ProgressHelper.InitSettings(entity.CurrentSetting);
+            _ProgressHelper.InitSettings(CurrentItem.CurrentSetting);
+
+            LogUtil.Log($"{fileData.AudioPaths.Count}");
+
             // 加载音频设置
-            LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
+            _AudioPlayHelper.InitPlay(CurrentItem, fileData.AudioPaths, fileData.AudioNames);
 
             // 加载镜头动作
-            LoadCameraSettings(entity.CameraSetting, fileData.MotionPaths, fileData.MotionNames);
+            _CameraHelper.InitPlay(CurrentItem, fileData.MotionPaths, fileData.MotionNames);
 
             //try
             //{
@@ -1329,35 +1332,11 @@ namespace mmd2timeline
                 }
 
                 // 设置人物动作
-                motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
+                motionHelper?.InitSettings(CurrentItem, fileData.MotionPaths, fileData.MotionNames, motion);
             }
 
             yield return null;
             atom.collisionEnabled = true;
-        }
-
-        /// <summary>
-        /// 加载音频设置
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="choices"></param>
-        /// <param name="displayChoices"></param>
-        private void LoadAudioSettings(AudioSetting settings, List<string> choices, List<string> displayChoices)
-        {
-            _AudioPlayHelper.InitPlay(settings, choices, displayChoices);
-        }
-
-        /// <summary>
-        /// 加载镜头设置
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="choices"></param>
-        /// <param name="displayChoices"></param>
-        private void LoadCameraSettings(CameraSetting settings, List<string> choices, List<string> displayChoices)
-        {
-            var choice = string.IsNullOrEmpty(settings.CameraPath) ? noneString : settings.CameraPath;
-
-            _CameraHelper.InitPlay(choices, displayChoices, choice, settings);
         }
 
         /// <summary>
