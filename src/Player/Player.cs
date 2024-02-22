@@ -152,7 +152,17 @@ namespace mmd2timeline
             RegisterAction(new JSONStorableAction("Toggle Play Mode", () => this.TogglePlayMode()));
 
             RegisterAction(new JSONStorableAction("Reset Person Motion", () => StartCoroutine(ResetAllPersonMotion())));
+
+            _loadPlaylistFile = new JSONStorableString($"Load Playlist File", null);
+            _loadPlaylistFile.setCallbackFunction = v =>
+            {
+                this.Playlist.LoadPlayListPreset(v);
+            };
+
+            RegisterString(_loadPlaylistFile);
         }
+
+        JSONStorableString _loadPlaylistFile;
 
         #region 各种事件处理函数
 

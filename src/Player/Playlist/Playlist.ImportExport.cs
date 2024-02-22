@@ -69,7 +69,7 @@ namespace mmd2timeline
                 shortcuts.Add(i);
             }
 
-            SuperController.singleton.GetMediaPathDialog(HandleLoadPlayListPreset, PLAYLIST_SAVE_EXT, PLAYLIST_PATH, false, true, false, null, false, shortcuts, true, true);
+            SuperController.singleton.GetMediaPathDialog(LoadPlayListPreset, PLAYLIST_SAVE_EXT, PLAYLIST_PATH, false, true, false, null, false, shortcuts, true, true);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace mmd2timeline
         /// 从文件加载播放列表
         /// </summary>
         /// <param name="filePath"></param>
-        void HandleLoadPlayListPreset(string filePath)
+        internal void LoadPlayListPreset(string filePath)
         {
             try
             {
