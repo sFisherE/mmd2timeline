@@ -201,6 +201,7 @@ namespace mmd2timeline
                 }
                 else
                 {
+                    // TODO 检查选定的插件是否有附加Embody插件，如果有，则将进行相应处理
                     if (config.UseCameraAtom && _cameraAtom != null)
                     {
                         _cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
@@ -326,6 +327,33 @@ namespace mmd2timeline
                 SuperController.singleton.disableNavigation = disable;
 
                 OnCameraActivateStatusChanged?.Invoke(this, SuperController.singleton.navigationDisabled);
+
+                // 如果使用镜头原子，则检查镜头原子是否有Embody插件，如果有，则自动进行镜头启用和禁用的处理
+                if (config.UseCameraAtom)
+                {
+                    if (_cameraAtom != null)
+                    {
+                        foreach (string receiverChoice in _cameraAtom.GetStorableIDs())
+                        {
+                            if (receiverChoice.StartsWith("plugin#") && receiverChoice.IndexOf("Embody") > 7)
+                            {
+                                var receiver = _cameraAtom.GetStorableByID(receiverChoice);
+
+                                if (receiver != null)
+                                {
+                                    var activeJSON = receiver.GetBoolJSONParam("Active");
+
+                                    if (activeJSON != null)
+                                    {
+                                        activeJSON.val = SuperController.singleton.navigationDisabled;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
 

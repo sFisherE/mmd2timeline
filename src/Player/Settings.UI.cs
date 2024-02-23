@@ -173,7 +173,7 @@ namespace mmd2timeline
         {
             var defaultSourceName = noneString;
 
-            var cameraAtomSources = GetSceneAtoms().Where(a => a.type == "Empty").Select(a => a.uid).ToList();
+            var cameraAtomSources = GetSceneAtoms().Where(a => a.type == "Empty" || a.type == "WindowCamera").Select(a => a.uid).ToList();
             cameraAtomSources.Insert(0, defaultSourceName);
 
             if (_cameraAtomChooser == null)
@@ -193,6 +193,30 @@ namespace mmd2timeline
             else
             {
                 _cameraAtomChooser.choices = cameraAtomSources;
+            }
+
+            var defaultChooser = "";
+
+            // 如果镜头原子选定的是默认值
+            if (_cameraAtomChooser.val == _cameraAtomChooser.defaultVal)
+            {
+                // 检查Atom是否有附加EmBody插件，如果有，自动选定它
+
+                foreach (var uid in cameraAtomSources)
+                {
+                    var atom = GetAtomById(uid);
+
+                    if (atom != null && atom.GetStorableIDs().Exists(s => s.StartsWith("plugin#") && s.IndexOf("Embody") > 7))
+                    {
+                        defaultChooser = uid;
+                        break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(defaultChooser))
+                {
+                    _cameraAtomChooser.val = defaultChooser;
+                }
             }
         }
 
