@@ -456,7 +456,7 @@ namespace mmd2timeline
             {
                 if (this.HasKey("GlobalMotionScale"))
                     return this["GlobalMotionScale"].AsFloat;
-                else return 1f;
+                else return .85f;
             }
             set
             {
