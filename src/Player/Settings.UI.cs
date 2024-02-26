@@ -147,7 +147,7 @@ namespace mmd2timeline
         {
             var defaultSourceName = "[Default]";
 
-            var audioSources = GetSceneAtoms().Where(a => a.audioSourceControls.Length > 0).Select(a => a.uid).ToList();
+            var audioSources = GetSceneAtoms().Where(a => a.GetComponentInChildren<AudioSource>() != null).Select(a => a.uid).ToList();
             audioSources.Insert(0, defaultSourceName);
 
             if (_audioSourceChooser == null)
