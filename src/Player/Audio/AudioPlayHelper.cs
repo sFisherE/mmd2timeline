@@ -1,3 +1,5 @@
+using mmd2timeline.Store;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +10,11 @@ namespace mmd2timeline
     /// </summary>
     internal partial class AudioPlayHelper
     {
+        /// <summary>
+        /// 对应的MMD实体
+        /// </summary>
+        MMDEntity _MMDEntity = null;
+
         /// <summary>
         /// 音频设定
         /// </summary>
@@ -21,9 +28,30 @@ namespace mmd2timeline
         /// <summary>
         /// 音源
         /// </summary>
-        public AudioSource _AudioSource => _AudioSource2 ?? audioSourceFallback;
-        private AudioSource audioSourceFallback;
-        public AudioSource _AudioSource2;
+        //public AudioSource _AudioSource => _AudioSource2 ?? audioSourceFallback;
+        //private AudioSource audioSourceFallback;
+        //public AudioSource _AudioSource2;
+
+        /// <summary>
+        /// 使用的音源
+        /// </summary>
+        AudioSource _audioSource;
+
+        /// <summary>
+        /// 获取音频源
+        /// </summary>
+        AudioSource _AudioSource
+        {
+            get
+            {
+                return _audioSource ?? _defaultAudioSource;
+            }
+        }
+
+        /// <summary>
+        /// 默认音频源
+        /// </summary>
+        AudioSource _defaultAudioSource = URLAudioClipManager.singleton.testAudioSource;
 
         /// <summary>
         /// 是否正在加载
@@ -125,7 +153,22 @@ namespace mmd2timeline
         private AudioPlayHelper()
         {
             // 初始化音频源
-            audioSourceFallback = URLAudioClipManager.singleton.testAudioSource;
+            //audioSourceFallback = URLAudioClipManager.singleton.testAudioSource;
+        }
+
+        /// <summary>
+        /// 设置音频源
+        /// </summary>
+        /// <param name="atom"></param>
+        internal void SetAudioSource(Atom atom)
+        {
+            // 如果之前有音频源并且在播放，停止播放
+            if (_audioSource != null && _audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+
+            _audioSource = atom?.GetComponentInChildren<AudioSource>();
         }
 
         /// <summary>
@@ -133,9 +176,11 @@ namespace mmd2timeline
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        internal void InitPlay(AudioSetting settings, List<string> choices, List<string> displayChoices)
+        internal void InitPlay(MMDEntity entity, List<string> choices, List<string> displayChoices)
         {
-            _AudioSetting = settings;
+            _MMDEntity = entity;
+
+            _AudioSetting = _MMDEntity.AudioSetting;
 
             // 记录设定中的延迟值
             _delay = _AudioSetting.TimeDelay;
@@ -147,7 +192,7 @@ namespace mmd2timeline
                 SetTimeDelay(_delay);
             }
 
-            SetChooser(displayChoices, choices, settings?.AudioPath);
+            SetChooser(displayChoices, choices, _AudioSetting?.AudioPath);
         }
 
         /// <summary>
@@ -174,7 +219,7 @@ namespace mmd2timeline
         /// <returns></returns>
         public float GetAudioTime()
         {
-            return _AudioSource.time;
+            return (float)Math.Ceiling(_AudioSource.time * 100f) / 100f;
         }
 
         /// <summary>
@@ -248,7 +293,30 @@ namespace mmd2timeline
                 audioPath = null;
             }
 
-            AudioCliper.LoadAudio(audioPath);
+            AudioCliper.LoadAudio(GetRealPath(audioPath));
+        }
+
+        /// <summary>
+        /// 获取真实路径
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private string GetRealPath(string path)
+        {
+            // 检查数据是否在VAR包中，如果是，更改路径
+            if (_MMDEntity != null && _MMDEntity.InPackage && !string.IsNullOrEmpty(path))
+            {
+                if (path.StartsWith("SELF"))
+                {
+                    path = path.Replace("SELF", _MMDEntity.PackageName);
+                }
+                else
+                {
+                    path = _MMDEntity.PackageName + ":/" + path;
+                }
+            }
+
+            return path;
         }
 
         /// <summary>
@@ -277,7 +345,8 @@ namespace mmd2timeline
         {
             Clear(true);
 
-            _AudioSource2 = null;
+            _audioSource = null;
+            _defaultAudioSource = null;
             _AudioClipHelper = null;
             _AudioSetting = null;
 

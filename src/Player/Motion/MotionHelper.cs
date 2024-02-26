@@ -16,6 +16,11 @@ namespace mmd2timeline
     internal partial class MotionHelper
     {
         /// <summary>
+        /// 对应的MMD实体
+        /// </summary>
+        MMDEntity _MMDEntity = null;
+
+        /// <summary>
         /// 配置数据
         /// </summary>
         protected static readonly Config config = Config.GetInstance();
@@ -243,8 +248,10 @@ namespace mmd2timeline
         /// <param name="displayChoices"></param>
         /// <param name="choice"></param>
         /// <param name="motion"></param>
-        internal void InitSettings(List<string> choices, List<string> displayChoices, PersonMotion settings)
+        internal void InitSettings(MMDEntity entity, List<string> choices, List<string> displayChoices, PersonMotion settings)
         {
+            _MMDEntity = entity;
+
             _MotionSetting = settings;
 
             _delay = _MotionSetting?.TimeDelay ?? 0f;
@@ -366,6 +373,29 @@ namespace mmd2timeline
         //}
 
         /// <summary>
+        /// 获取真实路径
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private string GetRealPath(string path)
+        {
+            // 检查数据是否在VAR包中，如果是，更改路径
+            if (_MMDEntity != null && _MMDEntity.InPackage && !string.IsNullOrEmpty(path))
+            {
+                if (path.StartsWith("SELF"))
+                {
+                    path = path.Replace("SELF", _MMDEntity.PackageName);
+                }
+                else
+                {
+                    path = _MMDEntity.PackageName + ":/" + path;
+                }
+            }
+
+            return path;
+        }
+
+        /// <summary>
         /// 导入VMD
         /// </summary>
         /// <param name="path"></param>
@@ -378,6 +408,8 @@ namespace mmd2timeline
                     return;
                 }
 
+                // 检查数据是否在VAR包中，如果是，更改路径
+                path = GetRealPath(path);
                 _MmdPersonGameObject.LoadMotion(path);
 
                 //if (hasAtomInited)

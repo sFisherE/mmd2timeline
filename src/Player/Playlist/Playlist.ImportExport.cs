@@ -61,7 +61,15 @@ namespace mmd2timeline
         {
             FileManagerSecure.CreateDirectory(PLAYLIST_PATH);
             var shortcuts = FileManagerSecure.GetShortCutsForDirectory(PLAYLIST_PATH);
-            SuperController.singleton.GetMediaPathDialog(HandleLoadPlayListPreset, PLAYLIST_SAVE_EXT, PLAYLIST_PATH, false, true, false, null, false, shortcuts);
+
+            var shortcuts2 = FileManagerSecure.GetShortCutsForDirectory("Saves\\PluginData\\MMD2Timeline");
+
+            foreach (var i in shortcuts2)
+            {
+                shortcuts.Add(i);
+            }
+
+            SuperController.singleton.GetMediaPathDialog(LoadPlayListPreset, PLAYLIST_SAVE_EXT, PLAYLIST_PATH, false, true, false, null, false, shortcuts, true, true);
         }
 
         /// <summary>
@@ -90,7 +98,7 @@ namespace mmd2timeline
         /// 从文件加载播放列表
         /// </summary>
         /// <param name="filePath"></param>
-        void HandleLoadPlayListPreset(string filePath)
+        internal void LoadPlayListPreset(string filePath)
         {
             try
             {
@@ -233,7 +241,9 @@ namespace mmd2timeline
                     {
                         var item = list[i].AsObject;
 
-                        this.AddPlayItem(new PlaylistItem().LoadFromJSON<PlaylistItem>(item), notify: false);
+                        var playItem = new PlaylistItem(this.InPackage, this.PackageName).LoadFromJSON<PlaylistItem>(item);
+
+                        this.AddPlayItem(playItem, notify: false);
                     }
 
                     this.Remove("List");
@@ -304,7 +314,9 @@ namespace mmd2timeline
                     {
                         var item = list[i].AsObject;
 
-                        this.AddPlayItem(new PlaylistItem().LoadFromJSON<PlaylistItem>(item), notify: false);
+                        var playItem = new PlaylistItem(this.InPackage, this.PackageName).LoadFromJSON<PlaylistItem>(item);
+
+                        this.AddPlayItem(playItem, notify: false);
 
                         PlayItemImportProgressChanged?.Invoke($"\n\nLoading {fileName} Playlist.\n\n{item["Name"]}", i, total);
                         yield return null;

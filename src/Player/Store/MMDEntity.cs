@@ -176,6 +176,28 @@ namespace mmd2timeline.Store
             }
         }
 
+        string _packageName;
+
+        public string PackageName
+        {
+            get
+            {
+                return _packageName;
+            }
+            set { _packageName = value; }
+        }
+
+        /// <summary>
+        /// 获取此MMD实例是否在包中
+        /// </summary>
+        public bool InPackage
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(PackageName);
+            }
+        }
+
         /// <summary>
         /// 获取mmd文件数据
         /// </summary>
@@ -195,8 +217,11 @@ namespace mmd2timeline.Store
             var motions = new List<string>();
             var expressions = new List<string>();
 
+            // 检重
+            var files = this.Files.DistinctBy(f => f.FileName);
+
             // 轮询MMD文件，并对文件自动选择进行预处理
-            foreach (MMDFile file in this.Files)
+            foreach (MMDFile file in files)
             {
                 var fullFileName = file.FileName;
                 var fileName = FileManagerSecure.GetFileName(fullFileName);
@@ -537,7 +562,7 @@ namespace mmd2timeline.Store
 
             var to = new string(chars.ToArray());
 
-            return to;
+            return FileManagerSecure.NormalizePath(to);
         }
 
         /// <summary>

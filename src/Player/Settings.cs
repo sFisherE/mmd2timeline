@@ -1,6 +1,6 @@
-using MacGruber;
 using System;
 using System.Linq;
+using static SuperController;
 
 namespace mmd2timeline
 {
@@ -53,7 +53,29 @@ namespace mmd2timeline
 
         public override void OnDestroy()
         {
+            SuperController.singleton.onAtomUIDRenameHandlers -= OnAtomUIDChanged;
+            SuperController.singleton.onAtomAddedHandlers -= OnAtomChanged;
+            SuperController.singleton.onAtomRemovedHandlers -= OnAtomChanged;
+
             base.OnDestroy();
+        }
+
+        public override void OnEnable()
+        {
+            SuperController.singleton.onAtomUIDRenameHandlers += OnAtomUIDChanged;
+            SuperController.singleton.onAtomAddedHandlers += OnAtomChanged;
+            SuperController.singleton.onAtomRemovedHandlers += OnAtomChanged;
+
+            base.OnEnable();
+        }
+
+        public override void OnDisable()
+        {
+            SuperController.singleton.onAtomUIDRenameHandlers -= OnAtomUIDChanged;
+            SuperController.singleton.onAtomAddedHandlers -= OnAtomChanged;
+            SuperController.singleton.onAtomRemovedHandlers -= OnAtomChanged;
+
+            base.OnDisable();
         }
     }
 }

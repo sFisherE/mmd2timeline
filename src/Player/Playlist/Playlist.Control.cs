@@ -96,7 +96,7 @@ namespace mmd2timeline
             {
                 if (CurrentItem != null)
                 {
-                    return MMDEntity.LoadFromStoreByGUID(CurrentItem.GUID);
+                    return MMDEntity.LoadFromStoreByGUID(CurrentItem.GUID, CurrentItem.PackageName);
                 }
                 else
                 {

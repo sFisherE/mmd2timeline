@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace mmd2timeline
 {
@@ -123,7 +124,15 @@ namespace mmd2timeline
             _PlaylistChooser.valNoCallback = arg.GUID;
             //}
 
-            LoadMMD(this.Playlist.CurrentMMD);
+            try
+            {
+
+                LoadMMD(this.Playlist.CurrentMMD);
+            }
+            catch (Exception e)
+            {
+                LogUtil.LogError(e);
+            }
         }
 
         /// <summary>

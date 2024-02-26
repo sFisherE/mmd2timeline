@@ -166,7 +166,7 @@ namespace mmd2timeline
             if (trigger == null)
                 return;
 
-            // 只有浮点类型的触发器才会传递float值
+            // 触发事件
             trigger.Trigger();
         }
 
@@ -181,7 +181,7 @@ namespace mmd2timeline
             if (trigger == null)
                 return;
 
-            // 只有浮点类型的触发器才会传递float值
+            // 只有字符串类型的触发器才会传递string值
             if (trigger.EventType == TriggerEventType.String)
             {
                 trigger.Trigger(value);
@@ -206,7 +206,7 @@ namespace mmd2timeline
             if (trigger == null)
                 return;
 
-            // 只有浮点类型的触发器才会传递float值
+            // 只有布尔类型的触发器才会传递bool值
             if (trigger.EventType == TriggerEventType.Bool)
             {
                 trigger.Trigger(value);
@@ -255,7 +255,7 @@ namespace mmd2timeline
             if (trigger == null)
                 return;
 
-            // 只有浮点类型的触发器才会传递float值
+            // 只有字符串类型的触发器才会传递string值
             if (trigger.EventType == TriggerEventType.Chooser)
             {
                 trigger.Trigger(value, choices);

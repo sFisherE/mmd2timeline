@@ -52,9 +52,13 @@ namespace mmd2timeline.Store
         {
             try
             {
-                FileManagerSecure.CreateDirectory(this.StorePath);
+                // 只有不在包中的数据才能保存
+                if (!InPackage)
+                {
+                    FileManagerSecure.CreateDirectory(this.StorePath);
 
-                SuperController.singleton.SaveJSON(this, this.StoreFile);
+                    SuperController.singleton.SaveJSON(this, this.StoreFile);
+                }
 
                 NeedSave = false;
             }
@@ -173,15 +177,27 @@ namespace mmd2timeline.Store
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        internal static MMDEntity LoadFromStoreByGUID(string guid)
+        internal static MMDEntity LoadFromStoreByGUID(string guid, string packageName = null)
         {
             var fileName = $"{STORE_PATH}\\{guid}\\entity.{SAVE_EXT}";
 
-            if (FileManagerSecure.FileExists(fileName))
+            if (!string.IsNullOrEmpty(packageName))
+            {
+                fileName = packageName + ":/" + fileName;
+            }
+
+            if (!string.IsNullOrEmpty(packageName) || FileManagerSecure.FileExists(fileName))
             {
                 var json = SuperController.singleton.LoadJSON(fileName);
 
-                return LoadFromJSONClass(json as JSONClass);
+                var entity = LoadFromJSONClass(json as JSONClass);
+
+                if (entity != null && !string.IsNullOrEmpty(packageName))
+                {
+                    entity.PackageName = packageName;
+                }
+
+                return entity;
             }
             else
             {
@@ -196,13 +212,15 @@ namespace mmd2timeline.Store
         /// <returns></returns>
         internal static MMDEntity LoadFromStorByPath(string path)
         {
-            var entity = LoadFromStoreByGUID(GetGUIDByPath(path));
+            var key = FileManagerSecure.NormalizePath(path);
+
+            var entity = LoadFromStoreByGUID(GetGUIDByPath(key));
 
             if (entity == null)
             {
                 entity = new MMDEntity
                 {
-                    Key = path,
+                    Key = key,
                     Title = FileManagerSecure.GetFileName(path)
                 };
             }

@@ -69,10 +69,10 @@ namespace mmd2timeline
         /// </summary>
         UIDynamicTwinButton _LoadTwinButton;
 
-        /// <summary>
-        /// 播放速度
-        /// </summary>
-        JSONStorableFloat _PlaySpeedJSON;
+        ///// <summary>
+        ///// 播放速度
+        ///// </summary>
+        //JSONStorableFloat _PlaySpeedJSON;
 
         /// <summary>
         /// 加载提示信息
@@ -144,10 +144,10 @@ namespace mmd2timeline
             RegisterStringChooser(_playModeChooser);
             _PlayUIs.Add(_playModeChooser);
 
-            _PlayUIs.Add(SetupStaticEnumsChooser<ProgressSyncMode>("Sync Mode", ProgressSyncMode.Names, ProgressSyncMode.GetName(ProgressSyncMode.SyncWithAudio), RightSide, m =>
-            {
-                this._ProgressHelper.SyncMode = ProgressSyncMode.GetValue(m);
-            }));
+            //_PlayUIs.Add(SetupStaticEnumsChooser<ProgressSyncMode>("Sync Mode", ProgressSyncMode.Names, ProgressSyncMode.GetName(ProgressSyncMode.SyncWithAudio), RightSide, m =>
+            //{
+            //    this._ProgressHelper.SyncMode = ProgressSyncMode.GetValue(m);
+            //}));
 
             _MMDUIs.Add(_UIPlayButton = Utils.SetupButton(this, Lang.Get("Play"), () => TogglePlaying(), RightSide));
 
@@ -211,23 +211,23 @@ namespace mmd2timeline
             // 创建镜头设置UI
             _CameraHelper.CreateSettingsUI(this, RightSide);
 
-            #region 播放速度UI配置
-            var speedParamName = "Play Speed";
-            _PlaySpeedJSON = new JSONStorableFloat(speedParamName, 1f, 0f, 2f);
-            _PlaySpeedJSON.setCallbackFunction = s =>
-            {
-                // Time.timeScale = s;
-                //_AudioPlayController.SetPlaySpeed(s);
+            //#region 播放速度UI配置
+            //var speedParamName = "Play Speed";
+            //_PlaySpeedJSON = new JSONStorableFloat(speedParamName, 1f, 0f, 2f);
+            //_PlaySpeedJSON.setCallbackFunction = s =>
+            //{
+            //    // Time.timeScale = s;
+            //    //_AudioPlayController.SetPlaySpeed(s);
 
-                _ProgressHelper.SetPlaySpeed(s);
-            };
-            RegisterFloat(_PlaySpeedJSON);
+            //    _ProgressHelper.SetPlaySpeed(s);
+            //};
+            //RegisterFloat(_PlaySpeedJSON);
 
-            var playSpeedSlider = CreateSlider(_PlaySpeedJSON, RightSide);
-            playSpeedSlider.ConfigureQuickButtons(-0.01f, -0.10f, -0.25f, -0.50f, 0.01f, 0.10f, 0.25f, 0.5f);
-            playSpeedSlider.label = Lang.Get(speedParamName);
-            _PlayUIs.Add(_PlaySpeedJSON);
-            #endregion
+            //var playSpeedSlider = CreateSlider(_PlaySpeedJSON, RightSide);
+            //playSpeedSlider.ConfigureQuickButtons(-0.01f, -0.10f, -0.25f, -0.50f, 0.01f, 0.10f, 0.25f, 0.5f);
+            //playSpeedSlider.label = Lang.Get(speedParamName);
+            //_PlayUIs.Add(_PlaySpeedJSON);
+            //#endregion
 
             // 锁定人物位置
             //_MMDUIs.Add(Utils.SetupToggle(this, Lang.Get("Lock Person Position"), config.LockPersonPosition, v => config.LockPersonPosition = v, RightSide));

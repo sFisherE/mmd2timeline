@@ -22,6 +22,10 @@ namespace mmd2timeline
         Quaternion _RotationOffset = Quaternion.Euler(0f, 0f, 0f);
         Vector3 _PositionOffset = Vector3.zero;
 
+        Atom _cameraAtom;
+
+        internal void SetCameraAtom(Atom atom) { _cameraAtom = atom; }
+
         /// <summary>
         /// 更新旋转偏移
         /// </summary>
@@ -197,17 +201,25 @@ namespace mmd2timeline
                 }
                 else
                 {
-                    var navigationRigPosition = GetPosition(position, rotation, NavigationRig);
-
-                    if (_positionLock)
+                    // TODO 检查选定的插件是否有附加Embody插件，如果有，则将进行相应处理
+                    if (config.UseCameraAtom && _cameraAtom != null)
                     {
-                        NavigationRig.position = navigationRigPosition;
+                        _cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
                     }
-
-                    if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
+                    else
                     {
-                        var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
-                        NavigationRig.rotation = navigationRigRotation;
+                        var navigationRigPosition = GetPosition(position, rotation, NavigationRig);
+
+                        if (_positionLock)
+                        {
+                            NavigationRig.position = navigationRigPosition;
+                        }
+
+                        if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
+                        {
+                            var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
+                            NavigationRig.rotation = navigationRigRotation;
+                        }
                     }
 
                     if (config.CameraFOVEnabled)
@@ -315,6 +327,33 @@ namespace mmd2timeline
                 SuperController.singleton.disableNavigation = disable;
 
                 OnCameraActivateStatusChanged?.Invoke(this, SuperController.singleton.navigationDisabled);
+
+                // 如果使用镜头原子，则检查镜头原子是否有Embody插件，如果有，则自动进行镜头启用和禁用的处理
+                if (config.UseCameraAtom)
+                {
+                    if (_cameraAtom != null)
+                    {
+                        foreach (string receiverChoice in _cameraAtom.GetStorableIDs())
+                        {
+                            if (receiverChoice.StartsWith("plugin#") && receiverChoice.IndexOf("Embody") > 7)
+                            {
+                                var receiver = _cameraAtom.GetStorableByID(receiverChoice);
+
+                                if (receiver != null)
+                                {
+                                    var activeJSON = receiver.GetBoolJSONParam("Active");
+
+                                    if (activeJSON != null)
+                                    {
+                                        activeJSON.val = SuperController.singleton.navigationDisabled;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
 

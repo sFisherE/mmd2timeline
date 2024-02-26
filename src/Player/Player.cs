@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace mmd2timeline
 {
@@ -151,7 +152,17 @@ namespace mmd2timeline
             RegisterAction(new JSONStorableAction("Toggle Play Mode", () => this.TogglePlayMode()));
 
             RegisterAction(new JSONStorableAction("Reset Person Motion", () => StartCoroutine(ResetAllPersonMotion())));
+
+            _loadPlaylistFile = new JSONStorableString($"Load Playlist File", null);
+            _loadPlaylistFile.setCallbackFunction = v =>
+            {
+                this.Playlist.LoadPlayListPreset(v);
+            };
+
+            RegisterString(_loadPlaylistFile);
         }
+
+        JSONStorableString _loadPlaylistFile;
 
         #region 各种事件处理函数
 
@@ -207,10 +218,6 @@ namespace mmd2timeline
                     StartCoroutine(InitPersonAtomMotionHelper(atom));
                 }
             }
-            if (atom.type == "AudioSource")
-            {
-                _AudioPlayHelper._AudioSource2 = atom.GetComponentInChildren<AudioSource>();
-            }
         }
         /// <summary>
         /// 原子被移除的接收方法
@@ -263,7 +270,8 @@ namespace mmd2timeline
             SetMMDCameraProgress(progress);
 
             // 设置音频播放进度
-            if (_ProgressHelper.Speed != 1f // 速度不为1的情况下要同步音频进度
+            if (config.SyncMode != ProgressSyncMode.SyncWithAudio // 同步进度不依据音频
+                || config.PlaySpeed != 1f // 速度不为1的情况下要同步音频进度
                 || hardUpdate // 明确设定硬更新时同步音频进度
                 || _AudioPlayHelper.IsDelay // 启用了音频延迟时需要同步进度
                 || (_AudioPlayHelper.HasAudio && _ProgressHelper.IsPlaying && !_AudioPlayHelper.IsPlaying))// 有音频 但是没有在播放时
@@ -839,7 +847,7 @@ namespace mmd2timeline
             }
 
             // 如果冻结动画或不是活动和启用状态、动作重置中、播放速度为0，进行播放进度冻结后，直接返回
-            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || !_MotionHelperGroup.AllHasAtomInited() || _PlaySpeedJSON.val <= 0f)
+            if (SuperController.singleton.freezeAnimation || !SuperController.singleton.isActiveAndEnabled || isMotionResetting || !_MotionHelperGroup.AllHasAtomInited() || config.PlaySpeed <= 0f)
             {
                 if (IsPlaying)
                 {
@@ -875,16 +883,16 @@ namespace mmd2timeline
             try
             {
                 // 如果有音频、在播放中，播放速度是1，按照音频进度更新
-                if (_ProgressHelper.SyncMode == ProgressSyncMode.SyncWithAudio &&
-                !_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying && _ProgressHelper.Speed == 1f)
+                if (config.SyncMode == ProgressSyncMode.SyncWithAudio &&
+                !_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying && config.PlaySpeed == 1f)
                 {
                     _ProgressHelper.SetProgress(_AudioPlayHelper.GetAudioTime(), false);
                 }
                 else
                 {
-                    _ProgressHelper.Update();
-                    if (!_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying)
-                        _AudioPlayHelper.SetAudioTime(_ProgressHelper.Progress, false);
+                    _ProgressHelper.Update(config.PlaySpeed);
+                    //if (!_AudioPlayHelper.IsDelay && _AudioPlayHelper.HasAudio && _AudioPlayHelper.IsPlaying)
+                    //    _AudioPlayHelper.SetAudioTime(_ProgressHelper.Progress, false);
                 }
             }
             catch (Exception ex)
@@ -902,7 +910,7 @@ namespace mmd2timeline
         {
             if (config.showDebugInfo)
             {
-                ShowHUDMessage($"Speed:{_ProgressHelper.Speed}" +
+                ShowHUDMessage($"Speed:{config.PlaySpeed}" +
                     $"\n" +
                     $"HasAudio:{_AudioPlayHelper.HasAudio}" +
                     $"\n" +
@@ -913,8 +921,8 @@ namespace mmd2timeline
                     $"A.Progress:{_AudioPlayHelper.GetAudioTime().ToString("0.000")}" +
                     $"\n" +
                     $"lowestControlName:{_MotionHelperGroup.Helpers.FirstOrDefault()?.lowestControlName}" +
-                    $"\n" +
-                    $"AudioSource:{_AudioPlayHelper._AudioSource}" +
+                    //$"\n" +
+                    //$"AudioSource:{_AudioPlayHelper._AudioSource}" +
                     msg);
             }
         }
@@ -1203,10 +1211,10 @@ namespace mmd2timeline
             {
                 CurrentItem = entity;
 
-                UpdateFavoriteLabel(entity);
+                UpdateFavoriteLabel(CurrentItem);
             }
 
-            var fileData = entity.GetFileData();
+            var fileData = CurrentItem.GetFileData();
 
             // 如果没有内容，停止播放
             if (fileData.DefaultCamera == noneString
@@ -1216,12 +1224,13 @@ namespace mmd2timeline
                 this.StopPlaying();
             }
 
-            _ProgressHelper.InitSettings(entity.CurrentSetting);
+            _ProgressHelper.InitSettings(CurrentItem.CurrentSetting);
+
             // 加载音频设置
-            LoadAudioSettings(entity.AudioSetting, fileData.AudioPaths, fileData.AudioNames);
+            _AudioPlayHelper.InitPlay(CurrentItem, fileData.AudioPaths, fileData.AudioNames);
 
             // 加载镜头动作
-            LoadCameraSettings(entity.CameraSetting, fileData.MotionPaths, fileData.MotionNames);
+            _CameraHelper.InitPlay(CurrentItem, fileData.MotionPaths, fileData.MotionNames);
 
             //try
             //{
@@ -1321,35 +1330,11 @@ namespace mmd2timeline
                 }
 
                 // 设置人物动作
-                motionHelper?.InitSettings(fileData.MotionPaths, fileData.MotionNames, motion);
+                motionHelper?.InitSettings(CurrentItem, fileData.MotionPaths, fileData.MotionNames, motion);
             }
 
             yield return null;
             atom.collisionEnabled = true;
-        }
-
-        /// <summary>
-        /// 加载音频设置
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="choices"></param>
-        /// <param name="displayChoices"></param>
-        private void LoadAudioSettings(AudioSetting settings, List<string> choices, List<string> displayChoices)
-        {
-            _AudioPlayHelper.InitPlay(settings, choices, displayChoices);
-        }
-
-        /// <summary>
-        /// 加载镜头设置
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="choices"></param>
-        /// <param name="displayChoices"></param>
-        private void LoadCameraSettings(CameraSetting settings, List<string> choices, List<string> displayChoices)
-        {
-            var choice = string.IsNullOrEmpty(settings.CameraPath) ? noneString : settings.CameraPath;
-
-            _CameraHelper.InitPlay(choices, displayChoices, choice, settings);
         }
 
         /// <summary>

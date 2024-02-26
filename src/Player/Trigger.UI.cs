@@ -726,8 +726,6 @@ namespace mmd2timeline
             {
                 var targetType = _currentTriggerEventAction.TargetType;
 
-                if (targetType == TriggerEventType.Bool) return true;
-
                 switch (targetType)
                 {
                     case TriggerEventType.Bool:
