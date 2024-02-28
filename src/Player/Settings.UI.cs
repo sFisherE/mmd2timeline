@@ -186,7 +186,7 @@ namespace mmd2timeline
                     if (v != defaultSourceName)
                         target = GetAtomById(v);
 
-                    CameraHelper.GetInstance().SetCameraAtom(target);
+                    CameraHelper.GetInstance().SetCustomCameraAtom(target);
                 };
                 RegisterStringChooser(_cameraAtomChooser);
             }
@@ -376,11 +376,11 @@ namespace mmd2timeline
         /// </summary>
         void RefreshCameraUI()
         {
-            if (config.UseOriginalCamera || config.CameraControlMode == CameraControlModes.Atom)
+            if (config.UseOriginalCamera || config.UseCustomCameraAtom)
             {
                 _CameraFocusUI.RefreshView(false);
                 ShowUIElements(_CameraControlUI, false);
-                CameraHelper.GetInstance().ShowFocusUI(false);
+                CameraHelper.GetInstance().ShowFocusUI(true);
             }
             else
             {
@@ -389,7 +389,7 @@ namespace mmd2timeline
                 CameraHelper.GetInstance().ShowFocusUI(true);
             }
 
-            ShowUIElement(_cameraAtomChooser, config.CameraControlMode == CameraControlModes.Atom);
+            ShowUIElement(_cameraAtomChooser, config.UseCustomCameraAtom);
         }
 
         /// <summary>

@@ -22,9 +22,9 @@ namespace mmd2timeline
         Quaternion _RotationOffset = Quaternion.Euler(0f, 0f, 0f);
         Vector3 _PositionOffset = Vector3.zero;
 
-        Atom _cameraAtom;
+        Atom _customCameraAtom;
 
-        internal void SetCameraAtom(Atom atom) { _cameraAtom = atom; }
+        internal void SetCustomCameraAtom(Atom atom) { _customCameraAtom = atom; }
 
         /// <summary>
         /// 更新旋转偏移
@@ -174,25 +174,25 @@ namespace mmd2timeline
 
                 if (config.UseWindowCamera && WindowCamera != null)
                 {
-                    if (config.UseOriginalCamera || (config.CameraPositionSmoothing <= 0f && config.CameraRotationSmoothing <= 0f && !_FocusOnAtom))
+                    if (!(config.UseOriginalCamera || (config.CameraPositionSmoothing <= 0f && config.CameraRotationSmoothing <= 0f && !_FocusOnAtom)))
                     {
-                        _CameraTransform.SetPositionAndRotation(position, rotation);
+                        // 位置平滑大于0
+                        if (config.CameraPositionSmoothing > 0)
+                            position = Vector3.SmoothDamp(_CameraTransform.position, position, ref _currentPositionVelocity, config.CameraPositionSmoothing);
+                        if (config.CameraRotationSmoothing > 0)
+                            rotation = SmoothDamp(_CameraTransform.rotation, rotation, ref _currentRotationVelocity, config.CameraRotationSmoothing);
                     }
-                    else
+                    //_CameraTransform.SetPositionAndRotation(position, rotation);
+                    _CameraTransform.position = position;
+
+                    if (!FocusOn(position, rotation.GetUp()))
                     {
-                        var navigationRigPosition = GetPosition(position, rotation, _CameraTransform, isCamera: true);
-
-                        if (_positionLock)
-                        {
-                            _CameraTransform.position = navigationRigPosition;
-                        }
-
-                        if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
-                        {
-                            var navigationRigRotation = GetRotation(navigationRigPosition, rotation, _CameraTransform);
-                            _CameraTransform.rotation = navigationRigRotation;
-                        }
+                        _CameraTransform.rotation = rotation;
                     }
+
+                    _CameraTransform.position += _PositionOffset;
+                    _CameraTransform.rotation *= _RotationOffset;
+
                     if (config.CameraFOVEnabled)
                     {
                         _CameraControl.cameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
@@ -201,10 +201,18 @@ namespace mmd2timeline
                 }
                 else
                 {
-                    // TODO 检查选定的插件是否有附加Embody插件，如果有，则将进行相应处理
-                    if (config.UseCameraAtom && _cameraAtom != null)
+                    // 如果使用自定义相机原子模式并且自定义相机原子不为空
+                    if (config.UseCustomCameraAtom && _customCameraAtom != null)
                     {
-                        _cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
+                        //_cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
+                        _customCameraAtom.mainController.control.position = position;
+
+                        if (!FocusOn(position, rotation.GetUp()))
+                        {
+                            _customCameraAtom.mainController.control.rotation = rotation;
+                        }
+                        _customCameraAtom.mainController.control.position += _PositionOffset;
+                        _customCameraAtom.mainController.control.rotation *= _RotationOffset;
                     }
                     else
                     {
@@ -329,15 +337,22 @@ namespace mmd2timeline
                 OnCameraActivateStatusChanged?.Invoke(this, SuperController.singleton.navigationDisabled);
 
                 // 如果使用镜头原子，则检查镜头原子是否有Embody插件，如果有，则自动进行镜头启用和禁用的处理
-                if (config.UseCameraAtom)
+                if (config.UseCustomCameraAtom)
                 {
-                    if (_cameraAtom != null)
+                    if (_customCameraAtom != null)
                     {
-                        foreach (string receiverChoice in _cameraAtom.GetStorableIDs())
+                        // 如果自定义相机原子为关闭状态，则打开它
+                        var cameraAtomOnJSON = _customCameraAtom.GetBoolJSONParam("on");
+                        if (cameraAtomOnJSON != null && !cameraAtomOnJSON.val)
+                        {
+                            cameraAtomOnJSON.val = true;
+                        }
+
+                        foreach (string receiverChoice in _customCameraAtom.GetStorableIDs())
                         {
                             if (receiverChoice.StartsWith("plugin#") && receiverChoice.IndexOf("Embody") > 7)
                             {
-                                var receiver = _cameraAtom.GetStorableByID(receiverChoice);
+                                var receiver = _customCameraAtom.GetStorableByID(receiverChoice);
 
                                 if (receiver != null)
                                 {
