@@ -176,6 +176,26 @@ namespace mmd2timeline
                     return;
                 }
 
+                Transform positionRef = null;
+                //JSONStorableFloat scaleJSON = null;
+                //var personScale = 1f;
+
+                if (_positionReferenceAtom != null)
+                {
+                    positionRef = _positionReferenceAtom.mainController.control;
+
+                    //var rescaleObject = _positionReferenceAtom.GetStorableByID("rescaleObject");
+
+                    //if (rescaleObject != null)
+                    //{
+                    //    scaleJSON = rescaleObject.GetFloatJSONParam("scale");
+                    //    if (scaleJSON != null)
+                    //    {
+                    //        personScale = scaleJSON.val;
+                    //    }
+                    //}
+                }
+
                 if (config.UseWindowCamera && WindowCamera != null)
                 {
                     if (!(config.UseOriginalCamera || (config.CameraPositionSmoothing <= 0f && config.CameraRotationSmoothing <= 0f && !_FocusOnAtom)))
@@ -189,12 +209,6 @@ namespace mmd2timeline
                     //_CameraTransform.SetPositionAndRotation(position, rotation);
                     _CameraTransform.position = position;
 
-                    if (_positionReferenceAtom != null)
-                    {
-                        var positionRef = _positionReferenceAtom.mainController.control;
-                        _CameraTransform.position += positionRef.position;
-                    }
-
                     if (!FocusOn(position, rotation.GetUp()))
                     {
                         _CameraTransform.rotation = rotation;
@@ -202,6 +216,11 @@ namespace mmd2timeline
 
                     _CameraTransform.position += _PositionOffset;
                     _CameraTransform.rotation *= _RotationOffset;
+
+                    if (positionRef != null)
+                    {
+                        _CameraTransform.position += positionRef.position;
+                    }
 
                     if (config.CameraFOVEnabled)
                     {
@@ -217,18 +236,17 @@ namespace mmd2timeline
                         //_cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
                         _customCameraAtom.mainController.control.position = position;
 
-                        if (_positionReferenceAtom != null)
-                        {
-                            var positionRef = _positionReferenceAtom.mainController.control;
-                            _customCameraAtom.mainController.control.position += positionRef.position;
-                        }
-
                         if (!FocusOn(position, rotation.GetUp()))
                         {
                             _customCameraAtom.mainController.control.rotation = rotation;
                         }
                         _customCameraAtom.mainController.control.position += _PositionOffset;
                         _customCameraAtom.mainController.control.rotation *= _RotationOffset;
+
+                        if (positionRef != null)
+                        {
+                            _customCameraAtom.mainController.control.position += positionRef.position;
+                        }
                     }
                     else
                     {
@@ -239,16 +257,15 @@ namespace mmd2timeline
                             NavigationRig.position = navigationRigPosition;
                         }
 
-                        if (_positionReferenceAtom != null)
-                        {
-                            var positionRef = _positionReferenceAtom.mainController.control;
-                            NavigationRig.position += positionRef.position;
-                        }
-
                         if (!FocusOn(position, rotation.GetUp()) && _rotationLock)
                         {
                             var navigationRigRotation = GetRotation(position, rotation, NavigationRig);
                             NavigationRig.rotation = navigationRigRotation;
+                        }
+
+                        if (positionRef != null)
+                        {
+                            NavigationRig.position += positionRef.position;
                         }
                     }
 

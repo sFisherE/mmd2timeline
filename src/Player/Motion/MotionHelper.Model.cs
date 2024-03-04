@@ -77,6 +77,22 @@ namespace mmd2timeline
 
         internal IEnumerator CoInitAtom(bool resetOnly = false)
         {
+            var personScale = 1f;
+
+            var rescaleObject = _PersonAtom.GetStorableByID("rescaleObject");
+            JSONStorableFloat scaleJSON = null;
+
+            if (rescaleObject != null)
+            {
+                scaleJSON = rescaleObject.GetFloatJSONParam("scale");
+                if (scaleJSON != null)
+                {
+                    personScale = scaleJSON.val;
+
+                    scaleJSON.val = 1f;
+                }
+            }
+
             var prePosition = _PersonAtom.mainController.transform.position;
             var preRotation = _PersonAtom.mainController.transform.rotation;
 
@@ -129,6 +145,11 @@ namespace mmd2timeline
 
                 yield return null;
                 hasAtomInited = true;
+            }
+
+            if (scaleJSON != null)
+            {
+                scaleJSON.val = personScale;
             }
 
             _PersonAtomHelper.StopExpressions();
