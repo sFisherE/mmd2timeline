@@ -501,6 +501,9 @@ namespace mmd2timeline
             this["Action"] = "动作";
             this["Audio Settings"] = "音频设置";
             this["Audio Source"] = "音频源";
+            this["Camera Control"] = "镜头模式";
+            this["Camera Atom"] = "自定义镜头原子";
+            this["[Default]"] = "默认";
         }
     }
 }

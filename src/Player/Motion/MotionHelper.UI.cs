@@ -1,6 +1,7 @@
 ﻿using MacGruber;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace mmd2timeline
 {
@@ -569,9 +570,11 @@ namespace mmd2timeline
         /// <param name="popupPanelHeight"></param>
         /// <param name="rightSide"></param>
         /// <returns></returns>
-        JSONStorableStringChooser SetupStringChooser(BaseScript self, string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        JSONStorableStringChooser SetupStringChooser(BaseScript self, string label, List<string> names, float popupPanelHeight = 600f, bool rightSide = false)
         {
-            return self.SetupStringChooserNoLang(GetParamName(label), Lang.Get(label), entries, popupPanelHeight, rightSide);
+            var displayNames = names.Select(e => Lang.Get(e)).ToList();
+
+            return self.SetupStringChooserNoLang(GetParamName(label), Lang.Get(label), names, displayNames, popupPanelHeight, rightSide);
         }
         /// <summary>
         /// 设置EnumsChooser控件

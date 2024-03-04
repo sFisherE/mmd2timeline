@@ -148,11 +148,14 @@ namespace mmd2timeline
             var defaultSourceName = "[Default]";
 
             var audioSources = GetSceneAtoms().Where(a => a.GetComponentInChildren<AudioSource>() != null).Select(a => a.uid).ToList();
-            audioSources.Insert(0, defaultSourceName);
 
             if (_audioSourceChooser == null)
             {
-                _audioSourceChooser = SetupStringChooserNoLang($"Audio Source", Lang.Get("Audio Source"), audioSources, rightSide: RightSide);
+                var displayAudioSources = audioSources.ToList();
+                displayAudioSources.Insert(0, Lang.Get(defaultSourceName));
+                audioSources.Insert(0, defaultSourceName);
+
+                _audioSourceChooser = SetupStringChooserNoLang($"Audio Source", Lang.Get("Audio Source"), audioSources, displayAudioSources, rightSide: RightSide);
                 _audioSourceChooser.setCallbackFunction = v =>
                 {
                     Atom target = null;
@@ -174,11 +177,14 @@ namespace mmd2timeline
             var defaultSourceName = noneString;
 
             var cameraAtomSources = GetSceneAtoms().Where(a => a.type == "Empty" || a.type == "WindowCamera").Select(a => a.uid).ToList();
-            cameraAtomSources.Insert(0, defaultSourceName);
 
             if (_cameraAtomChooser == null)
             {
-                _cameraAtomChooser = SetupStringChooserNoLang($"Camera Atom", Lang.Get("Camera Atom"), cameraAtomSources, rightSide: RightSide);
+                var displayCameraAtomSources = cameraAtomSources.ToList();
+                cameraAtomSources.Insert(0, defaultSourceName);
+                displayCameraAtomSources.Insert(0, Lang.Get(defaultSourceName));
+
+                _cameraAtomChooser = SetupStringChooserNoLang($"Camera Atom", Lang.Get("Camera Atom"), cameraAtomSources, displayCameraAtomSources, rightSide: RightSide);
                 _cameraAtomChooser.setCallbackFunction = v =>
                 {
                     Atom target = null;
