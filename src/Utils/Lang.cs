@@ -444,6 +444,8 @@ namespace mmd2timeline
             this["Knee"] = "膝";
             this["Foot"] = "足";
             this["Toe"] = "趾";
+            this["Head"] = "头";
+            this["Neck"] = "颈";
             this["Adjust Bone Rotation X"] = "调节骨骼旋转 X";
             this["Adjust Bone Rotation Y"] = "调节骨骼旋转 Y";
             this["Adjust Bone Rotation Z"] = "调节骨骼旋转 Z";

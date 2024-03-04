@@ -90,7 +90,7 @@ namespace LibMMD.Motion
                     image.IkFixTypes = new int[ikLinkNum];
                     image.IkTransformOrders = Enumerable.Repeat(BoneImage.OrderYzx, ikLinkNum)
                         .ToArray();
-                    image.IkLinkLimited = new bool [ikLinkNum];
+                    image.IkLinkLimited = new bool[ikLinkNum];
                     image.IkLinkLimitsMin = new Vector3[ikLinkNum];
                     image.IkLinkLimitsMax = new Vector3[ikLinkNum];
 
@@ -163,7 +163,7 @@ namespace LibMMD.Motion
                 }
             }
 
-            foreach(var item in BoneImages)
+            foreach (var item in BoneImages)
             {
                 BoneImageLookup.Add(item.Name, item);
             }
@@ -224,7 +224,7 @@ namespace LibMMD.Motion
                 image.TotalTranslation = image.TotalTranslation +
                                          image.AppendRatio * BoneImages[image.AppendParent].TotalTranslation;
             }
-            
+
             UpdateLocalMatrix(image);
         }
 
@@ -245,6 +245,9 @@ namespace LibMMD.Motion
         {
             if (s_AdjustBones != null) return;
             s_AdjustBones = new Dictionary<string, string[]>();
+
+            s_AdjustBones.Add("Head", new string[] { "頭", "頭" });
+            s_AdjustBones.Add("Neck", new string[] { "首", "首" });
             s_AdjustBones.Add("Arm", new string[] { "左腕", "右腕" });
             s_AdjustBones.Add("Shoulder", new string[] { "左肩", "右肩" });
             s_AdjustBones.Add("Elbow", new string[] { "左ひじ", "右ひじ" });
@@ -261,10 +264,10 @@ namespace LibMMD.Motion
 
             image.TotalRotation = image.MorphRotation * image.Rotation;
             image.TotalTranslation = image.MorphTranslation + image.Translation;
-            bool mark = image.Name.StartsWith("左") ? true : false;
+            bool mark = image.Name.StartsWith("右") ? true : false;
 
             InitAdjustBones();
-            foreach(var item in s_AdjustBones)
+            foreach (var item in s_AdjustBones)
             {
                 string boneName = item.Key;
                 if (Model.m_BoneAdjust.ContainsKey(boneName))
@@ -273,7 +276,7 @@ namespace LibMMD.Motion
                     if (image.Name == names[0] || image.Name == names[1])
                     {
                         Vector3 v = Model.m_BoneAdjust[boneName];
-                        v = new Vector3(v.x, mark ? v.y : -v.y, mark ? v.z : -v.z);
+                        v = new Vector3(v.x, mark ? -v.y : v.y, mark ? -v.z : v.z);
                         image.TotalRotation = Quaternion.Euler(v) * image.TotalRotation;
                     }
                 }
@@ -350,7 +353,7 @@ namespace LibMMD.Motion
                                 ikRotateAxis.y = ikRotateAxis.z = 0.0f;
                                 break;
                             case BoneImage.FixY:
-                                ikRotateAxis.y =  
+                                ikRotateAxis.y =
                                     Nabs(Vector3.Dot(ikRotateAxis,
                                         MathUtil.Matrix4x4ColDowngrade(localizationMatrix, 1)));
                                 ikRotateAxis.x = ikRotateAxis.z = 0.0f;
@@ -364,7 +367,7 @@ namespace LibMMD.Motion
                         }
                     }
                     else
-                    { 
+                    {
                         ikRotateAxis = Matrix4x4.Transpose(localizationMatrix).MultiplyVector(ikRotateAxis);
                         ikRotateAxis.Normalize();
                     }
@@ -372,7 +375,7 @@ namespace LibMMD.Motion
                         Mathf.Min(Mathf.Acos(Mathf.Clamp(Vector3.Dot(targetDirection, ikDirection), -1.0f, 1.0f)),
                             image.CcdAngleLimit * (j + 1));
                     ikImage.IkRotation =
-                        Quaternion.AngleAxis((float) (ikRotateAngle / Math.PI * 180.0), ikRotateAxis) * ikImage.IkRotation;
+                        Quaternion.AngleAxis((float)(ikRotateAngle / Math.PI * 180.0), ikRotateAxis) * ikImage.IkRotation;
 
                     if (image.IkLinkLimited[j])
                     {

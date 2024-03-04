@@ -586,7 +586,7 @@ namespace mmd2timeline
         /// <returns></returns>
         JSONStorableStringChooser SetupStaticEnumsChooser<T>(BaseScript self, string label, List<string> names, string defaultValue, bool rightSide, BaseScript.StaticEnumsSetCallback<T> callback)
         {
-            return self.SetupStaticEnumsChooser<T>(GetParamName(label), label, names, defaultValue, rightSide, callback);
+            return self.SetupStaticEnumsChooser<T>(GetParamName(label), Lang.Get(label), names, defaultValue, rightSide, callback);
         }
         #endregion
     }
