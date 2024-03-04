@@ -504,6 +504,7 @@ namespace mmd2timeline
             this["Camera Control"] = "镜头模式";
             this["Camera Atom"] = "自定义镜头原子";
             this["[Default]"] = "默认";
+            this["Camera Position Reference"] = "镜头位置参考";
         }
     }
 }

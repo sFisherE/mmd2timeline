@@ -26,6 +26,10 @@ namespace mmd2timeline
 
         internal void SetCustomCameraAtom(Atom atom) { _customCameraAtom = atom; }
 
+        Atom _positionReferenceAtom;
+
+        internal void SetPositionReferenceAtom(Atom atom) { _positionReferenceAtom = atom; }
+
         /// <summary>
         /// 更新旋转偏移
         /// </summary>
@@ -185,6 +189,12 @@ namespace mmd2timeline
                     //_CameraTransform.SetPositionAndRotation(position, rotation);
                     _CameraTransform.position = position;
 
+                    if (_positionReferenceAtom != null)
+                    {
+                        var positionRef = _positionReferenceAtom.mainController.control;
+                        _CameraTransform.position += positionRef.position;
+                    }
+
                     if (!FocusOn(position, rotation.GetUp()))
                     {
                         _CameraTransform.rotation = rotation;
@@ -207,6 +217,12 @@ namespace mmd2timeline
                         //_cameraAtom.mainController.control.SetPositionAndRotation(position, rotation);
                         _customCameraAtom.mainController.control.position = position;
 
+                        if (_positionReferenceAtom != null)
+                        {
+                            var positionRef = _positionReferenceAtom.mainController.control;
+                            _customCameraAtom.mainController.control.position += positionRef.position;
+                        }
+
                         if (!FocusOn(position, rotation.GetUp()))
                         {
                             _customCameraAtom.mainController.control.rotation = rotation;
@@ -221,6 +237,12 @@ namespace mmd2timeline
                         if (_positionLock)
                         {
                             NavigationRig.position = navigationRigPosition;
+                        }
+
+                        if (_positionReferenceAtom != null)
+                        {
+                            var positionRef = _positionReferenceAtom.mainController.control;
+                            NavigationRig.position += positionRef.position;
                         }
 
                         if (!FocusOn(position, rotation.GetUp()) && _rotationLock)

@@ -120,6 +120,11 @@ namespace mmd2timeline
         JSONStorableStringChooser _cameraAtomChooser;
 
         /// <summary>
+        /// 镜头位置引用原子选择器
+        /// </summary>
+        JSONStorableStringChooser _cameraPositionReferenceAtomChooser;
+
+        /// <summary>
         /// 原子UID更改的处理函数
         /// </summary>
         /// <param name="s"></param>
@@ -128,6 +133,7 @@ namespace mmd2timeline
         {
             RefreshAudioSourceAtomList();
             RefreshCameraAtomList();
+            RefreshCameraPositionReferenceAtomList();
         }
 
         /// <summary>
@@ -138,6 +144,7 @@ namespace mmd2timeline
         {
             RefreshAudioSourceAtomList();
             RefreshCameraAtomList();
+            RefreshCameraPositionReferenceAtomList();
         }
 
         /// <summary>
@@ -148,13 +155,12 @@ namespace mmd2timeline
             var defaultSourceName = "[Default]";
 
             var audioSources = GetSceneAtoms().Where(a => a.GetComponentInChildren<AudioSource>() != null).Select(a => a.uid).ToList();
+            var displayAudioSources = audioSources.ToList();
+            displayAudioSources.Insert(0, Lang.Get(defaultSourceName));
+            audioSources.Insert(0, defaultSourceName);
 
             if (_audioSourceChooser == null)
             {
-                var displayAudioSources = audioSources.ToList();
-                displayAudioSources.Insert(0, Lang.Get(defaultSourceName));
-                audioSources.Insert(0, defaultSourceName);
-
                 _audioSourceChooser = SetupStringChooserNoLang($"Audio Source", Lang.Get("Audio Source"), audioSources, displayAudioSources, rightSide: RightSide);
                 _audioSourceChooser.setCallbackFunction = v =>
                 {
@@ -169,6 +175,38 @@ namespace mmd2timeline
             else
             {
                 _audioSourceChooser.choices = audioSources;
+                _audioSourceChooser.displayChoices = displayAudioSources;
+            }
+        }
+        //Position Reference
+        void RefreshCameraPositionReferenceAtomList()
+        {
+            var defaultSourceName = noneString;
+
+            var targetAtomSources = GetSceneAtoms().Where(a => a.type == "Empty" || a.type == "Person").Select(a => a.uid).ToList();
+
+            var displayCameraAtomSources = targetAtomSources.ToList();
+            targetAtomSources.Insert(0, defaultSourceName);
+            displayCameraAtomSources.Insert(0, Lang.Get(defaultSourceName));
+
+            if (_cameraPositionReferenceAtomChooser == null)
+            {
+                _cameraPositionReferenceAtomChooser = SetupStringChooserNoLang($"Camera Position Reference", Lang.Get("Camera Position Reference"), targetAtomSources, displayCameraAtomSources, rightSide: RightSide);
+                _cameraPositionReferenceAtomChooser.setCallbackFunction = v =>
+                {
+                    Atom target = null;
+
+                    if (v != defaultSourceName)
+                        target = GetAtomById(v);
+
+                    CameraHelper.GetInstance().SetPositionReferenceAtom(target);
+                };
+                RegisterStringChooser(_cameraPositionReferenceAtomChooser);
+            }
+            else
+            {
+                _cameraPositionReferenceAtomChooser.choices = targetAtomSources;
+                _cameraPositionReferenceAtomChooser.displayChoices = displayCameraAtomSources;
             }
         }
 
@@ -177,13 +215,12 @@ namespace mmd2timeline
             var defaultSourceName = noneString;
 
             var cameraAtomSources = GetSceneAtoms().Where(a => a.type == "Empty" || a.type == "WindowCamera").Select(a => a.uid).ToList();
+            var displayCameraAtomSources = cameraAtomSources.ToList();
+            cameraAtomSources.Insert(0, defaultSourceName);
+            displayCameraAtomSources.Insert(0, Lang.Get(defaultSourceName));
 
             if (_cameraAtomChooser == null)
             {
-                var displayCameraAtomSources = cameraAtomSources.ToList();
-                cameraAtomSources.Insert(0, defaultSourceName);
-                displayCameraAtomSources.Insert(0, Lang.Get(defaultSourceName));
-
                 _cameraAtomChooser = SetupStringChooserNoLang($"Camera Atom", Lang.Get("Camera Atom"), cameraAtomSources, displayCameraAtomSources, rightSide: RightSide);
                 _cameraAtomChooser.setCallbackFunction = v =>
                 {
@@ -199,6 +236,7 @@ namespace mmd2timeline
             else
             {
                 _cameraAtomChooser.choices = cameraAtomSources;
+                _cameraAtomChooser.displayChoices = displayCameraAtomSources;
             }
 
             var defaultChooser = "";
@@ -435,6 +473,7 @@ namespace mmd2timeline
 
             //_CameraControlUI.Add(SetupToggle(config.DeactiveCameraWhenMainHUDOpened, "Deactive when MainHUD Opened", dft.DeactiveCameraWhenMainHUDOpened, (v) => config.DeactiveCameraWhenMainHUDOpened = v, RightSide));
 
+
             #region 窗口镜头同步
 
             //var syncWindowCameraJSON = SetupToggle(config.SyncWindowCamera, "Play in WindowCamera", dft.SyncWindowCamera, RightSide);//_WindowCameraAtom
@@ -464,6 +503,8 @@ namespace mmd2timeline
             var cameraHelper = CameraHelper.GetInstance();
             // 创建镜头聚焦UI
             cameraHelper.CreateFocusUI(this, RightSide);
+
+            RefreshCameraPositionReferenceAtomList();
 
             Utils.SetupSpacer(this, 10f, RightSide);
         }
