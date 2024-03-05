@@ -1,11 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using mmd2timeline;
+using Oculus.Platform;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LibMMD.Motion
 {
     public class CameraMotion
     {
-        public List<KeyValuePair<int, CameraKeyframe>> KeyFrames { get; set; }
+        List<KeyValuePair<int, CameraKeyframe>> _keyFrames;
+        public List<KeyValuePair<int, CameraKeyframe>> KeyFrames
+        {
+            get
+            {
+                return _keyFrames;
+            }
+            set
+            {
+                _keyFrames = value;
+                prevIndex = 0;
+            }
+        }
 
         private CameraPose GetCameraPoseByFrame(float frame)
         {
@@ -73,12 +87,12 @@ namespace LibMMD.Motion
                     points[i] = CalculBezierPointByTwo(t, p1, p2);
             }
 
-            if (isLinear&& leftFrame == rightFrame - 1)
+            if (isLinear && leftFrame == rightFrame - 1)
             {
                 return CameraKeyFrameToCameraPose(leftKey);
             }
             //如果只差一帧的话，强制用线性插值。
-            if(leftFrame == rightFrame - 1)
+            if (leftFrame == rightFrame - 1)
             {
                 for (var i = 0; i < 6; i++)
                 {
@@ -119,9 +133,14 @@ namespace LibMMD.Motion
             };
         }
 
-        public CameraPose GetCameraPose(double time)
+        public CameraPose GetCameraPose(double time, bool evaluation = false, bool newInterpolate = false)
         {
-            return GetCameraPoseByFrame((float)(time * 30.0));
+            var frame = (float)(time * 30.0);
+            if (evaluation)
+            {
+                return GetFrame(frame, newInterpolate);
+            }
+            return GetCameraPoseByFrame(frame);
         }
 
         private class CameraKeyframeSearchComparator : IComparer<KeyValuePair<int, CameraKeyframe>>
@@ -161,5 +180,318 @@ namespace LibMMD.Motion
             p += ttt * p3; //fourth term
             return p;
         }
+
+        #region 重写的镜头数据获取方法
+
+        int prevIndex = 0;
+
+        public CameraPose GetFrame(float frame, bool newInterpolate = false)
+        {
+            if (this.KeyFrames.Count == 0)
+                return null;
+
+            // 如果目标帧小于等于第一帧，返回第一帧
+            if (frame <= this.KeyFrames[0].Key)
+            {
+                var value = KeyFrames[0].Value;
+                return CameraKeyFrameToCameraPose(value);
+            }
+            // 如果目标帧大于等于最后一帧，返回最后一帧
+            else if (frame >= KeyFrames[KeyFrames.Count - 1].Key)
+            {
+                var value = KeyFrames[KeyFrames.Count - 1].Value;
+                return CameraKeyFrameToCameraPose(value);
+            }
+            // 如果目标帧在上一帧和下一帧之间，取两帧之间的插值
+            else if (frame > KeyFrames[this.prevIndex].Key && frame < KeyFrames[this.prevIndex + 1].Key)
+            {
+                if (newInterpolate)
+                {
+                    return NewInterpolateCameraFrame(frame, KeyFrames[this.prevIndex], KeyFrames[this.prevIndex + 1]);
+                }
+                return InterpolateCameraFrame(frame, KeyFrames[this.prevIndex], KeyFrames[this.prevIndex + 1]);
+            }
+            else
+            {
+                // 循环所有帧
+                for (var i = 0; i < KeyFrames.Count; i++)
+                {
+                    // 如果目标帧与当前帧一致
+                    if (frame == KeyFrames[i].Key)
+                    {
+                        // 记录当前帧
+                        this.prevIndex = i;
+                        // 返回当前帧
+                        return CameraKeyFrameToCameraPose(KeyFrames[i].Value);
+                    }
+                    // 如果目标帧小于下一帧，则判定取当前帧与下一帧的插值
+                    else if (frame < KeyFrames[i + 1].Key)
+                    {
+                        // 记录当前帧
+                        this.prevIndex = i;
+                        // 返回上一帧与下一帧的插值
+                        if (newInterpolate)
+                        {
+                            return NewInterpolateCameraFrame(frame, KeyFrames[i], KeyFrames[i + 1]);
+                        }
+                        return InterpolateCameraFrame(frame, KeyFrames[i], KeyFrames[i + 1]);
+                    }
+                }
+            }
+            return null;
+        }
+
+        CameraPose NewInterpolateCameraFrame(float targetFrameNo, KeyValuePair<int, CameraKeyframe> prevFrameData, KeyValuePair<int, CameraKeyframe> nextFrameData)
+        {
+            var prevFrame = prevFrameData.Value;
+            var nextFrame = nextFrameData.Value;
+            if (prevFrameData.Key + 1 == nextFrameData.Key)
+                return CameraKeyFrameToCameraPose(prevFrame);
+            var tframe = (float)(targetFrameNo - prevFrameData.Key) / (float)(nextFrameData.Key - prevFrameData.Key);
+
+            float tx, ty, tz, tr, td, tv;
+
+            if (IsLinear(nextFrame.xCurve))
+            {
+                tx = tframe;
+            }
+            else
+            {
+                tx = InterpolateFrame(nextFrame.xCurve, tframe);
+            }
+            if (IsLinear(nextFrame.yCurve))
+                ty = tframe;
+            else
+                ty = InterpolateFrame(nextFrame.yCurve, tframe);
+            if (IsLinear(nextFrame.zCurve))
+                tz = tframe;
+            else
+                tz = InterpolateFrame(nextFrame.zCurve, tframe);
+            if (IsLinear(nextFrame.rCurve))
+                tr = tframe;
+            else
+                tr = InterpolateFrame(nextFrame.rCurve, tframe);
+            if (IsLinear(nextFrame.dCurve))
+                td = tframe;
+            else
+                td = InterpolateFrame(nextFrame.dCurve, tframe);
+            if (IsLinear(nextFrame.vCurve))
+                tv = tframe;
+            else
+                tv = InterpolateFrame(nextFrame.vCurve, tframe);
+
+            var nf = new CameraPose
+            {
+                FocalLength = prevFrame.FocalLength + (nextFrame.FocalLength - prevFrame.FocalLength) * td,
+                Position = new Vector3(
+                   prevFrame.Position.x + (nextFrame.Position.x - prevFrame.Position.x) * tx,
+                   prevFrame.Position.y + (nextFrame.Position.y - prevFrame.Position.y) * ty,
+                   prevFrame.Position.z + (nextFrame.Position.z - prevFrame.Position.z) * tz),
+                Rotation = new Vector3(
+                   prevFrame.Rotation.x + (nextFrame.Rotation.x - prevFrame.Rotation.x) * tr,
+                   prevFrame.Rotation.y + (nextFrame.Rotation.y - prevFrame.Rotation.y) * tr,
+                   prevFrame.Rotation.z + (nextFrame.Rotation.z - prevFrame.Rotation.z) * tr),
+                Fov = prevFrame.Fov + (nextFrame.Fov - prevFrame.Fov) * tv
+            };
+
+            return nf;
+        }
+
+        CameraPose InterpolateCameraFrame(float targetFrameNo, KeyValuePair<int, CameraKeyframe> prevFrameData, KeyValuePair<int, CameraKeyframe> nextFrameData)
+        {
+            var prevFrame = prevFrameData.Value;
+            var nextFrame = nextFrameData.Value;
+            if (prevFrameData.Key + 1 == nextFrameData.Key)
+                return CameraKeyFrameToCameraPose(prevFrame);
+            var tframe = (float)(targetFrameNo - prevFrameData.Key) / (float)(nextFrameData.Key - prevFrameData.Key);
+
+            var points = new float[6];//MoveX,MoveY,MoveZ,Rotate,Distance,Angle
+            bool isLinear = false;
+            for (var i = 0; i < 6; i++)
+            {
+                var p1 = new Vector3(prevFrame.Interpolation[i * 4], prevFrame.Interpolation[i * 4 + 2]);
+                var p2 = new Vector3(prevFrame.Interpolation[i * 4 + 1], prevFrame.Interpolation[i * 4 + 3]);
+                //线性插值
+                if (p1.x == p1.y && p2.x == p2.y)
+                {
+                    points[i] = tframe;
+                    isLinear = true;
+                }
+                else
+                    points[i] = CalculBezierPointByTwo(tframe, p1, p2);
+            }
+
+            //如果只差一帧的话，强制用线性插值。
+            if (prevFrameData.Key == nextFrameData.Key - 1)
+            {
+                for (var i = 0; i < 6; i++)
+                {
+                    points[i] = tframe;
+                }
+            }
+
+            var x = prevFrame.Position.x + points[0] * (nextFrame.Position.x - prevFrame.Position.x);
+            //x = (1-points[0])*prevFrame.Position.x+points[0]*nextFrame.Position.x
+
+            var y = prevFrame.Position.y + points[1] * (nextFrame.Position.y - prevFrame.Position.y);
+            var z = prevFrame.Position.z + points[2] * (nextFrame.Position.z - prevFrame.Position.z);
+
+            var rx = prevFrame.Rotation.x + points[3] * (nextFrame.Rotation.x - prevFrame.Rotation.x);
+            var ry = prevFrame.Rotation.y + points[3] * (nextFrame.Rotation.y - prevFrame.Rotation.y);
+            var rz = prevFrame.Rotation.z + points[3] * (nextFrame.Rotation.z - prevFrame.Rotation.z);
+            var focalLength = prevFrame.FocalLength + points[4] * (nextFrame.FocalLength - prevFrame.FocalLength);
+            var fov = prevFrame.Fov + (nextFrame.Fov - prevFrame.Fov) * points[5];
+            var pose = new CameraPose
+            {
+                FocalLength = focalLength,
+                Fov = fov,
+                Orthographic = prevFrame.Orthographic,
+                Position = new Vector3(x, y, z),
+                Rotation = new Vector3(rx, ry, rz)
+            };
+
+            //float tx, ty, tz, tr, td, tv;
+
+            //if (IsLinear(nextFrame.xCurve))
+            //{
+            //    tx = tframe;
+            //}
+            //else
+            //{
+            //    tx = InterpolateFrame(nextFrame.xCurve, tframe);
+            //}
+            //if (IsLinear(nextFrame.yCurve))
+            //    ty = tframe;
+            //else
+            //    ty = InterpolateFrame(nextFrame.yCurve, tframe);
+            //if (IsLinear(nextFrame.zCurve))
+            //    tz = tframe;
+            //else
+            //    tz = InterpolateFrame(nextFrame.zCurve, tframe);
+            //if (IsLinear(nextFrame.rCurve))
+            //    tr = tframe;
+            //else
+            //    tr = InterpolateFrame(nextFrame.rCurve, tframe);
+            //if (IsLinear(nextFrame.dCurve))
+            //    td = tframe;
+            //else
+            //    td = InterpolateFrame(nextFrame.dCurve, tframe);
+            //if (IsLinear(nextFrame.vCurve))
+            //    tv = tframe;
+            //else
+            //    tv = InterpolateFrame(nextFrame.vCurve, tframe);
+
+            //var nf = new CameraPose();
+
+            //nf.FocalLength = prevFrame.FocalLength + (nextFrame.FocalLength - prevFrame.FocalLength) * td;
+            //nf.Position = new Vector3(
+            //   prevFrame.Position.x + (nextFrame.Position.x - prevFrame.Position.x) * tx,
+            //   prevFrame.Position.y + (nextFrame.Position.y - prevFrame.Position.y) * ty,
+            //   prevFrame.Position.z + (nextFrame.Position.z - prevFrame.Position.z) * tz);
+            //nf.Rotation = new Vector3(
+            //   prevFrame.Rotation.x + (nextFrame.Rotation.x - prevFrame.Rotation.x) * tr,
+            //   prevFrame.Rotation.y + (nextFrame.Rotation.y - prevFrame.Rotation.y) * tr,
+            //   prevFrame.Rotation.z + (nextFrame.Rotation.z - prevFrame.Rotation.z) * tr);
+            //nf.Fov = prevFrame.Fov + (nextFrame.Fov - prevFrame.Fov) * tv;
+
+            //var dirty = false;
+            //if (pose.Fov != nf.Fov)
+            //{
+            //    dirty = true;
+            //    LogUtil.Log($"Fov:{pose.Fov}!={nf.Fov}");
+            //}
+            //if (pose.FocalLength != nf.FocalLength)
+            //{
+            //    dirty = true;
+
+            //    LogUtil.Log($"FocalLength:{pose.FocalLength}!={nf.FocalLength}");
+            //}
+            //if (pose.Position != nf.Position)
+            //{
+            //    dirty = true;
+
+            //    LogUtil.Log($"Position:{pose.Position}!={nf.Position}");
+            //}
+            //if (pose.Rotation != nf.Rotation)
+            //{
+            //    dirty = true;
+
+            //    LogUtil.Log($"Rotation:{pose.Rotation}!={nf.Rotation}");
+            //}
+            //if (pose.Orthographic != nf.Orthographic)
+            //{
+            //    dirty = true;
+
+            //    LogUtil.Log($"Orthographic:{pose.Orthographic}!={nf.Orthographic}");
+            //}
+
+            //if (dirty)
+            //{
+            //    LogUtil.Log($"-------------------------------------------------");
+            //}
+            //else
+            //{
+            //    count++;
+            //    LogUtil.Log($"OK:{count}");
+            //}
+
+            return pose;
+        }
+
+        int count = 0;
+
+        Vector2 SampleBezier(Vector2 handle1, Vector2 handle2, float t)
+        {
+            var zero = Vector2.zero;
+            var full = new Vector2(1.0f, 1.0f);
+            var v1 = Vector2.Lerp(zero, handle1, t);
+            var v2 = Vector2.Lerp(handle1, handle2, t);
+            var v3 = Vector2.Lerp(handle2, full, t);
+            var v4 = Vector2.Lerp(v1, v2, t);
+            var v5 = Vector2.Lerp(v2, v3, t);
+            var v6 = Vector2.Lerp(v4, v5, t);
+            return v6;
+        }
+
+        float Interpolate(double p1x, double p2x, double p1y, double p2y, float x)
+        {
+            var handle1 = new Vector2((float)p1x, (float)p1y);
+            var handle2 = new Vector2((float)p2x, (float)p2y);
+            var xtgt = x;
+            var x0 = 0.0f;
+            var x1 = 1.0f;
+            var c = 0;
+            Vector2 v;
+
+            while (true)
+            {
+                v = SampleBezier(handle1, handle2, x);
+                c += 1;
+                if (c >= 10)
+                    break;
+                if (Mathf.Abs(xtgt - v.x) < 0.001f)
+                    break;
+                if (v.x > xtgt)
+                {
+                    x1 = x;
+                    x = (x1 + x0) / 2;
+                }
+                else
+                {
+                    x0 = x;
+                    x = (x1 + x0) / 2;
+                }
+            }
+            return v.y;
+        }
+        float InterpolateFrame(Curve curve, float x)
+        {
+            return Interpolate(curve.a, curve.c, curve.b, curve.d, x);
+        }
+        bool IsLinear(Curve cuv)
+        {
+            return cuv.a == cuv.b && cuv.c == cuv.d;
+        }
+        #endregion
     }
 }

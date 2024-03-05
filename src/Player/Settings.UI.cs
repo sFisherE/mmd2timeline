@@ -420,7 +420,7 @@ namespace mmd2timeline
         /// </summary>
         void RefreshCameraUI()
         {
-            if (config.UseOriginalCamera || config.UseCustomCameraAtom)
+            if (config.UseOriginalCamera || config.UseCustomCameraAtom || config.CameraControlMode == CameraControlModes.Evaluation1 || config.CameraControlMode == CameraControlModes.Evaluation2)
             {
                 _CameraFocusUI.RefreshView(false);
                 ShowUIElements(_CameraControlUI, false);
