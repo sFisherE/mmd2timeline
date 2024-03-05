@@ -82,10 +82,10 @@ namespace mmd2timeline
         /// <param name="popupPanelHeight"></param>
         /// <param name="rightSide"></param>
         /// <returns></returns>
-        internal JSONStorableStringChooser SetupStringChooser(string paramName, string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        internal JSONStorableStringChooser SetupStringChooser(string paramName, string label, List<string> entries, List<string> displayEntries, float popupPanelHeight = 600f, bool rightSide = false)
         {
             string defaultEntry = entries.Count > 0 ? entries[0] : "";
-            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, label);
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, displayEntries, defaultEntry, label);
             this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
             //this.RegisterStringChooser(storable);
             return storable;
@@ -95,7 +95,9 @@ namespace mmd2timeline
         {
             string label = Lang.Get(paramName);
 
-            return SetupStringChooser(paramName, label, entries, popupPanelHeight, rightSide);
+            var displayEntries = entries.Select(e => Lang.Get(e)).ToList();
+
+            return SetupStringChooser(paramName, label, entries, displayEntries, popupPanelHeight, rightSide);
         }
 
         /// <summary>
@@ -106,10 +108,10 @@ namespace mmd2timeline
         /// <param name="popupPanelHeight"></param>
         /// <param name="rightSide"></param>
         /// <returns></returns>
-        internal JSONStorableStringChooser SetupStringChooserNoLang(string paramName, string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        internal JSONStorableStringChooser SetupStringChooserNoLang(string paramName, string label, List<string> entries, List<String> displayNames, float popupPanelHeight = 600f, bool rightSide = false)
         {
             string defaultEntry = entries.Count > 0 ? entries[0] : "";
-            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, label);
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, displayNames, defaultEntry, label);
             this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
             //this.RegisterStringChooser(storable);
             return storable;

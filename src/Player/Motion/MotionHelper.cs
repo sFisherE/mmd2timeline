@@ -941,6 +941,23 @@ namespace mmd2timeline
                 //// 修正高度
                 //var horizon = Math.Max(config.AutoCorrectFixHeight, floorHeight);
 
+                #region 获取人物缩放
+
+                var personScale = 1f;
+
+                var rescaleObject = _PersonAtom.GetStorableByID("rescaleObject");
+
+                if (rescaleObject != null)
+                {
+                    var scale = rescaleObject.GetFloatJSONParam("scale");
+                    if (scale != null)
+                    {
+                        personScale = scale.val;
+                    }
+                }
+
+                #endregion
+
                 #region 修正骨骼位置，如果骨骼位置高度小于0，则对其进行修正
                 var reviseY = GetFixHeight(bones);
                 #endregion
@@ -961,7 +978,7 @@ namespace mmd2timeline
                         if (this.controllerLookup.ContainsKey(boneTransform))
                         {
                             Quaternion rotation = mmdbone.transform.rotation;
-                            Vector3 position = mmdbone.transform.position;
+                            Vector3 position = mmdbone.transform.position * personScale;
                             var freeControllerV = this.controllerLookup[boneTransform];
 
                             // 如果开启了高跟，跳过脚趾的更新

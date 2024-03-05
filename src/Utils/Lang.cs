@@ -444,6 +444,8 @@ namespace mmd2timeline
             this["Knee"] = "膝";
             this["Foot"] = "足";
             this["Toe"] = "趾";
+            this["Head"] = "头";
+            this["Neck"] = "颈";
             this["Adjust Bone Rotation X"] = "调节骨骼旋转 X";
             this["Adjust Bone Rotation Y"] = "调节骨骼旋转 Y";
             this["Adjust Bone Rotation Z"] = "调节骨骼旋转 Z";
@@ -499,6 +501,10 @@ namespace mmd2timeline
             this["Action"] = "动作";
             this["Audio Settings"] = "音频设置";
             this["Audio Source"] = "音频源";
+            this["Camera Control"] = "镜头模式";
+            this["Camera Atom"] = "自定义镜头原子";
+            this["[Default]"] = "默认";
+            this["Camera Position Reference"] = "镜头位置参考";
         }
     }
 }

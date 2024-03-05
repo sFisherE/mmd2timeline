@@ -207,8 +207,8 @@ namespace mmd2timeline.Store
             var musicList = new List<String>(new string[1] { noneString });
             var motionList = new List<String>(new string[1] { noneString });
 
-            var musicNameList = new List<String>(new string[1] { noneString });
-            var motionNameList = new List<String>(new string[1] { noneString });
+            var musicNameList = new List<String>(new string[1] { Lang.Get(noneString) });
+            var motionNameList = new List<String>(new string[1] { Lang.Get(noneString) });
 
             var defaultMusic = noneString;
             var defaultCamera = noneString;

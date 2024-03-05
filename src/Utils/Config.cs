@@ -331,7 +331,7 @@ namespace mmd2timeline
         /// <summary>
         /// 是否将镜头数据赋予原子
         /// </summary>
-        public bool UseCameraAtom
+        public bool UseCustomCameraAtom
         {
             get
             {

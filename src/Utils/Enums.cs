@@ -234,11 +234,19 @@ namespace mmd2timeline
         /// 趾
         /// </summary>
         public const int Toe = 7;
+        /// <summary>
+        /// 头
+        /// </summary>
+        public const int Head = 8;
+        /// <summary>
+        /// 颈
+        /// </summary>
+        public const int Neck = 9;
 
         /// <summary>
         /// 初始化枚举类
         /// </summary>
-        private static EnumClass enums = new EnumClass("Shoulder", "Arm", "Elbow", "Hand", "Thigh", "Knee", "Foot", "Toe");
+        private static EnumClass enums = new EnumClass("Shoulder", "Arm", "Elbow", "Hand", "Thigh", "Knee", "Foot", "Toe", "Head", "Neck");
 
         /// <summary>
         /// 获取名称列表

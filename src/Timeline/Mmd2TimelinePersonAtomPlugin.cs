@@ -10,7 +10,7 @@ using MacGruber;
 
 namespace mmd2timeline
 {
-   partial class Mmd2TimelinePersonAtomPlugin : MVRScript
+    partial class Mmd2TimelinePersonAtomPlugin : MVRScript
     {
         public virtual bool WithAsset()
         {
@@ -21,7 +21,7 @@ namespace mmd2timeline
             EnableHighHeel(enableHeel.val);
             //sfishere.mmd2timeline.10:/Custom/Scripts/mmd2timeline
             Config.varPmxPath = MacGruber.Utils.GetPluginPath(this) + "/g2f.pmx";
-            LogUtil.Log("path:"+ Config.varPmxPath);
+            LogUtil.Log("path:" + Config.varPmxPath);
         }
         void OnDestroy()
         {
@@ -32,15 +32,15 @@ namespace mmd2timeline
         public Text importedVmdLabel;
         public string GetTimeText()
         {
-          return  string.Format("Time:{0:F2}/{1:F2} Frame:{2}", 
-              (float)CurFrame / 30,endTime.val-startTime.val, CurFrame);
-            
+            return string.Format("Time:{0:F2}/{1:F2} Frame:{2}",
+                (float)CurFrame / 30, endTime.val - startTime.val, CurFrame);
+
         }
         public JSONStorableFloat playProgress;
         public JSONStorableFloat motionScale;
         void SetMotionScale(float val)
         {
-            if(m_MmdPersonGameObject!=null)
+            if (m_MmdPersonGameObject != null)
             {
                 m_MmdPersonGameObject.SetMotionPos(m_MmdPersonGameObject._playTime, true, motionScale.val);
             }
@@ -90,7 +90,7 @@ namespace mmd2timeline
             playProgress = new JSONStorableFloat("Preview", 0f, SetProgress, 0, 10f, true);
 
 
-            m_BoneAdjustX= new JSONStorableFloat("Adjust Bone Rotation X", 0f, SetBoneAdjustX, -30, 30f, true);
+            m_BoneAdjustX = new JSONStorableFloat("Adjust Bone Rotation X", 0f, SetBoneAdjustX, -30, 30f, true);
             m_BoneAdjustY = new JSONStorableFloat("Adjust Bone Rotation Y", 0f, SetBoneAdjustY, -30, 30f, true);
             m_BoneAdjustZ = new JSONStorableFloat("Adjust Bone Rotation Z", 0f, SetBoneAdjustZ, -30, 30f, true);
 
@@ -110,7 +110,7 @@ namespace mmd2timeline
             CreateHeader("Step 2:", false, Color.black);
             {
                 var btn = CreateButton("Import Vmd");
-                if(btn!=null)
+                if (btn != null)
                     btn.button.onClick.AddListener(ImportVmd);
             }
             importedVmdLabel = CreateLabel("Imported Vmd:None", false, Color.green, false);
@@ -155,7 +155,7 @@ namespace mmd2timeline
                     slider.quickButtonsEnabled = false;
             }
             {
-            //采样速度
+                //采样速度
                 var slider = CreateSlider(sampleSpeed, true);
                 if (slider != null)
                     slider.quickButtonsEnabled = false;
@@ -163,22 +163,22 @@ namespace mmd2timeline
             {
                 var slider = CreateSlider(playProgress);
                 if (slider != null)
-					RegisterFloat(playProgress);
-					//liu修改 增加选择范围 可以上一帧 下一帧 点击选择
-					slider.rangeAdjustEnabled = false;//范围调整已启用
-					slider.valueFormat = "F2";//小位数调整
-					//slider.quickButtonsEnabled = false;
+                    RegisterFloat(playProgress);
+                //liu修改 增加选择范围 可以上一帧 下一帧 点击选择
+                slider.rangeAdjustEnabled = false;//范围调整已启用
+                slider.valueFormat = "F2";//小位数调整
+                                          //slider.quickButtonsEnabled = false;
             }
             //骨骼微调
             {
-                m_BoneChooser = new JSONStorableStringChooser("AdjustBoneRotation", new List<string>() { "Shoulder", "Arm", "Elbow","Hand", "Thigh", "Knee", "Foot", "Toe" }, "Arm", "Bone Rotation Adjust",SetBone);
+                m_BoneChooser = new JSONStorableStringChooser("AdjustBoneRotation", new List<string>() { "Shoulder", "Arm", "Elbow", "Hand", "Thigh", "Knee", "Foot", "Toe", "Head", "Neck" }, "Arm", "Bone Rotation Adjust", SetBone);
                 CreateFilterablePopup(m_BoneChooser, true);
 
                 CreateSlider(m_BoneAdjustX, true);
                 CreateSlider(m_BoneAdjustY, true);
                 CreateSlider(m_BoneAdjustZ, true);
 
-                var btn = CreateButton("Clear Bone Rotation Adjust",true);
+                var btn = CreateButton("Clear Bone Rotation Adjust", true);
                 if (btn != null)
                 {
                     btn.button.onClick.AddListener(() =>
@@ -204,7 +204,7 @@ namespace mmd2timeline
             //    }
             //}
 
-			int lgPauseWwitchContinueType=0;
+            int lgPauseWwitchContinueType = 0;
 
             CreateHeader("Step 3:", false, Color.black);
             {
@@ -333,13 +333,13 @@ namespace mmd2timeline
             int startFrame = (int)(beginTime * 30);
             int endFrame = (int)(endTime * 30);
 
-            var motions =m_MmdPersonGameObject._motion.BoneMotions;
+            var motions = m_MmdPersonGameObject._motion.BoneMotions;
             HashSet<int> frames = new HashSet<int>();
             foreach (var item in motions)
             {
                 bool include = true;
-                    if (DazBoneMapping.fingerBoneNames.Contains(item.Key))
-                        include = false;
+                if (DazBoneMapping.fingerBoneNames.Contains(item.Key))
+                    include = false;
                 if (include)
                 {
                     foreach (var item2 in item.Value)
@@ -385,15 +385,15 @@ namespace mmd2timeline
         void SetProgress(float val)
         {
             if (m_MmdPersonGameObject == null) return;
-            m_MmdPersonGameObject.SetMotionPos(val,true,motionScale.val);
+            m_MmdPersonGameObject.SetMotionPos(val, true, motionScale.val);
 
         }
         void SetStartTime(float val)
         {
             if (m_MmdPersonGameObject == null) return;
-            m_MmdPersonGameObject.SetMotionPos(val,true,motionScale.val);
+            m_MmdPersonGameObject.SetMotionPos(val, true, motionScale.val);
             float max = endTime.max;
-            endTime.min= val;
+            endTime.min = val;
             endTime.max = max;
         }
         void SetEndTime(float val)
@@ -406,7 +406,7 @@ namespace mmd2timeline
         void ImportVmd(string path)
         {
             m_MmdPersonGameObject.LoadMotion(path);
-            m_MmdPersonGameObject.SetMotionPos(0,true,motionScale.val);
+            m_MmdPersonGameObject.SetMotionPos(0, true, motionScale.val);
         }
         void SetTransform()
         {
@@ -601,7 +601,7 @@ namespace mmd2timeline
             temp.transform.position = containingAtom.transform.position;
             //转180°
             //temp.transform.localEulerAngles = new Vector3(0, 180, 0);
-            temp.transform.rotation = containingAtom.transform.rotation* Quaternion.Euler(0, 180, 0);
+            temp.transform.rotation = containingAtom.transform.rotation * Quaternion.Euler(0, 180, 0);
             Debug.LogError(temp.transform.localEulerAngles);
 
             Transform parent2 = containingAtom.transform.Find("rescale2/PhysicsModel");
@@ -717,7 +717,7 @@ namespace mmd2timeline
                     //{
                     //    UpdateFinger(item);
                     //}
-                    foreach(var item in fingerBones)
+                    foreach (var item in fingerBones)
                     {
                         UpdateFinger(item);
                     }
@@ -740,7 +740,7 @@ namespace mmd2timeline
                 if (IsSampling)
                 {
                     //录手指
-                    foreach(var item in fingerBones)
+                    foreach (var item in fingerBones)
                     {
                         Transform boneTf = cachedBoneLookup[item.name];
                         int frame = CurFrame;
@@ -948,7 +948,7 @@ namespace mmd2timeline
             fileBrowserUI.shortCuts = null;
             fileBrowserUI.browseVarFilesAsDirectories = false;
             fileBrowserUI.SetTextEntry(true);
-            fileBrowserUI.Show(path=>
+            fileBrowserUI.Show(path =>
             {
                 if (string.IsNullOrEmpty(path)) return;
                 if (!path.ToLower().EndsWith($".{_saveExt}")) path += $".{_saveExt}";
