@@ -1,6 +1,4 @@
-﻿using mmd2timeline;
-using Oculus.Platform;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace LibMMD.Motion
@@ -16,8 +14,8 @@ namespace LibMMD.Motion
             }
             set
             {
+                Clear();
                 _keyFrames = value;
-                prevIndex = 0;
             }
         }
 
@@ -493,5 +491,11 @@ namespace LibMMD.Motion
             return cuv.a == cuv.b && cuv.c == cuv.d;
         }
         #endregion
+
+        public void Clear()
+        {
+            KeyFrames?.Clear();
+            prevIndex = 0;
+        }
     }
 }

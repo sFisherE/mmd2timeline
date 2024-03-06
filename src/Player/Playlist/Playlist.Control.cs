@@ -249,7 +249,7 @@ namespace mmd2timeline
                 return;
             }
 
-            var nextItem = _CurrentItem;
+            var nextItem = CurrentItem;
 
             if (this.PlayMode != MMDPlayMode.Repeat)
             {
@@ -258,7 +258,7 @@ namespace mmd2timeline
             }
 
             // 如果下一个内容与当前内容一致，则触发重播事件，否则更新当前项目
-            if (nextItem == _CurrentItem)
+            if (nextItem == CurrentItem)
             {
                 PlayItemRepeat?.Invoke(this, nextItem);
             }

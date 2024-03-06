@@ -36,7 +36,7 @@ namespace LibMMD.Motion
 
             m_boneNameTable = new Dictionary<string, int>();
             m_boneNameTable2 = new Dictionary<int, string>();
-            for(int i=0;i< poser.Model.Bones.Length; i++)
+            for (int i = 0; i < poser.Model.Bones.Length; i++)
             {
                 var item = poser.Model.Bones[i];
                 m_boneNameTable.Add(item.Name, i);
@@ -93,7 +93,7 @@ namespace LibMMD.Motion
             UpdateIKEnable(frame);
             foreach (var entry in _boneMap)
             {
-                _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, frame),motionScale);
+                _poser.SetBonePose(entry.Value, _motion.GetBonePose(entry.Key, frame), motionScale);
             }
         }
 
@@ -174,5 +174,11 @@ namespace LibMMD.Motion
 
         private readonly MmdMotion _motion;
         private readonly Poser _poser;
+
+        public void Clear()
+        {
+            m_boneNameTable?.Clear();
+            m_boneNameTable2.Clear();
+        }
     }
 }

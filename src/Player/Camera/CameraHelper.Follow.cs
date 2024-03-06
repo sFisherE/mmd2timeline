@@ -92,7 +92,14 @@ namespace mmd2timeline
         {
             get
             {
-                return SuperController.singleton.MonitorRig;
+                if (config.IsInVR)
+                {
+                    return SuperController.singleton.navigationRig;
+                }
+                else
+                {
+                    return SuperController.singleton.MonitorRig;
+                }
             }
         }
 

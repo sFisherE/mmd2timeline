@@ -15,7 +15,7 @@ namespace LibMMD.Motion
         public void GetSingleKeyframes()
         {
             Dictionary<int, HashSet<string>> frameDic = new Dictionary<int, HashSet<string>>();
-            foreach(var item in BoneMotions)
+            foreach (var item in BoneMotions)
             {
                 foreach (var item2 in item.Value)
                 {
@@ -26,7 +26,7 @@ namespace LibMMD.Motion
                     frameDic[item2.Key].Add(item.Key);
                 }
             }
-            foreach(var item in frameDic)
+            foreach (var item in frameDic)
             {
                 if (item.Value.Count == 1)
                 {
@@ -81,7 +81,7 @@ namespace LibMMD.Motion
         }
         public void CombineMorphMotions(Dictionary<string, List<KeyValuePair<int, MorphKeyframe>>> motions)
         {
-            foreach(var item in motions)
+            foreach (var item in motions)
             {
                 if (!MorphMotions.ContainsKey(item.Key))
                 {
@@ -91,7 +91,7 @@ namespace LibMMD.Motion
                 {
                     var list = MorphMotions[item.Key];
                     Dictionary<int, KeyValuePair<int, MorphKeyframe>> dict = new Dictionary<int, KeyValuePair<int, MorphKeyframe>>();
-                    foreach(var item2 in list)
+                    foreach (var item2 in list)
                     {
                         dict.Add(item2.Key, item2);
                     }
@@ -104,7 +104,7 @@ namespace LibMMD.Motion
                         dict.Add(item2.Key, item2);
                     }
                     var list3 = new List<KeyValuePair<int, MorphKeyframe>>();
-                    foreach(var item2 in dict)
+                    foreach (var item2 in dict)
                     {
                         list3.Add(item2.Value);
                     }
@@ -127,7 +127,7 @@ namespace LibMMD.Motion
             MorphMotions = new Dictionary<string, List<KeyValuePair<int, MorphKeyframe>>>();
         }
 
-        public bool IsSkipForIk(int frame,string boneName)
+        public bool IsSkipForIk(int frame, string boneName)
         {
             foreach (var item in VisibleIKList)
             {
@@ -187,7 +187,8 @@ namespace LibMMD.Motion
             if (rightBoundIndex == 0)
             {
                 leftBoundIndex = 0;
-            } else if (rightBoundIndex >= keyFrames.Count)
+            }
+            else if (rightBoundIndex >= keyFrames.Count)
             {
                 rightBoundIndex = leftBoundIndex = keyFrames.Count - 1;
             }
@@ -209,7 +210,7 @@ namespace LibMMD.Motion
                     Rotation = leftKey.Rotation,
                 };
             }
-            var baryPos = (frame - leftFrame) / (float) (rightFrame - leftFrame);
+            var baryPos = (frame - leftFrame) / (float)(rightFrame - leftFrame);
             var translation = new Vector3();
             var lambda = leftKey.XInterpolator.Calculate(baryPos);
             translation.x = leftKey.Translation.x * (1 - lambda) + rightKey.Translation.x * lambda;
@@ -241,7 +242,7 @@ namespace LibMMD.Motion
                 };
             }
             //Ö»ÓÐÒ»Ö¡
-            if (keyFrames.Count==1)
+            if (keyFrames.Count == 1)
             {
                 var key = keyFrames[0].Value;
                 return new BonePose
@@ -275,7 +276,7 @@ namespace LibMMD.Motion
                 };
             }
 
-            var toSearch = new KeyValuePair<int, BoneKeyframe>((int) dFrame, null);
+            var toSearch = new KeyValuePair<int, BoneKeyframe>((int)dFrame, null);
             var rightBoundIndex = keyFrames.BinarySearch(toSearch, BoneKeyframeSearchComparator.Instance);
             if (rightBoundIndex < 0)
             {
@@ -285,7 +286,8 @@ namespace LibMMD.Motion
             if (rightBoundIndex == 0)
             {
                 leftBoundIndex = 0;
-            } else if (rightBoundIndex >= keyFrames.Count)
+            }
+            else if (rightBoundIndex >= keyFrames.Count)
             {
                 rightBoundIndex = leftBoundIndex = keyFrames.Count - 1;
             }
@@ -307,7 +309,7 @@ namespace LibMMD.Motion
                     Rotation = leftKey.Rotation
                 };
             }
-            var baryPos = (float) (dFrame - leftFrame) / (rightFrame - leftFrame);
+            var baryPos = (float)(dFrame - leftFrame) / (rightFrame - leftFrame);
             var translation = new Vector3();
             var lambda = leftKey.XInterpolator.Calculate(baryPos);
             translation.x = leftKey.Translation.x * (1 - lambda) + rightKey.Translation.x * lambda;
@@ -354,7 +356,8 @@ namespace LibMMD.Motion
             if (rightBoundIndex == 0)
             {
                 leftBoundIndex = 0;
-            } else if (rightBoundIndex >= keyFrames.Count)
+            }
+            else if (rightBoundIndex >= keyFrames.Count)
             {
                 rightBoundIndex = leftBoundIndex = keyFrames.Count - 1;
             }
@@ -372,7 +375,7 @@ namespace LibMMD.Motion
             {
                 return new MorphPose(leftKey.Weight);
             }
-            var baryPos = (frame - leftFrame) / (float) (rightFrame - leftFrame);
+            var baryPos = (frame - leftFrame) / (float)(rightFrame - leftFrame);
             var lWeight = leftKey.Weight;
             var rWeight = rightKey.Weight;
             var lambda = leftKey.WInterpolator.Calculate(baryPos);
@@ -413,7 +416,8 @@ namespace LibMMD.Motion
             if (rightBoundIndex == 0)
             {
                 leftBoundIndex = 0;
-            } else if (rightBoundIndex >= keyFrames.Count)
+            }
+            else if (rightBoundIndex >= keyFrames.Count)
             {
                 rightBoundIndex = leftBoundIndex = keyFrames.Count - 1;
             }
@@ -431,7 +435,7 @@ namespace LibMMD.Motion
             {
                 return new MorphPose(leftKey.Weight);
             }
-            var baryPos = (float) (iFrame - leftFrame) / (rightFrame - leftFrame);
+            var baryPos = (float)(iFrame - leftFrame) / (rightFrame - leftFrame);
             var lWeight = leftKey.Weight;
             var rWeight = rightKey.Weight;
             var lambda = leftKey.WInterpolator.Calculate(baryPos);
@@ -475,6 +479,12 @@ namespace LibMMD.Motion
             {
                 return x.Key.CompareTo(y.Key);
             }
+        }
+
+        public void Clear()
+        {
+            BoneMotions.Clear();
+            MorphMotions.Clear();
         }
     }
 }
