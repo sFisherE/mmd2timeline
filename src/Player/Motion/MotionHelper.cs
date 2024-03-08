@@ -1055,14 +1055,14 @@ namespace mmd2timeline
                 }
 
                 float time = GetRelativeTime();
-                if (this._EnableFaceJSON.val)
+                if (this._ExpressionScaleJSON.val > 0f)
                 {
                     var morphs = mmd.GetUpdatedMorph(time);
                     foreach (var item in morphs)
                     {
                         if (this._FaceMorphs.ContainsKey(item.Key))
                         {
-                            this._FaceMorphs[item.Key].morphValue = item.Value;
+                            this._FaceMorphs[item.Key].morphValue = item.Value * this._ExpressionScaleJSON.val;
                         }
                     }
                 }

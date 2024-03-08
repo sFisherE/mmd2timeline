@@ -507,6 +507,7 @@ namespace mmd2timeline
             this["Camera Position Reference"] = "镜头位置参考";
             this["Evaluation1"] = "评估版（1）";
             this["Evaluation2"] = "评估版（2）";
+            this["Expression Scale"] = "表情缩放";
         }
     }
 }

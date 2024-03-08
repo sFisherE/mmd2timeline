@@ -51,6 +51,23 @@ namespace mmd2timeline.Store
         }
 
         /// <summary>
+        /// 表情缩放
+        /// </summary>
+        public float ExpressionScale
+        {
+            get
+            {
+                if (this.HasKey("ExpressionScale"))
+                    return this["ExpressionScale"].AsFloat;
+                else return 1f;
+            }
+            set
+            {
+                this["ExpressionScale"].AsFloat = value;
+            }
+        }
+
+        /// <summary>
         /// 直腿. 0-1
         /// </summary>
         public float StraightLeg

@@ -83,9 +83,9 @@ namespace mmd2timeline
         /// </summary>
         JSONStorableFloat _MotionScaleJSON;
         /// <summary>
-        /// 开启表情
+        /// 表情缩放
         /// </summary>
-        JSONStorableBool _EnableFaceJSON;
+        JSONStorableFloat _ExpressionScaleJSON;
 
         /// <summary>
         /// 开启高跟
@@ -225,13 +225,13 @@ namespace mmd2timeline
             }, rightSide);
             _MotionSettingsUI.Elements.Add(_TimeDelayJSON);
 
-            // 是否启用表情
-            _EnableFaceJSON = SetupToggle(self, "Enable Face", true, v =>
+            // 表情缩放
+            _ExpressionScaleJSON = SetupSliderFloat(self, "Expression Scale", 1f, 0f, 2f, v =>
             {
-                _MotionSetting.IgnoreFace = !v;
+                _MotionSetting.ExpressionScale = v;
                 ReUpdateMotion();
-            }, rightSide);
-            _MotionSettingsUI.Elements.Add(_EnableFaceJSON);
+            }, rightSide, "F4");
+            _MotionSettingsUI.Elements.Add(_ExpressionScaleJSON);
             #region 位置设置UI
 
             //// 位置
@@ -500,8 +500,15 @@ namespace mmd2timeline
                 return;
             }
 
-            //// 忽略脸部
-            _EnableFaceJSON.val = !_MotionSetting.IgnoreFace;
+            if (_MotionSetting.IgnoreFace)
+            {
+                //// 忽略脸部
+                _ExpressionScaleJSON.val = 0f;
+            }
+            else
+            {
+                _ExpressionScaleJSON.val = _MotionSetting.ExpressionScale;
+            }
             _UseAllJointsSettingsJSON.val = _MotionSetting.UseAllJointsSettings;
 
             // 如果使用全部关节设置
