@@ -138,6 +138,11 @@ namespace mmd2timeline
                 _MmdCamera.transform.localScale = Vector3.one;
                 _MmdCamera.transform.localRotation = Quaternion.identity;
 
+                // 使用评估版镜头数据读取方法
+                _MmdCamera.Evaluation = true;
+                // 使用原有的插值计算方式
+                _MmdCamera.NewInterpolate = false;
+
                 _MmdCamera.CameraUpdated += UpdateCamera;
 
                 // 获取拥有者
