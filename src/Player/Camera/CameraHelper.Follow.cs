@@ -92,7 +92,14 @@ namespace mmd2timeline
         {
             get
             {
-                return SuperController.singleton.navigationRig;
+                if (config.IsInVR)
+                {
+                    return SuperController.singleton.navigationRig;
+                }
+                else
+                {
+                    return SuperController.singleton.MonitorRig;
+                }
             }
         }
 
@@ -179,6 +186,9 @@ namespace mmd2timeline
                 Transform positionRef = null;
                 //JSONStorableFloat scaleJSON = null;
                 //var personScale = 1f;
+                var positionScale = _CameraSetting.CameraScale;
+
+                var heightScale = _CameraSetting.CameraYScale;
 
                 if (_positionReferenceAtom != null)
                 {
@@ -217,14 +227,11 @@ namespace mmd2timeline
                     _CameraTransform.position += _PositionOffset;
                     _CameraTransform.rotation *= _RotationOffset;
 
-                    if (positionRef != null)
-                    {
-                        _CameraTransform.position += positionRef.position;
-                    }
+                    UpdatePosition(_CameraTransform, positionRef, positionScale, heightScale);
 
                     if (config.CameraFOVEnabled)
                     {
-                        _CameraControl.cameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
+                        _CameraControl.cameraFOV = fov;
                     }
                     _CameraControl.cameraToControl.orthographic = orthographic;
                 }
@@ -243,10 +250,7 @@ namespace mmd2timeline
                         _customCameraAtom.mainController.control.position += _PositionOffset;
                         _customCameraAtom.mainController.control.rotation *= _RotationOffset;
 
-                        if (positionRef != null)
-                        {
-                            _customCameraAtom.mainController.control.position += positionRef.position;
-                        }
+                        UpdatePosition(_customCameraAtom.mainController.control, positionRef, positionScale, heightScale);
                     }
                     else
                     {
@@ -263,15 +267,12 @@ namespace mmd2timeline
                             NavigationRig.rotation = navigationRigRotation;
                         }
 
-                        if (positionRef != null)
-                        {
-                            NavigationRig.position += positionRef.position;
-                        }
+                        UpdatePosition(NavigationRig, positionRef, positionScale, heightScale);
                     }
 
                     if (config.CameraFOVEnabled)
                     {
-                        SuperController.singleton.monitorCameraFOV = fov * (1 - _CameraSetting.CameraScale / 1f);
+                        SuperController.singleton.monitorCameraFOV = fov;
                     }
                     SuperController.singleton.MonitorCenterCamera.orthographic = orthographic;
                 }
@@ -280,6 +281,19 @@ namespace mmd2timeline
             {
                 LogUtil.Debug(e, "Failed to update: ");
             }
+        }
+
+        private void UpdatePosition(Transform target, Transform positionRef, float positionScale, float heightScale)
+        {
+            if (positionRef != null)
+            {
+                target.position += positionRef.position;
+            }
+
+            var heightCorrection = target.position;
+            heightCorrection.y *= heightScale;
+            heightCorrection.z += heightCorrection.z * positionScale;
+            target.position = heightCorrection;
         }
 
         /// <summary>

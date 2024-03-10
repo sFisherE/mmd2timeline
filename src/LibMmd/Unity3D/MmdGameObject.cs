@@ -125,7 +125,7 @@ namespace LibMMD.Unity3D
                 //RestartBonePoseCalculation(_playTime, 1.0f / PhysicsFps);
             }
         }
- 
+
         //表情
         public Dictionary<string, float> GetUpdatedMorph(float time)
         {
@@ -313,6 +313,12 @@ namespace LibMMD.Unity3D
 
         private void ResetMotionPlayer()
         {
+            if (_motionPlayer != null)
+            {
+                _motionPlayer.Clear();
+                _motionPlayer = null;
+            }
+
             _motionPlayer = new MotionPlayer(_motion, _poser);
             _motionPlayer.SeekFrame(0, _motionScale);
             _poser.PrePhysicsPosing();
@@ -375,6 +381,8 @@ namespace LibMMD.Unity3D
         private void Release()
         {
             //StopBonePoseCalculation();
+
+            _poser?.Clear();
         }
 
         public void ResetMotion()
@@ -416,7 +424,11 @@ namespace LibMMD.Unity3D
         }
         internal void ClearMotion()
         {
-            _motion = null;
+            if (_motion != null)
+            {
+                _motion.Clear();
+                _motion = null;
+            }
             importedVmdPath.Clear();
         }
 
@@ -437,7 +449,7 @@ namespace LibMMD.Unity3D
             if (update && OnUpdate != null)
                 OnUpdate(this);
         }
-        
+
 
         private GameObject[] CreateBones(GameObject rootGameObject)
         {

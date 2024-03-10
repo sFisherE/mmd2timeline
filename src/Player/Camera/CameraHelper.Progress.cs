@@ -124,6 +124,8 @@ namespace mmd2timeline
 
             try
             {
+                //_MmdCamera.Evaluation = config.CameraControlMode == CameraControlModes.Evaluation1 || config.CameraControlMode == CameraControlModes.Evaluation2;
+                //_MmdCamera.NewInterpolate = config.CameraControlMode == CameraControlModes.Evaluation2;
                 // 调用MMDCamera的播放进度
                 _MmdCamera.SetPlayPos((double)progress);
             }

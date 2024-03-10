@@ -11,6 +11,14 @@ namespace LibMMD.Unity3D
         private double _playTime;
         private Camera _camera;
         public Camera[] cameras;
+        /// <summary>
+        /// 评估版
+        /// </summary>
+        public bool Evaluation = false;
+        /// <summary>
+        /// 新插值
+        /// </summary>
+        public bool NewInterpolate = true;
         //static MmdCameraObject s_Inst;
         //public static MmdCameraObject Inst
         //{
@@ -91,7 +99,7 @@ namespace LibMMD.Unity3D
             {
                 return;
             }
-            var cameraPose = _cameraMotion.GetCameraPose(_playTime);
+            var cameraPose = _cameraMotion.GetCameraPose(_playTime, Evaluation, NewInterpolate);
             if (cameraPose == null)
             {
                 return;

@@ -505,6 +505,9 @@ namespace mmd2timeline
             this["Camera Atom"] = "自定义镜头原子";
             this["[Default]"] = "默认";
             this["Camera Position Reference"] = "镜头位置参考";
+            this["Evaluation1"] = "评估版（1）";
+            this["Evaluation2"] = "评估版（2）";
+            this["Expression Scale"] = "表情缩放";
         }
     }
 }

@@ -159,11 +159,13 @@ namespace mmd2timeline
         public const int Custom = 1;
         public const int WindowCamera = 2;
         public const int Atom = 3;
+        //public const int Evaluation1 = 4;
+        //public const int Evaluation2 = 5;
 
         /// <summary>
         /// 初始化枚举类
         /// </summary>
-        private static EnumClass enums = new EnumClass("Original", "Custom", "WindowCamera", "Atom");
+        private static EnumClass enums = new EnumClass("Original", "Custom", "WindowCamera", "Atom"/*, "Evaluation1", "Evaluation2"*/);
 
         /// <summary>
         /// 获取名称列表

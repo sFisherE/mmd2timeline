@@ -547,5 +547,15 @@ namespace LibMMD.Motion
 
         private readonly List<int> _prePhysicsBones = new List<int>();
         private readonly List<int> _postPhysicsBones = new List<int>();
+
+        public void Clear()
+        {
+            _prePhysicsBones?.Clear();
+            _postPhysicsBones?.Clear();
+            _boneNameMap?.Clear();
+            _morphNameMap?.Clear();
+            BoneImageLookup?.Clear();
+            Model = null;
+        }
     }
 }
