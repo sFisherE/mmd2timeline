@@ -91,9 +91,25 @@ namespace mmd2timeline
             return storable;
         }
 
+        // 触发器适用方法
+        internal JSONStorableStringChooser SetupStringChooser(string paramName, string label, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
+        {
+            string defaultEntry = entries.Count > 0 ? entries[0] : "";
+            JSONStorableStringChooser storable = new JSONStorableStringChooser(paramName, entries, defaultEntry, label);
+            this.CreateScrollablePopup(storable, rightSide).popupPanelHeight = popupPanelHeight;
+            //this.RegisterStringChooser(storable);
+            return storable;
+        }
+
         internal JSONStorableStringChooser SetupStringChooser(string paramName, List<string> entries, float popupPanelHeight = 600f, bool rightSide = false)
         {
             string label = Lang.Get(paramName);
+
+            // 触发器逻辑走原逻辑
+            if (entries == null || entries.Count == 0)
+            {
+                return SetupStringChooser(paramName, label, entries, popupPanelHeight, rightSide);
+            }
 
             var displayEntries = entries.Select(e => Lang.Get(e)).ToList();
 
